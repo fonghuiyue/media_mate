@@ -1,0 +1,32 @@
+{
+	"author": {
+		"name": "willyb321",
+		"email": "wbwilliam7@gmail.com",
+		"url": "tehsuperwilly.tech"
+	},
+	"private": true,
+	"license": "MIT",
+	"name": "media_mate",
+	"main": "indexbuild.js",
+	"productName": "Media Mate",
+	"description": "My SDD HSC Major Project, a full media server/player/downloader/etc - in one",
+	"version": "0.0.1",
+	"dependencies": {
+		"about-window": "^1.6.1",
+		"bugsnag": "^1.9.0",
+		"bulma": "^0.3.1",
+		"debug": "^2.6.0",
+		"electron-debug": "^1.1.0",
+		"electron-is-dev": "^0.1.2",
+		"electron-json-storage": "^3.0.1",
+		"electron-updater": "^1.4.2",
+		"fs-extra": "^2.0.0",
+		"izitoast": "^1.1.1",
+		"moment": "^2.17.1",
+		"progressbar.js": "^1.0.1",
+		"source-map-support": "^0.4.11",
+		"tableify": "^1.0.0",
+		"underscore": "^1.8.3"
+	},
+	"xo": false
+}

@@ -10,40 +10,42 @@
 	<!-- endinject -->
 	<title>Media Mate Streamer</title>
 	<script type="text/javascript">
-function runScript(e) {
-	if (e.keyCode == 13) {
-		var tb = document.getElementById("magnet");
-		submitmagnet(tb.value)
-		return false;
-	}
-}
-var WebTorrent = require('webtorrent')
-function submitmagnet(magnet) {
-var client = new WebTorrent()
-var magnetURI = magnet
-client.add(magnetURI, function (torrent) {
-  var file = torrent.files[0]
-  file.renderTo('#player') // append the file to the DOM
-})
+		function runScript(e) {
+			if (e.keyCode == 13) {
+				var tb = document.getElementById("magnet");
+				submitmagnet(tb.value);
+				return false;
+			}
+		}
+		var WebTorrent = require('webtorrent');
+		function submitmagnet(magnet) {
+			var client = new WebTorrent();
+			client.add(magnet, function (torrent) {
+				let file = torrent.files[0];
+				file.appendTo('#player', function (err, elem) {
+					if (err) throw err; // file failed to download or display in the DOM
+					console.log('New DOM node with the content', elem);
+					elem.style.width = '100%';
+				}); // append the file to the DOM
+			})
 
-}
-</script>
+		}
+	</script>
 </head>
 <body>
 <div class="columns">
-  <div class="column is-narrow">
-  </div>
-  <div class="column">
-    <div class="box">
-      <p class="title is-5">Paste a magnet link in here then hit enter</p>
-      <p class="subtitle"><input id="magnet" type="text" onkeypress="return runScript(event)"></p>
-    </div>
-  </div>
+	<div class="column is-narrow">
+	</div>
+	<div class="column">
+		<div class="box">
+			<p class="title is-5">Paste a magnet link in here then hit enter</p>
+			<p class="subtitle"><input id="magnet" type="text" onkeypress="return runScript(event)"></p>
+		</div>
+	</div>
 </div>
-<div class="container is-fluid">
-<video id="player" style="width: 100%"></video>
+<div id="player" class="container is-fluid">
 </div>
 <!-- <div id="player" class="is-fullwidth"> -->
-  <!-- </div> -->
+<!-- </div> -->
 </body>
 </html>

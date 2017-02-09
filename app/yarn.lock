@@ -461,9 +461,9 @@ ecstatic@^2.1.0:
     minimist "^1.1.0"
     url-join "^1.0.0"
 
-electron-builder-http@12.3.0:
-  version "12.3.0"
-  resolved "https://registry.yarnpkg.com/electron-builder-http/-/electron-builder-http-12.3.0.tgz#5a75e3683e4c1a8ef093f353d3298342c875d2c0"
+electron-builder-http@13.3.0:
+  version "13.3.0"
+  resolved "https://registry.yarnpkg.com/electron-builder-http/-/electron-builder-http-13.3.0.tgz#f309cc82da682d5b3203aa7c35d349a47193a07b"
   dependencies:
     debug "2.6.0"
     fs-extra-p "^3.1.0"
@@ -517,14 +517,14 @@ electron-localshortcut@^0.6.0:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/electron-localshortcut/-/electron-localshortcut-0.6.1.tgz#c4e268c38a6e42f40de5618fc906d1ed608f11aa"
 
-electron-updater@^1.4.2:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/electron-updater/-/electron-updater-1.4.2.tgz#1755595cdeff7b30eb0955a086b2cf46bc00421d"
+electron-updater@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/electron-updater/-/electron-updater-1.6.0.tgz#e3b1e79f7a739986b38e4015a427e6b572ec7e2e"
   dependencies:
     bluebird-lst-c "^1.0.6"
-    electron-builder-http "12.3.0"
+    electron-builder-http "13.3.0"
     fs-extra-p "^3.1.0"
-    js-yaml "^3.7.0"
+    js-yaml "^3.8.1"
     semver "^5.3.0"
     source-map-support "^0.4.11"
 
@@ -898,7 +898,7 @@ jodid25519@^1.0.0:
   dependencies:
     jsbn "~0.1.0"
 
-js-yaml@^3.7.0:
+js-yaml@^3.8.1:
   version "3.8.1"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.8.1.tgz#782ba50200be7b9e5a8537001b7804db3ad02628"
   dependencies:

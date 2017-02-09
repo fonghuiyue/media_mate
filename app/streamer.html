@@ -10,42 +10,62 @@
 	<!-- endinject -->
 	<title>Media Mate Streamer</title>
 	<script type="text/javascript">
+		const WebTorrent = require('webtorrent');
 		function runScript(e) {
 			if (e.keyCode == 13) {
-				var tb = document.getElementById("magnet");
+				const tb = document.getElementById("magnet");
 				submitmagnet(tb.value);
 				return false;
 			}
 		}
-		var WebTorrent = require('webtorrent');
 		function submitmagnet(magnet) {
-			var client = new WebTorrent();
+			const client = new WebTorrent();
 			client.add(magnet, function (torrent) {
-				let file = torrent.files[0];
+				let file = torrent.files;
 				file.appendTo('#player', function (err, elem) {
 					if (err) throw err; // file failed to download or display in the DOM
 					console.log('New DOM node with the content', elem);
 					elem.style.width = '100%';
+					file.getBlobURL(function (err, url) {
+						if (err) throw err;
+						let a = document.createElement('a');
+						a.download = file.name;
+						a.href = url;
+						a.textContent = 'Download ' + file.name;
+						console.log(a);
+						document.getElementById("dl").appendChild(a);
+
+					});
 				}); // append the file to the DOM
 			})
-
 		}
 	</script>
 </head>
 <body>
+<section class="hero is-primary is-bold">
+	<div class="hero-body">
+		<div class="container">
+			<h1 class="title">
+				Streaming
+			</h1>
+			<h2 class="subtitle">
+				Paste a magnet URI in the box below
+			</h2>
+		</div>
+	</div>
+</section>
 <div class="columns">
 	<div class="column is-narrow">
 	</div>
 	<div class="column">
+
 		<div class="box">
-			<p class="title is-5">Paste a magnet link in here then hit enter</p>
-			<p class="subtitle"><input id="magnet" type="text" onkeypress="return runScript(event)"></p>
+			<p class="subtitle"><input id="magnet" placeholder="Paste magnet URI here." type="text" onkeypress="return runScript(event)" title="magnet"></p>
+			<div id="dl" class="column">
+			</div>
 		</div>
 	</div>
 </div>
-<div id="player" class="container is-fluid">
-</div>
-<!-- <div id="player" class="is-fullwidth"> -->
-<!-- </div> -->
+<div id="player" class="container is-fluid"></div>
 </body>
 </html>

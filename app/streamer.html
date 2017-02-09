@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- inject:css -->
+	<link rel="stylesheet" href="index.css">
+	<link rel="stylesheet" href="node_modules/bulma/css/bulma.css">
+	<link rel="stylesheet" href="node_modules/izitoast/dist/css/iziToast.min.css">
+	<!-- endinject -->
+	<!-- inject:js -->
+	<!-- endinject -->
+	<title>Media Mate Streamer</title>
+	<script type="text/javascript">
+function runScript(e) {
+	if (e.keyCode == 13) {
+		var tb = document.getElementById("magnet");
+		submitmagnet(tb.value)
+		return false;
+	}
+}
+var WebTorrent = require('webtorrent')
+function submitmagnet(magnet) {
+var client = new WebTorrent()
+var magnetURI = magnet
+client.add(magnetURI, function (torrent) {
+  var file = torrent.files[0]
+  file.renderTo('#player') // append the file to the DOM
+})
+
+}
+</script>
+</head>
+<body>
+<div class="columns">
+  <div class="column is-narrow">
+  </div>
+  <div class="column">
+    <div class="box">
+      <p class="title is-5">Paste a magnet link in here then hit enter</p>
+      <p class="subtitle"><input id="magnet" type="text" onkeypress="return runScript(event)"></p>
+    </div>
+  </div>
+</div>
+<div class="container is-fluid">
+<video id="player" style="width: 100%"></video>
+</div>
+<!-- <div id="player" class="is-fullwidth"> -->
+  <!-- </div> -->
+</body>
+</html>

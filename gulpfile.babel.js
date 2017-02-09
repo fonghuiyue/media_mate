@@ -100,7 +100,7 @@ gulp.task('clean', () => {
 	return del(['dist/**/*', 'node_modules/', 'app/node_modules/']);
 });
 gulp.task('index', () => {
-	gulp.src('./app/**/*.html')
+	gulp.src(['./app/**/*.html', '!./app/node_modules/**'])
 	.pipe(inject(gulp.src(['./app/*.css', './app/node_modules/bulma/css/bulma.css', './app/node_modules/izitoast/dist/css/iziToast.min.css'], {read: false}), {relative: true}))
 	.pipe(gulp.dest('./app'));
 });

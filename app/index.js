@@ -1,5 +1,5 @@
 'use strict';
-import electron, {Menu, dialog, ipcMain, shell} from 'electron';
+import electron, {Menu, dialog, ipcMain as ipc, shell} from 'electron';
 import path from 'path';
 import os from 'os';
 import {autoUpdater} from 'electron-updater';
@@ -54,6 +54,17 @@ require('electron-debug')();
 
 // prevent window being garbage collected
 let mainWindow;
+
+process.on('uncaughtError', err => {
+	bugsnag.notify(err);
+	console.log('ERROR! The error is: ' + err || err.stack);
+})
+
+ipc.on('errorInWindow', function(event, data){
+    // bugsnag.notify(err);
+console.log(event, data)
+  	// console.log('ERROR! The error is: ' + err || err.stack);
+})
 
 function onClosed() {
 	// dereference the window

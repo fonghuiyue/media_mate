@@ -19,7 +19,14 @@
 				return false;
 			}
 		}
-		throw new Error('m8')
+		const ipc = require('electron').ipcRenderer;
+		window.onerror = function(message, filename, lineno, colno, error)
+		{
+			if(error != null) {
+				console.log(error);
+				ipc.send('errorInWindow', error);
+			}
+		};
 		function submitmagnet(magnet) {
 			const client = new WebTorrent();
 			client.add(magnet, function (torrent) {
@@ -39,7 +46,7 @@
 
 					});
 				}); // append the file to the DOM
-			})
+			})``
 		}
 	</script>
 </head>

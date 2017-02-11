@@ -58,13 +58,13 @@ let mainWindow;
 process.on('uncaughtError', err => {
 	bugsnag.notify(err);
 	console.log('ERROR! The error is: ' + err || err.stack);
-})
+});
 
 ipc.on('errorInWindow', function(event, data){
-    // bugsnag.notify(err);
-console.log(event, data)
-  	// console.log('ERROR! The error is: ' + err || err.stack);
-})
+    // bugsnag.notify(data);
+    console.log(data);
+  	// console.log('ERROR! The error is: ' + data);
+});
 
 function onClosed() {
 	// dereference the window

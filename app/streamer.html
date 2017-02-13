@@ -11,7 +11,10 @@
 	<!-- endinject -->
 	<title>Media Mate Streamer</title>
 	<script type="text/javascript">
-		const WebTorrent = require('webtorrent-hybrid');
+		const WebTorrent = require('webtorrent');
+		const stringify = require('json-stringify-safe');
+		const client = new WebTorrent();
+		let filesAll = '';
 		function runScript(e) {
 			if (e.keyCode == 13) {
 				const tb = document.getElementById("magnet");
@@ -19,32 +22,45 @@
 				return false;
 			}
 		}
-		const ipc = require('electron').ipcRenderer;
-		window.onerror = function(message, filename, lineno, colno, error)
-		{
-			if(error != null) {
-				console.log(error);
-				ipc.send('errorInWindow', error);
+		function chooseFile(files) {
+			const select = document.getElementById("selectNumber");
+			console.log(files);
+			filesAll = files;
+			for (let i = 0; i < files.length; i++) {
+				let opt = files[i];
+				let el = document.createElement("option");
+				el.textContent = opt.name;
+				el.value = i;
+				select.appendChild(el);
 			}
-		};
+		}
+		function startPlaying(file) {
+			file.renderTo('#playerm8', function (err, elem) {
+				if (err) throw err; // file failed to download or display in the DOM
+				console.log('New DOM node with the content', elem);
+				elem.style.display = 'block';
+				elem.style.width = '100%';
+				file.getBlobURL(function (err, url) {
+					if (err) throw err;
+					let a = document.createElement('a');
+					a.download = file.name;
+					a.href = url;
+					a.textContent = 'Download ' + file.name;
+					console.log(a);
+					document.getElementById("dl").appendChild(a);
+				});
+			}); // append the file to the DOM
+		}
+		function getFile() {
+			let e = document.getElementById("selectNumber");
+			let value = e.options[e.selectedIndex].index;
+			let text = e.options[e.selectedIndex].value;
+			startPlaying(filesAll[text])
+		}
 		function submitmagnet(magnet) {
-			const client = new WebTorrent();
 			client.add(magnet, function (torrent) {
-				let file = torrent.files;
-				file.appendTo('#player', function (err, elem) {
-					if (err) throw err; // file failed to download or display in the DOM
-					console.log('New DOM node with the content', elem);
-					elem.style.width = '100%';
-					file.getBlobURL(function (err, url) {
-						if (err) throw err;
-						let a = document.createElement('a');
-						a.download = file.name;
-						a.href = url;
-						a.textContent = 'Download ' + file.name;
-						console.log(a);
-						document.getElementById("dl").appendChild(a);
-					});
-				}); // append the file to the DOM
+				chooseFile(torrent.files);
+				document.getElementById("myForm").style.display = 'inline';
 			});
 		}
 	</script>
@@ -71,9 +87,18 @@
 			<p class="subtitle"><input id="magnet" placeholder="Paste magnet URI here." type="text" onkeypress="return runScript(event)" title="magnet"></p>
 			<div id="dl" class="column">
 			</div>
+			<form id="myForm" style="display: none;">
+				<select id="selectNumber" onchange="getFile()" title="Choose file">
+					<option>Select an option</option>
+					<script type="text/javascript">
+
+					</script>
+				</select>
+			</form>
 		</div>
 	</div>
 </div>
 <div id="player" class="container is-fluid"></div>
+<video id="playerm8" controls style="display: none;"></video>
 </body>
 </html>

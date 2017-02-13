@@ -1245,9 +1245,9 @@ videostream@^2.3.0:
     pump "^1.0.1"
     range-slice-stream "^1.2.0"
 
-webtorrent@^0.98.6:
-  version "0.98.6"
-  resolved "https://registry.yarnpkg.com/webtorrent/-/webtorrent-0.98.6.tgz#658cad7a24197acf0b8559caece94a4299887375"
+webtorrent@^0.98.7:
+  version "0.98.7"
+  resolved "https://registry.yarnpkg.com/webtorrent/-/webtorrent-0.98.7.tgz#5741c9bd53de6aedd6ddc393e60783659c325499"
   dependencies:
     addr-to-ip-port "^1.4.2"
     bitfield "^1.1.2"

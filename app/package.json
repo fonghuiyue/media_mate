@@ -28,7 +28,7 @@
 		"source-map-support": "^0.4.11",
 		"tableify": "^1.0.0",
 		"underscore": "^1.8.3",
-		"webtorrent": "^0.98.6"
+		"webtorrent": "^0.98.7"
 	},
 	"xo": false
 }

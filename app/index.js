@@ -45,7 +45,9 @@ autoUpdater.on('error', error => {
 		bugsnag.notify(error);
 	}
 });
-
+/**
+ * @description Emitted on autoupdate progress.
+ */
 autoUpdater.on('download-progress', percent => {
 
 });
@@ -54,24 +56,33 @@ require('electron-debug')();
 
 // prevent window being garbage collected
 let mainWindow;
-
+/**
+ * @description Catch any uncaught errors and report them.
+ */
 process.on('uncaughtError', err => {
 	bugsnag.notify(err);
 	console.log('ERROR! The error is: ' + err || err.stack);
 });
-
+/**
+ * @description Called from renderer process when an error occurs
+ */
 ipc.on('errorInWindow', function(event, data){
     // bugsnag.notify(data);
     console.log(data);
   	// console.log('ERROR! The error is: ' + data);
 });
-
+/**
+ * @description Called when window closed.
+ */
 function onClosed() {
 	// dereference the window
 	// for multiple windows store them in an array
 	mainWindow = null;
 }
-
+/**
+ * @description Called on app open
+ * @returns {electron.BrowserWindow}
+ */
 function createMainWindow() {
 	const win = new electron.BrowserWindow({
 		width: 600,
@@ -83,19 +94,25 @@ function createMainWindow() {
 
 	return win;
 }
-
+/**
+ * @description When all windows are closed, quit the app.
+ */
 app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') {
 		app.quit();
 	}
 });
-
+/**
+ * @description If mainwindow doesn't exist, make it.
+ */
 app.on('activate', () => {
 	if (!mainWindow) {
 		mainWindow = createMainWindow();
 	}
 });
-
+/**
+ * @description Make the main window.
+ */
 app.on('ready', () => {
 	mainWindow = createMainWindow();
 });

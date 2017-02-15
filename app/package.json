@@ -19,7 +19,7 @@
 		"electron-debug": "^1.1.0",
 		"electron-is-dev": "^0.1.2",
 		"electron-json-storage": "^3.0.1",
-		"electron-updater": "^1.6.1",
+		"electron-updater": "^1.6.4",
 		"fs-extra": "^2.0.0",
 		"izitoast": "^1.1.1",
 		"json-stringify-safe": "^5.0.1",
@@ -28,7 +28,7 @@
 		"source-map-support": "^0.4.11",
 		"tableify": "^1.0.0",
 		"underscore": "^1.8.3",
-		"webtorrent": "^0.98.7"
+		"webtorrent": "^0.98.8"
 	},
 	"xo": false
 }

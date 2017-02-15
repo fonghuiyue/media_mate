@@ -21,7 +21,7 @@
 		"release": "gulp index && gulp build:dist",
 		"tag": "release-it",
 		"lint": "xo",
-		"docs": "esdoc",
+		"docs": "jsdoc -c ./conf.json -t ./node_modules/ink-docstrap/template -R README.md",
 		"postinstall": "(cd app && yarn install)",
 		"deps": "(ncu -au && cd app && ncu -au)"
 	},
@@ -46,12 +46,13 @@
 		"gulp-sourcemaps": "^2.4.1",
 		"gulp-uglify": "^2.0.1",
 		"gulp-xo": "^0.14.0",
+		"ink-docstrap": "^1.3.0",
+		"jsdoc": "^3.4.3",
 		"jsdoc-export-default-interop": "^0.3.1",
 		"release-it": "^2.5.4",
 		"rimraf": "^2.5.4",
 		"spectron": "^3.6.0",
-		"xo": "^0.17.1",
-		"esdoc": "^0.5.2"
+		"xo": "^0.17.1"
 	},
 	"ava": {},
 	"xo": {

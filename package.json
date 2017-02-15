@@ -21,7 +21,7 @@
 		"release": "gulp index && gulp build:dist",
 		"tag": "release-it",
 		"lint": "xo",
-		"docs": "jsdoc -c ./conf.json -t ./node_modules/ink-docstrap/template -R README.md",
+		"docs": "jsdoc -c ./conf.json -t ./node_modules/ink-docstrap/template -R readme.md",
 		"postinstall": "(cd app && yarn install)",
 		"deps": "(ncu -au && cd app && ncu -au)"
 	},

@@ -40,6 +40,7 @@
 				console.log('New DOM node with the content', elem);
 				elem.style.display = 'block';
 				elem.style.width = '100%';
+				document.getElementById('destroy').style.display = 'block';
 				file.getBlobURL(function (err, url) {
 					if (err) throw err;
 					let a = document.createElement('a');
@@ -59,8 +60,16 @@
 		function submitmagnet(magnet) {
 			client.add(magnet, function (torrent) {
 				chooseFile(torrent.files);
+				process.torrent = torrent;
 				document.getElementById("myForm").style.display = 'inline';
 			});
+		}
+		function stop() {
+			process.torrent.destroy(function(tor) {
+					document.getElementById('playerm8').style.display = 'none';
+					document.getElementById('destroy').style.display = 'none';
+					document.getElementById('selectNumber').style.display = 'none';
+			})
 		}
 	</script>
 </head>
@@ -85,13 +94,11 @@
 		<div class="box">
 			<p class="subtitle"><input id="magnet" placeholder="Paste magnet URI here." type="text" onkeypress="return runScript(event)" title="magnet"></p>
 			<div id="dl" class="column">
+			<button class="button is-primary"  id="destroy" style="display: none;" onclick="stop()">Stop torrent</button>
 			</div>
 			<form id="myForm" style="display: none;">
 				<select id="selectNumber" onchange="getFile()" title="Choose file">
 					<option>Select an option</option>
-					<script type="text/javascript">
-
-					</script>
 				</select>
 			</form>
 		</div>

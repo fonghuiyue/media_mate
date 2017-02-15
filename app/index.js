@@ -10,11 +10,16 @@ import isDev from 'electron-is-dev';
 import bugsnag from 'bugsnag';
 import openAboutWindow from 'about-window';
 import moment from 'moment';
-
+/**
+ * The electron app instance
+ */
 const app = electron.app;
 bugsnag.register('03b389d77abc2d10136d8c859391f952', {appVersion: app.getVersion(), sendCode: true});
 let win;
-/** Autoupdater on update available */
+/**
+ * Autoupdater on update available
+ * @
+ */
 autoUpdater.on('update-available', info => { // eslint-disable-line no-unused-vars
 	dialog.showMessageBox({
 		type: 'info',
@@ -24,7 +29,9 @@ autoUpdater.on('update-available', info => { // eslint-disable-line no-unused-va
 	});
 	win.loadURL(`file:///${__dirname}/index.html`);
 });
-/** Autoupdater on downloaded */
+/**
+ * Autoupdater on downloaded
+ */
 autoUpdater.on('update-downloaded', (event, info) => { // eslint-disable-line no-unused-vars
 	dialog.showMessageBox({
 		type: 'info',
@@ -33,7 +40,9 @@ autoUpdater.on('update-downloaded', (event, info) => { // eslint-disable-line no
 		message: 'The update is downloaded, and will be installed on quit. The version downloaded is: ' + event.version
 	});
 });
-/** Autoupdater if error */
+/**
+ * Autoupdater if error
+ */
 autoUpdater.on('error', error => {
 	dialog.showMessageBox({
 		type: 'info',
@@ -46,7 +55,7 @@ autoUpdater.on('error', error => {
 	}
 });
 /**
- * @description Emitted on autoupdate progress.
+ * Emitted on autoupdate progress.
  */
 autoUpdater.on('download-progress', percent => {
 
@@ -57,14 +66,14 @@ require('electron-debug')();
 // prevent window being garbage collected
 let mainWindow;
 /**
- * @description Catch any uncaught errors and report them.
+ * Catch any uncaught errors and report them.
  */
 process.on('uncaughtError', err => {
 	bugsnag.notify(err);
 	console.log('ERROR! The error is: ' + err || err.stack);
 });
 /**
- * @description Called from renderer process when an error occurs
+ * Called from renderer process when an error occurs
  */
 ipc.on('errorInWindow', function(event, data){
     // bugsnag.notify(data);
@@ -72,7 +81,7 @@ ipc.on('errorInWindow', function(event, data){
   	// console.log('ERROR! The error is: ' + data);
 });
 /**
- * @description Called when window closed.
+ * Called when window closed.
  */
 function onClosed() {
 	// dereference the window
@@ -80,8 +89,8 @@ function onClosed() {
 	mainWindow = null;
 }
 /**
- * @description Called on app open
- * @returns {electron.BrowserWindow}
+ * Called on app open
+ * @returns {BrowserWindow}
  */
 function createMainWindow() {
 	const win = new electron.BrowserWindow({
@@ -95,7 +104,7 @@ function createMainWindow() {
 	return win;
 }
 /**
- * @description When all windows are closed, quit the app.
+ * When all windows are closed, quit the app.
  */
 app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') {
@@ -103,7 +112,7 @@ app.on('window-all-closed', () => {
 	}
 });
 /**
- * @description If mainwindow doesn't exist, make it.
+ * If mainwindow doesn't exist, make it.
  */
 app.on('activate', () => {
 	if (!mainWindow) {
@@ -111,7 +120,7 @@ app.on('activate', () => {
 	}
 });
 /**
- * @description Make the main window.
+ * Make the main window.
  */
 app.on('ready', () => {
 	mainWindow = createMainWindow();

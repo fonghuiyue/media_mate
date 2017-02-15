@@ -1,0 +1,19 @@
+{
+	"source": "./app",
+	"destination": "./docs",
+	"access": ["public", "protected", "private"],
+	"excludes": ["node_modules"],
+	"unexportIdentifier": true,
+	"undocumentIdentifier": true,
+	"index": "./README.md",
+	"experimentalProposal": {
+		"classProperties": true,
+		"objectRestSpread": true,
+		"decorators": true,
+		"doExpressions": true,
+		"functionBind": true,
+		"asyncGenerators": true,
+		"exportExtensions": true,
+		"dynamicImport": true
+	}
+}

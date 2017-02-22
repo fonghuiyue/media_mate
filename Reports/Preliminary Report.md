@@ -1,5 +1,28 @@
 # Media Mate - A Proper Media Centre.
 
+<!-- MarkdownTOC -->
+
+- [The Problem](#the-problem)
+- [Why I chose this problem](#why-i-chose-this-problem)
+- [Why is a software solution appropriate for this problem?](#why-is-a-software-solution-appropriate-for-this-problem)
+- [What software development approach?](#what-software-development-approach)
+- [What will the final solution do?](#what-will-the-final-solution-do)
+- [Event Driven or Sequential?](#event-driven-or-sequential)
+- [Programming Environment](#programming-environment)
+- [Skills I currently have](#skills-i-currently-have)
+- [Skills I may need to acquire](#skills-i-may-need-to-acquire)
+- [Interaction](#interaction)
+- [Backup procedures](#backup-procedures)
+- [Legal issues](#legal-issues)
+- [Social issues](#social-issues)
+- [Ethical issues](#ethical-issues)
+- [Gantt Chart](#gantt-chart)
+- [Structure Chart](#structure-chart)
+- [IPO Chart](#ipo-chart)
+
+<!-- /MarkdownTOC -->
+
+
 # The Problem
 The problem currently with media centres is that to make one, you need to go through all sorts of setup, which is time consuming and mentally draining.
 
@@ -66,7 +89,7 @@ There are no ethical issues with this project.
 ![](Structure.png)
 
 # IPO Chart
-| Input        	| Processing                                          	| Output           	|
-|--------------	|-----------------------------------------------------	|------------------	|
-| Magnet URI   	| Download                                            	| Display Video    	|
-| ShowRSS Feed 	| Get RSS feed, process, download, sort, rename, move 	| Files downloaded 	|
+| Input | Processing | Output |
+|--------------|-----------------------------------------------------|------------------|
+| Magnet URI | Download | Display Video |
+| ShowRSS Feed | Get RSS feed, process, download, sort, rename, move | Files downloaded |

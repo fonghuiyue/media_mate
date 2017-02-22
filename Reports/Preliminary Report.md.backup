@@ -61,3 +61,12 @@ There are no ethical issues with this project.
 
 # Gantt Chart
 ![](Gantt.png)
+
+# Structure Chart
+![](Structure.png)
+
+# IPO Chart
+| Input | Processing | Output |
+|--------------|-----------------------------------------------------|------------------|
+| Magnet URI | Download | Display Video |
+| ShowRSS Feed | Get RSS feed, process, download, sort, rename, move | Files downloaded |

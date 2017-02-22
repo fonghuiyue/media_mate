@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<!-- inject:css -->
+	<link rel="stylesheet" href="index.css">
+	<link rel="stylesheet" href="node_modules/bulma/css/bulma.css">
+	<link rel="stylesheet" href="node_modules/izitoast/dist/css/iziToast.min.css">
+	<!-- endinject -->
+	<!-- inject:js -->
+	<script src="renderjs/render-err.js"></script>
+	<script src="renderjs/streamer.js"></script>
+	<!-- endinject -->
+    <meta charset="UTF-8">
+    <title>Media Mate Downloader</title>
+</head>
+<body>
+<script type="text/javascript">
+	const RSSParse = require('./lib/rssparse').RSSParse;
+	function runScript(e) {
+		if (e.keyCode == 13) {
+			const tb = document.getElementById('rss');
+			let RSS = new RSSParse(tb.value);
+			let dl = document.getElementById("dlbox");
+			document.getElementById("dls").style.display = 'inline';
+			RSS.on('data', data => {
+//				console.log(data);
+				console.log('ayy');
+				let label = document.createElement("label");
+				let input = document.createElement('input');
+				let inputName = document.createTextNode(data.title);
+				label.appendChild(inputName);
+				input.type = "checkbox";
+				input.name = data.magnet;
+				input.className = 'checkbox';
+				input.textContent = data.title;
+				label.appendChild(input);
+				console.log(input);
+				document.getElementById('dlbox').appendChild(label);
+			});
+			return false;
+		}
+	}
+</script>
+<section class="hero is-primary is-bold">
+	<div class="hero-body">
+		<div class="container">
+			<h1 class="title">
+				Downloading
+			</h1>
+			<h2 class="subtitle">
+				Paste a <a href="http://showrss.info">ShowRSS</a> feed below
+			</h2>
+		</div>
+	</div>
+</section>
+<div class="columns">
+	<div class="column is-narrow">
+	</div>
+	<div class="column">
+		<div class="box">
+			<p class="subtitle"><input id="rss" placeholder="Paste ShowRSS feed url." type="text" onkeypress="return runScript(event)" title="magnet"></p>
+		</div>
+	</div>
+</div>
+<div id="dls" style="display: none;">
+	<form id="dlbox">
+
+	</form>
+</div>
+</body>
+</html>

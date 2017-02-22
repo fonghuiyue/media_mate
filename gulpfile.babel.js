@@ -16,9 +16,11 @@ gulp.task('default', () => {
 	console.log(err.codeFrame);
 	return err;
 } else {
-	return gulp.src(['app/*.js', 'app/lib/*.js', '!node_modules',
+	return gulp.src(['app/*.js', '!node_modules',
 		'!node_modules/**',
+		'!app/menu.js',
 		'!dist',
+		'!app/renderjs',
 		'!dist/**'])
 		.pipe(sourcemaps.init())
 		.pipe(babel({
@@ -101,7 +103,7 @@ gulp.task('clean', () => {
 });
 gulp.task('index', () => {
 	gulp.src(['./app/**/*.html', '!./app/node_modules/**'])
-	.pipe(inject(gulp.src(['./app/*.css', './app/util/renderErr.js', './app/node_modules/bulma/css/bulma.css', './app/node_modules/izitoast/dist/css/iziToast.min.css'], {read: false}), {relative: true}))
+	.pipe(inject(gulp.src(['./app/*.css', './app/renderjs/*.js', './app/node_modules/bulma/css/bulma.css', './app/node_modules/izitoast/dist/css/iziToast.min.css'], {read: false}), {relative: true}))
 	.pipe(gulp.dest('./app'));
 });
 

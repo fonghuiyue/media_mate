@@ -2,11 +2,18 @@
   <dictionary name="Will">
     <words>
       <w>autoupdate</w>
+      <w>couchpotato</w>
+      <w>dirname</w>
       <w>endinject</w>
+      <w>feedparser</w>
       <w>mainwindow</w>
       <w>nsis</w>
       <w>onerror</w>
       <w>playerm</w>
+      <w>plex</w>
+      <w>renderjs</w>
+      <w>rssparse</w>
+      <w>sonarr</w>
       <w>starttag</w>
       <w>submitmagnet</w>
     </words>

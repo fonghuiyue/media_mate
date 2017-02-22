@@ -10,15 +10,16 @@ import isDev from 'electron-is-dev';
 import bugsnag from 'bugsnag';
 import openAboutWindow from 'about-window';
 import moment from 'moment';
+const template = require('./menu');
 /**
  * The electron app instance
  */
 const app = electron.app;
+
 bugsnag.register('03b389d77abc2d10136d8c859391f952', {appVersion: app.getVersion(), sendCode: true});
 let win;
 /**
  * Autoupdater on update available
- * @
  */
 autoUpdater.on('update-available', info => { // eslint-disable-line no-unused-vars
 	dialog.showMessageBox({
@@ -75,10 +76,10 @@ process.on('uncaughtError', err => {
 /**
  * Called from renderer process when an error occurs
  */
-ipc.on('errorInWindow', function(event, data){
-    // bugsnag.notify(data);
-    console.log(data);
-  	// console.log('ERROR! The error is: ' + data);
+ipc.on('errorInWindow', (event, data) => {
+	// bugsnag.notify(data);
+	console.log(data);
+	// console.log('ERROR! The error is: ' + data);
 });
 /**
  * Called when window closed.
@@ -125,3 +126,6 @@ app.on('activate', () => {
 app.on('ready', () => {
 	mainWindow = createMainWindow();
 });
+
+const menu = Menu.buildFromTemplate(template);
+Menu.setApplicationMenu(menu);

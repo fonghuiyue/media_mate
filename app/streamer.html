@@ -7,71 +7,10 @@
 	<link rel="stylesheet" href="node_modules/izitoast/dist/css/iziToast.min.css">
 	<!-- endinject -->
 	<!-- inject:js -->
-	<script src="util/renderErr.js"></script>
+	<script src="renderjs/render-err.js"></script>
+	<script src="renderjs/streamer.js"></script>
 	<!-- endinject -->
 	<title>Media Mate Streamer</title>
-	<script type="text/javascript">
-		const WebTorrent = require('webtorrent');
-		const stringify = require('json-stringify-safe');
-		const client = new WebTorrent();
-		let filesAll = '';
-		function runScript(e) {
-			if (e.keyCode == 13) {
-				const tb = document.getElementById("magnet");
-				submitmagnet(tb.value);
-				return false;
-			}
-		}
-		function chooseFile(files) {
-			const select = document.getElementById("selectNumber");
-			console.log(files);
-			filesAll = files;
-			for (let i = 0; i < files.length; i++) {
-				let opt = files[i];
-				let el = document.createElement("option");
-				el.textContent = opt.name;
-				el.value = i;
-				select.appendChild(el);
-			}
-		}
-		function startPlaying(file) {
-			file.renderTo('#playerm8', function (err, elem) {
-				if (err) throw err; // file failed to download or display in the DOM
-				console.log('New DOM node with the content', elem);
-				elem.style.display = 'block';
-				elem.style.width = '100%';
-				document.getElementById('destroy').style.display = 'block';
-				file.getBlobURL(function (err, url) {
-					if (err) throw err;
-					let a = document.createElement('a');
-					a.download = file.name;
-					a.href = url;
-					a.textContent = 'Download ' + file.name;
-					console.log(a);
-					document.getElementById("dl").appendChild(a);
-				});
-			}); // append the file to the DOM
-		}
-		function getFile() {
-			let e = document.getElementById("selectNumber");
-			let text = e.options[e.selectedIndex].value;
-			startPlaying(filesAll[text])
-		}
-		function submitmagnet(magnet) {
-			client.add(magnet, function (torrent) {
-				chooseFile(torrent.files);
-				process.torrent = torrent;
-				document.getElementById("myForm").style.display = 'inline';
-			});
-		}
-		function stop() {
-			process.torrent.destroy(function(tor) {
-					document.getElementById('playerm8').style.display = 'none';
-					document.getElementById('destroy').style.display = 'none';
-					document.getElementById('selectNumber').style.display = 'none';
-			})
-		}
-	</script>
 </head>
 <body>
 <section class="hero is-primary is-bold">

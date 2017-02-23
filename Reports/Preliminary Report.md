@@ -13,11 +13,10 @@
 - [Skills I may need to acquire](#skills-i-may-need-to-acquire)
 - [Interaction](#interaction)
 - [Backup procedures](#backup-procedures)
-- [Legal issues](#legal-issues)
+- [Legal and Ethical issues](#legal-and-ethical-issues)
 - [Social issues](#social-issues)
-- [Ethical issues](#ethical-issues)
-- [Gantt Chart](#gantt-chart)
-- [Structure Chart](#structure-chart)
+- [Gantt Chart Showing Time Management](#gantt-chart-showing-time-management)
+- [Structure Chart Showing Data Flow](#structure-chart-showing-data-flow)
 - [IPO Chart](#ipo-chart)
 
 <!-- /MarkdownTOC -->
@@ -51,9 +50,9 @@ Instead of having to run 5 different programs, why not run one that does everyth
 A software solution is appropriate for this problem because a media centre is something that should be automated. You should be able to just click a button, and then get the media you want. You should not have to watch for new releases yourself, download them manually, import them manually, and then finally watch them. You should be able to open up the media centre, and see all your media right there. And since all of this comes from the internet, it has to be utilised by the appropriate software in the first place.
 
 # What software development approach?
-I will be using a combination of rapid application development and agile. I will be using this combination for a number of reasons. 
+I will be using a combination of rapid application development and agile. I will be using this combination for a number of reasons.
 
-- One reason is that some of the required utilities already exist in my chosen language. 
+- One reason is that some of the required utilities already exist in my chosen language.
 
 - Another reason for using agile is that if something doesn't work, I can just change what doesn't work.
 
@@ -86,7 +85,7 @@ The user will interact with the program by interacting with UI elements such as 
 I will be using [Git](https://git-scm.com/) and [GitHub](https://github.com) for the source code and make regular 'commits' and pushes. Git is a very good version control software, and is effectively the standard for any good project.
 
 # Legal and Ethical issues
-There are copyright issues with downloading media from the internet. 
+There are copyright issues with downloading media from the internet.
 I will have to have a disclaimer, that I am not responsible for anything that is done with the program. There would also need to be examples of 'free media' for users on the media centre.
 
 # Social issues

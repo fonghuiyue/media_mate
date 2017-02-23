@@ -67,12 +67,10 @@ The program will also organise and name your media according to how you want it.
 Another thing it will do is a background service, and native OS integration.
 
 # Event Driven or Sequential?
-My solution will be a mixture of both. The front end will be event driven. The backend (downloading etc) will be sequential. 
-#REASONS
+My solution will be a mixture of both. The front end will be event driven. The backend (downloading etc) will be sequential. The reason for this is so the user doesn't have to manually initiate downloading.
 
 # Programming Environment
 I will be using [WebStorm](https://www.jetbrains.com/webstorm/) for writing the code, [Electron](https://electron.atom.io) for the app itself, and [NodeJS](https://nodejs.org) as the language.
-#TABLE
 
 # Skills I currently have
 Currently, I have very good knowledge in Electron and NodeJS which I will be using, experience with WebStorm, and many years of coding and command line experience.

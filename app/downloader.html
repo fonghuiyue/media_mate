@@ -16,15 +16,49 @@
 <body>
 <script type="text/javascript">
 	const RSSParse = require('./lib/rssparse').RSSParse;
+	const storage = require('electron-json-storage');
+	storage.has('showRSSURI', (err, hasKey) => {
+		if (err) throw err;
+		if (!hasKey) {
+			document.getElementById('rssp').style.display = 'block';
+		} else {
+			document.getElementById('rssp').style.display = 'none';
+			storage.get('showRSSURI', (err, data) => {
+				let RSS = new RSSParse(data.uri);
+				RSS.on('data', data => {
+					console.log('ayy');
+					let br = document.createElement('br');
+					let label = document.createElement("label");
+					let input = document.createElement('input');
+					let inputName = document.createTextNode(data.title);
+					label.appendChild(inputName);
+					input.type = "checkbox";
+					input.name = data.magnet;
+					input.className = 'checkbox';
+					input.textContent = data.title;
+					label.appendChild(input);
+					document.getElementById('dlbox').appendChild(document.createElement("br"));
+					console.log(input);
+
+					document.getElementById('dlbox').appendChild(label);
+				});
+			});
+
+		}
+	});
 	function runScript(e) {
 		if (e.keyCode == 13) {
 			const tb = document.getElementById('rss');
-			let RSS = new RSSParse(tb.value);
+			storage.set('showRSSURI', {uri: tb.value}, function (error) {
+				if (error) throw error
+			});
 			let dl = document.getElementById("dlbox");
 			document.getElementById("dls").style.display = 'inline';
+			let RSS = new RSSParse(tb.value);
 			RSS.on('data', data => {
 //				console.log(data);
 				console.log('ayy');
+				let br = document.createElement('br');
 				let label = document.createElement("label");
 				let input = document.createElement('input');
 				let inputName = document.createTextNode(data.title);
@@ -34,7 +68,9 @@
 				input.className = 'checkbox';
 				input.textContent = data.title;
 				label.appendChild(input);
+				dlbox.appendChild(document.createElement("br"));
 				console.log(input);
+
 				document.getElementById('dlbox').appendChild(label);
 			});
 			return false;
@@ -58,7 +94,7 @@
 	</div>
 	<div class="column">
 		<div class="box">
-			<p class="subtitle"><input id="rss" placeholder="Paste ShowRSS feed url." type="text" onkeypress="return runScript(event)" title="magnet"></p>
+			<p id="rssp" class="subtitle"><input id="rss" placeholder="Paste ShowRSS feed url." type="text" onkeypress="return runScript(event)" title="magnet"></p>
 		</div>
 	</div>
 </div>

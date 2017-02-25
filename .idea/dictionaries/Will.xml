@@ -4,6 +4,7 @@
       <w>autoupdate</w>
       <w>couchpotato</w>
       <w>dirname</w>
+      <w>dlbox</w>
       <w>endinject</w>
       <w>feedparser</w>
       <w>mainwindow</w>
@@ -12,7 +13,9 @@
       <w>playerm</w>
       <w>plex</w>
       <w>renderjs</w>
+      <w>rssp</w>
       <w>rssparse</w>
+      <w>showrss</w>
       <w>sonarr</w>
       <w>starttag</w>
       <w>submitmagnet</w>

@@ -2,11 +2,13 @@
   <dictionary name="Will">
     <words>
       <w>autoupdate</w>
+      <w>bulma</w>
       <w>couchpotato</w>
       <w>dirname</w>
       <w>dlbox</w>
       <w>endinject</w>
       <w>feedparser</w>
+      <w>izitoast</w>
       <w>mainwindow</w>
       <w>nsis</w>
       <w>onerror</w>

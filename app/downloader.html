@@ -16,62 +16,118 @@
 <body>
 <script type="text/javascript">
 	const RSSParse = require('./lib/rssparse').RSSParse;
-	const storage = require('electron-json-storage');
-	storage.has('showRSSURI', (err, hasKey) => {
-		if (err) throw err;
-		if (!hasKey) {
-			document.getElementById('rssp').style.display = 'block';
-		} else {
-			document.getElementById('rssp').style.display = 'none';
-			storage.get('showRSSURI', (err, data) => {
-				let RSS = new RSSParse(data.uri);
-				RSS.on('data', data => {
-					console.log('ayy');
-					let br = document.createElement('br');
-					let label = document.createElement("label");
-					let input = document.createElement('input');
-					let inputName = document.createTextNode(data.title);
-					label.appendChild(inputName);
-					input.type = "checkbox";
-					input.name = data.magnet;
-					input.className = 'checkbox';
-					input.textContent = data.title;
-					label.appendChild(input);
-					document.getElementById('dlbox').appendChild(document.createElement("br"));
-					console.log(input);
-
-					document.getElementById('dlbox').appendChild(label);
-				});
-			});
-
+	const MongoClient = require('mongodb').MongoClient
+		, assert = require('assert');
+//	const WebTorrent = require('webtorrent');
+	const _ = require('underscore');
+	const url = 'mongodb://localhost:27017/media_mate';
+	function insertRSSURI(uri, db, callback) {
+		let collection = db.collection('uri');
+		collection.insertOne({showRSSURI: uri}, (err, res) => {
+			assert.equal(err, null);
+			callback(res)
+		})
+	}
+	function ignoreDupeTorrents(torrent, db, callback) {
+		let collection = db.collection('torrents');
+		if (collection.find() !== null) {
+			collection.findOne({magnet: torrent.link}, (err, docs) => {
+				if (docs === null) {
+					collection.insertOne({magnet: torrent.link}, (err, res) => {
+						console.log(err);
+						callback()
+					})
+				} else {
+					callback('dupe');
+				}
+			})
+			} else {
+			collection.insertOne({magnet: torrent.link}, (err, res) => {
+				callback()
+			})
 		}
+	}
+	function updateURI (uri, db, callback) {
+		// Get the documents collection
+		let collection = db.collection('uri');
+		// Update document where a is 2, set b equal to 1
+			collection.drop();
+			collection.insertOne({showRSSURI: uri}, (err, res) => {
+			assert.equal(err, null);
+			console.log("Updated the showRSS uri");
+			callback(res);
+		})
+	}
+	function findDocuments(db, col, callback) {
+		// Get the documents collection
+		let collection = db.collection(col || 'uri');
+		// Find some documents
+		collection.find({}).toArray(function(err, docs) {
+			assert.equal(err, null);
+			console.log("Current contents of " + col);
+			console.log(docs);
+			callback(docs);
+		});
+	}
+	// Use connect method to connect to the Server
+	MongoClient.connect(url, function(err, db) {
+		assert.equal(null, err);
+		console.log("Connected correctly to server");
+		findDocuments(db, 'torrents', function() {
+			db.close();
+		});
 	});
+
 	function runScript(e) {
 		if (e.keyCode == 13) {
 			const tb = document.getElementById('rss');
-			storage.set('showRSSURI', {uri: tb.value}, function (error) {
-				if (error) throw error
+//			storage.set('showRSSURI', {uri: tb.value}, function (error) {
+//				if (error) throw error
+//			});
+			// Use connect method to connect to the Server
+			MongoClient.connect(url, function(err, db) {
+				assert.equal(null, err);
+				console.log("Connected correctly to server");
+					updateURI(tb.value, db, () => {
+					db.close();
+				});
 			});
 			let dl = document.getElementById("dlbox");
 			document.getElementById("dls").style.display = 'inline';
 			let RSS = new RSSParse(tb.value);
-			RSS.on('data', data => {
-//				console.log(data);
-				console.log('ayy');
-				let br = document.createElement('br');
-				let label = document.createElement("label");
-				let input = document.createElement('input');
-				let inputName = document.createTextNode(data.title);
-				label.appendChild(inputName);
-				input.type = "checkbox";
-				input.name = data.magnet;
-				input.className = 'checkbox';
-				input.textContent = data.title;
-				label.appendChild(input);
-				dlbox.appendChild(document.createElement("br"));
-				console.log(input);
+			MongoClient.connect(url, function(err, db) {
+				assert.equal(null, err);
+				console.log("Connected correctly to server");
 
-				document.getElementById('dlbox').appendChild(label);
+				RSS.on('data', data => {
+					data = _.omit(data, '_id');
+					ignoreDupeTorrents(data, db, dupe => {
+							if (!dupe) {
+							let br = document.createElement('br');
+							let label = document.createElement("label");
+							let input = document.createElement('input');
+							let inputName = document.createTextNode(data.title);
+							label.appendChild(inputName);
+							input.type = "checkbox";
+							input.name = data.link;
+							input.className = 'checkbox';
+							input.textContent = data.title;
+							input.addEventListener("click", function () {
+								input.style.display = 'none';
+								client.add(input.name, {path: 'F:\\media_mate'}, function (torrent) {
+									console.log(torrent);
+								});
+							});
+							label.appendChild(input);
+							dlbox.appendChild(document.createElement("br"));
+							console.log(input);
+							document.getElementById('dlbox').appendChild(label);
+						} else {
+								console.log('dupe');
+							}
+					});
+				});
+//				db.close();
 			});
 			return false;
 		}

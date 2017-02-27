@@ -1,6 +1,6 @@
 const WebTorrent = require('webtorrent');
-const stringify = require('json-stringify-safe');
 const client = new WebTorrent();
+require('events').EventEmitter.prototype._maxListeners = 1000;
 let filesAll = '';
 function runScript(e) {
 	if (e.keyCode == 13) {

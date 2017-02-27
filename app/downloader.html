@@ -14,18 +14,99 @@
     <title>Media Mate Downloader</title>
 </head>
 <body>
+<section class="hero is-primary is-bold">
+	<div class="hero-body">
+		<div class="container">
+			<h1 class="title">
+				Downloading
+			</h1>
+			<h2 class="subtitle">
+				Paste a <a href="http://showrss.info">ShowRSS</a> feed below
+			</h2>
+		</div>
+	</div>
+</section>
+<div class="columns">
+	<div class="column is-narrow">
+	</div>
+	<div class="column">
+		<div class="box">
+			<button id="dlAll" onclick="dlAll()" class="button is-primary" style="display: none; float: right;">Download All</button>
+			<button style="float: right;" onclick="dropTorrents()" class="button is-primary">Drop Torrents DB</button>
+			<p id="rssp" class="subtitle"><input id="rss" placeholder="Paste ShowRSS feed url." type="text" onkeypress="return runScript(event)" title="magnet"></p>
+		</div>
+	</div>
+</div>
+<div id="Progress" style="display: none; width: 100%; height: 50%"></div>
+<div id="dls" style="display: none; text-align: center;">
+	<form id="dlbox">
+
+	</form>
+</div>
+</body>
 <script type="text/javascript">
+	const moment = require('moment');
 	const RSSParse = require('./lib/rssparse').RSSParse;
-	const MongoClient = require('mongodb').MongoClient
-		, assert = require('assert');
-//	const WebTorrent = require('webtorrent');
+	const ProgressBar = require('progressbar.js');
+	const MongoClient = require('mongodb').MongoClient;
+	const assert = require('assert');
 	const _ = require('underscore');
 	const url = 'mongodb://localhost:27017/media_mate';
-	function insertRSSURI(uri, db, callback) {
+	let i = 0;
+	let dbindex = 0;
+	let magnetURI = [];
+	window.onload = function () {
+		getRSSURI((callback) => {
+			document.getElementById('rss').value = callback
+		})
+	};
+	function dlProgress(progress) {
+		let animateThrottled = _.throttle(
+			_.bind(bar.animate, bar),
+			500
+		);
+		animateThrottled(progress);
+	}
+	let bar = new ProgressBar.Line('#Progress', {
+		strokeWidth: 4,
+		easing: 'easeInOut',
+		duration: 1400,
+		color: '#FFEA82',
+		trailColor: '#eee',
+		trailWidth: 1,
+		svgStyle: {width: '100%', height: '100%'},
+		text: {
+			style: {
+				// Text color.
+				// Default: same as stroke color (options.color)
+				color: '#999',
+				position: 'absolute',
+				right: '0',
+				top: '30px',
+				padding: 0,
+				margin: 0,
+				transform: null
+			},
+			autoStyleContainer: false
+		},
+		from: {color: '#FFEA82'},
+		to: {color: '#ED6A5A'},
+		step: (state, bar) => {
+			bar.setText(Math.round(bar.value() * 100) + ' %');
+		}
+	});
+	//	const WebTorrent = require('webtorrent');
+	//	const client = new WebTorrent();
+	client.on('error', function (err) {
+		console.error('ERROR: ' + err.message)
+	});
+	//	const url = 'mongodb://localhost:27017/media_mate';
+	function getRSSURI(callback) {
+		MongoClient.connect(url	, (err, db) => {
 		let collection = db.collection('uri');
-		collection.insertOne({showRSSURI: uri}, (err, res) => {
-			assert.equal(err, null);
-			callback(res)
+		collection.find().toArray((err, docs) => {
+			callback(docs[0].showRSSURI);
+			})
 		})
 	}
 	function ignoreDupeTorrents(torrent, db, callback) {
@@ -33,26 +114,52 @@
 		if (collection.find() !== null) {
 			collection.findOne({magnet: torrent.link}, (err, docs) => {
 				if (docs === null) {
-					collection.insertOne({magnet: torrent.link}, (err, res) => {
+					collection.insertOne({magnet: torrent.link, downloaded: false}, (err, res) => {
 						console.log(err);
 						callback()
 					})
-				} else {
+				} else if (docs.downloaded === true) {
 					callback('dupe');
+				} else if (docs.downloaded === false) {
+					callback();
 				}
 			})
-			} else {
-			collection.insertOne({magnet: torrent.link}, (err, res) => {
+		} else {
+			collection.insertOne({magnet: torrent.link, downloaded: false}, (err, res) => {
 				callback()
 			})
 		}
+	}
+	function getTorIndex(magnet, callback) {
+		MongoClient.connect(url)
+			.then((err, db) => {
+				assert.equal(err, null);
+				let collection = db.collection('torrents');
+				collection.findOne({magnet: magnet})
+					.then((err, docs) => {
+						assert.equal(err, null);
+						if (docs !== null) {
+							let index = docs.index;
+							callback(index);
+						}
+					})
+			})
+	}
+	function dropTorrents(callback) {
+		MongoClient.connect(url, function(err, db) {
+			let collection = db.collection('torrents');
+			collection.drop()
+				.then(function () {
+					db.close();
+				});
+		});
 	}
 	function updateURI (uri, db, callback) {
 		// Get the documents collection
 		let collection = db.collection('uri');
 		// Update document where a is 2, set b equal to 1
-			collection.drop();
-			collection.insertOne({showRSSURI: uri}, (err, res) => {
+		collection.drop();
+		collection.insertOne({showRSSURI: uri}, (err, res) => {
 			assert.equal(err, null);
 			console.log("Updated the showRSS uri");
 			callback(res);
@@ -77,7 +184,55 @@
 			db.close();
 		});
 	});
-
+	function dlAll() {
+		MongoClient.connect(url, (err, db) => {
+			assert.equal(err, null);
+			let collection = db.collection('torrents');
+			collection.find({downloaded: {$ne : true}}).toArray(function(err, docs) {
+				assert.equal(err, null);
+				_.each(docs, (elem, index, list) => {
+					addTor(elem.magnet, index, document.getElementById(index));
+				})
+			})
+		});
+	}
+	function addTor(magnet, index) {
+		document.getElementById('Progress').style.display = '';
+		client.add(magnet, {path: 'F:\\media_mate'}, function (torrent) {
+			torrent.index = index;
+			const progInterval = setInterval(() => {
+				dlProgress(client.progress);
+				torrent.on('download', (bytes) => {
+					let percent = Math.round(torrent.progress * 100 * 100) / 100;
+					document.getElementsByName(magnet)[0].parentNode.firstChild.nodeValue = percent.toString() + '% downloaded, ' + moment.duration(torrent.timeRemaining / 1000, 'seconds').humanize() + ' remaining.';
+				});
+			}, 1000);
+			torrent.on('done', function () {
+				MongoClient.connect(url, (err, db) => {
+					let collection = db.collection('torrents');
+					collection.updateOne({magnet: document.getElementsByName(magnet)[0].name}, {$set: {downloaded: true}}, (err, res) => {
+						assert.equal(err, null);
+//						console.log(res)
+						document.getElementsByName(magnet)[0].parentNode.style.display = 'none';
+					})
+				});
+				console.log('done');
+				clearInterval(progInterval);
+				torrent.destroy();
+			})
+		});
+	}
+	function addIndexToDB(magnet, callback) {
+		MongoClient.connect(url, (err, db) => {
+			assert.equal(err, null);
+			let collection = db.collection('torrents');
+			collection.updateOne({magnet: magnet}, {$set: {index: dbindex}})
+				.then(() => {
+					dbindex++;
+					callback()
+				});
+		})
+	}
 	function runScript(e) {
 		if (e.keyCode == 13) {
 			const tb = document.getElementById('rss');
@@ -88,7 +243,7 @@
 			MongoClient.connect(url, function(err, db) {
 				assert.equal(null, err);
 				console.log("Connected correctly to server");
-					updateURI(tb.value, db, () => {
+				updateURI(tb.value, db, () => {
 					db.close();
 				});
 			});
@@ -98,66 +253,42 @@
 			MongoClient.connect(url, function(err, db) {
 				assert.equal(null, err);
 				console.log("Connected correctly to server");
-
+				document.getElementById("dlAll").style.display = 'block';
 				RSS.on('data', data => {
 					data = _.omit(data, '_id');
 					ignoreDupeTorrents(data, db, dupe => {
-							if (!dupe) {
+						if (!dupe) {
 							let br = document.createElement('br');
 							let label = document.createElement("label");
 							let input = document.createElement('input');
 							let inputName = document.createTextNode(data.title);
 							label.appendChild(inputName);
+							label.id = i;
 							input.type = "checkbox";
-							input.name = data.link;
 							input.className = 'checkbox';
-							input.textContent = data.title;
+//							input.textContent = data.title;
+							input.name = data.link;
 							input.addEventListener("click", function () {
-								input.style.display = 'none';
-								client.add(input.name, {path: 'F:\\media_mate'}, function (torrent) {
-									console.log(torrent);
-								});
+								addTor(input.name, input.id);
 							});
+							magnetURI.push(data.link);
 							label.appendChild(input);
 							dlbox.appendChild(document.createElement("br"));
-							console.log(input);
+//							console.log(input);
 							document.getElementById('dlbox').appendChild(label);
+							addIndexToDB(input.name, () => {
+
+							});
+//							console.log(i);
+							i++;
 						} else {
-								console.log('dupe');
-							}
+							console.log('dupe');
+						}
 					});
 				});
-//				db.close();
 			});
 			return false;
 		}
 	}
 </script>
-<section class="hero is-primary is-bold">
-	<div class="hero-body">
-		<div class="container">
-			<h1 class="title">
-				Downloading
-			</h1>
-			<h2 class="subtitle">
-				Paste a <a href="http://showrss.info">ShowRSS</a> feed below
-			</h2>
-		</div>
-	</div>
-</section>
-<div class="columns">
-	<div class="column is-narrow">
-	</div>
-	<div class="column">
-		<div class="box">
-			<p id="rssp" class="subtitle"><input id="rss" placeholder="Paste ShowRSS feed url." type="text" onkeypress="return runScript(event)" title="magnet"></p>
-		</div>
-	</div>
-</div>
-<div id="dls" style="display: none;">
-	<form id="dlbox">
-
-	</form>
-</div>
-</body>
 </html>

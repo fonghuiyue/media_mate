@@ -4,6 +4,7 @@
       <w>autoupdate</w>
       <w>bulma</w>
       <w>couchpotato</w>
+      <w>dbindex</w>
       <w>dirname</w>
       <w>dlbox</w>
       <w>endinject</w>
@@ -12,6 +13,7 @@
       <w>mainwindow</w>
       <w>nsis</w>
       <w>onerror</w>
+      <w>onload</w>
       <w>playerm</w>
       <w>plex</w>
       <w>renderjs</w>

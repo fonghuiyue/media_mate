@@ -16,11 +16,14 @@ gulp.task('default', () => {
 	console.log(err.codeFrame);
 	return err;
 } else {
-	return gulp.src(['app/*.js', '!node_modules',
+	return gulp.src(['!node_modules',
 		'!node_modules/**',
 		'!app/menu.js',
 		'!dist',
 		'!app/renderjs',
+		'app/*.js',
+		'!app/lib',
+		'!app/indexbuild.js',
 		'!dist/**'])
 		.pipe(sourcemaps.init())
 		.pipe(babel({

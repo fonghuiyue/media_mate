@@ -82,7 +82,7 @@
 				color: '#999',
 				position: 'absolute',
 				right: '0',
-				top: '30px',
+//				top: '30px',
 				padding: 0,
 				margin: 0,
 				transform: null
@@ -200,6 +200,8 @@
 		document.getElementById('Progress').style.display = '';
 		client.add(magnet, {path: 'F:\\media_mate'}, function (torrent) {
 			torrent.index = index;
+			document.getElementsByName(magnet)[0].checked = true;
+			document.getElementsByName(magnet)[0].disabled = true;
 			const progInterval = setInterval(() => {
 				dlProgress(client.progress);
 				torrent.on('download', (bytes) => {
@@ -240,7 +242,7 @@
 //				if (error) throw error
 //			});
 			// Use connect method to connect to the Server
-			MongoClient.connect(url, function(err, db) {
+			MongoClient.connect(url, function (err, db) {
 				assert.equal(null, err);
 				console.log("Connected correctly to server");
 				updateURI(tb.value, db, () => {
@@ -250,11 +252,11 @@
 			let dl = document.getElementById("dlbox");
 			document.getElementById("dls").style.display = 'inline';
 			let RSS = new RSSParse(tb.value);
-			MongoClient.connect(url, function(err, db) {
-				assert.equal(null, err);
-				console.log("Connected correctly to server");
-				document.getElementById("dlAll").style.display = 'block';
-				RSS.on('data', data => {
+			RSS.on('data', data => {
+				MongoClient.connect(url, function (err, db) {
+					assert.equal(null, err);
+					console.log("Connected correctly to server");
+					document.getElementById("dlAll").style.display = 'block';
 					data = _.omit(data, '_id');
 					ignoreDupeTorrents(data, db, dupe => {
 						if (!dupe) {
@@ -277,12 +279,13 @@
 //							console.log(input);
 							document.getElementById('dlbox').appendChild(label);
 							addIndexToDB(input.name, () => {
-
 							});
 //							console.log(i);
 							i++;
+							db.close();
 						} else {
 							console.log('dupe');
+							db.close();
 						}
 					});
 				});

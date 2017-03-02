@@ -165,10 +165,10 @@
 			})
 	}
 	function dropTorrents(callback) {
-		MongoClient.connect(url, function(err, db) {
+		MongoClient.connect(url, (err, db) => {
 			let collection = db.collection('torrents');
 			collection.drop()
-				.then(function () {
+				.then(() => {
 					db.close();
 				});
 		});
@@ -189,7 +189,7 @@
 		// Get the documents collection
 		let collection = db.collection(col || 'uri');
 		// Find some documents
-		collection.find({}).toArray(function(err, docs) {
+		collection.find({}).toArray((err, docs) => {
 			assert.equal(err, null);
 			console.log("Current contents of " + col);
 			console.log(docs);
@@ -198,10 +198,10 @@
 		});
 	}
 	// Use connect method to connect to the Server
-	MongoClient.connect(url, function(err, db) {
+	MongoClient.connect(url, (err, db) => {
 		assert.equal(null, err);
 		console.log("Connected correctly to server");
-		findDocuments(db, 'torrents', function() {
+		findDocuments(db, 'torrents', () => {
 			db.close();
 		});
 	});
@@ -209,7 +209,7 @@
 		MongoClient.connect(url, (err, db) => {
 			assert.equal(err, null);
 			let collection = db.collection('torrents');
-			collection.find({downloaded: {$ne : true}}).toArray(function(err, docs) {
+			collection.find({downloaded: {$ne : true}}).toArray((err, docs) => {
 				assert.equal(err, null);
 				_.each(docs, (elem, index, list) => {
 					addTor(elem.magnet, index, document.getElementById(index));
@@ -258,7 +258,7 @@
 			dlpath = callback;
 		});
 
-		client.add(magnet, {path: dlpath}, function (torrent) {
+		client.add(magnet, {path: dlpath}, (torrent) => {
 			torrent.index = index;
 			document.getElementsByName(magnet)[0].checked = true;
 			document.getElementsByName(magnet)[0].disabled = true;
@@ -269,7 +269,7 @@
 					document.getElementsByName(magnet)[0].parentNode.firstChild.nodeValue = percent.toString() + '% downloaded, ' + moment.duration(torrent.timeRemaining / 1000, 'seconds').humanize() + ' remaining.';
 				});
 			}, 1000);
-			torrent.on('done', function () {
+			torrent.on('done', () => {
 				MongoClient.connect(url, (err, db) => {
 					let collection = db.collection('torrents');
 					collection.updateOne({magnet: document.getElementsByName(magnet)[0].name}, {$set: {downloaded: true}}, (err, res) => {
@@ -304,7 +304,7 @@
 //				if (error) throw error
 //			});
 			// Use connect method to connect to the Server
-			MongoClient.connect(url, function (err, db) {
+			MongoClient.connect(url, (err, db) => {
 				assert.equal(null, err);
 				console.log("Connected correctly to server");
 				updateURI(tb.value, db, () => {
@@ -315,7 +315,7 @@
 			document.getElementById("dls").style.display = 'inline';
 			let RSS = new RSSParse(tb.value);
 			RSS.on('data', data => {
-				MongoClient.connect(url, function (err, db) {
+				MongoClient.connect(url, (err, db) => {
 					assert.equal(null, err);
 					console.log("Connected correctly to server");
 					document.getElementById("dlAll").style.display = 'block';
@@ -332,7 +332,7 @@
 							input.className = 'checkbox';
 //							input.textContent = data.title;
 							input.name = data.link;
-							input.addEventListener("click", function () {
+							input.addEventListener("click", () => {
 								addTor(input.name, input.id);
 							});
 							magnetURI.push(data.link);

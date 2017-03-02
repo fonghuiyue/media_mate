@@ -8,7 +8,6 @@
 	<!-- endinject -->
 	<!-- inject:js -->
 	<script src="renderjs/render-err.js"></script>
-	<script src="renderjs/streamer.js"></script>
 	<!-- endinject -->
     <meta charset="UTF-8">
     <title>Media Mate Downloader</title>
@@ -33,7 +32,10 @@
 		<div class="box">
 			<button id="dlAll" onclick="dlAll()" class="button is-primary" style="display: none; float: right;">Download All</button>
 			<button style="float: right;" onclick="dropTorrents()" class="button is-primary">Drop Torrents DB</button>
-			<p id="rssp" class="subtitle"><input id="rss" placeholder="Paste ShowRSS feed url." type="text" onkeypress="return runScript(event)" title="magnet"></p>
+			<button style="float: right;" onclick="insertDlPath()" id="dlpath" class="button is-primary">Choose DL Path</button>
+			<p id="rssp" class="subtitle">
+				<input id="rss" placeholder="Paste ShowRSS feed url." type="text" onkeypress="return runScript(event)" title="magnet">
+			</p>
 		</div>
 	</div>
 </div>
@@ -45,6 +47,10 @@
 </div>
 </body>
 <script type="text/javascript">
+	const WebTorrent = require('webtorrent');
+	const client = new WebTorrent();
+	const {dialog} = require('electron').remote;
+	require('events').EventEmitter.prototype._maxListeners = 1000;
 	const moment = require('moment');
 	const RSSParse = require('./lib/rssparse').RSSParse;
 	const ProgressBar = require('progressbar.js');
@@ -95,18 +101,26 @@
 			bar.setText(Math.round(bar.value() * 100) + ' %');
 		}
 	});
-	//	const WebTorrent = require('webtorrent');
-	//	const client = new WebTorrent();
 	client.on('error', function (err) {
 		console.error('ERROR: ' + err.message)
 	});
-	//	const url = 'mongodb://localhost:27017/media_mate';
 	function getRSSURI(callback) {
 		MongoClient.connect(url	, (err, db) => {
 		let collection = db.collection('uri');
-		collection.find().toArray((err, docs) => {
-			callback(docs[0].showRSSURI);
+		if (collection.find() !== undefined || collection.find() !== null) {
+			collection.find().toArray((err, docs) => {
+				if (docs.length > 0) {
+					callback(docs[0].showRSSURI);
+					db.close();
+				}
+				else {
+					callback('');
+					db.close();
+				}
 			})
+		} else {
+			callback('');
+		}
 		})
 	}
 	function ignoreDupeTorrents(torrent, db, callback) {
@@ -115,18 +129,22 @@
 			collection.findOne({magnet: torrent.link}, (err, docs) => {
 				if (docs === null) {
 					collection.insertOne({magnet: torrent.link, downloaded: false}, (err, res) => {
-						console.log(err);
-						callback()
+						if (err) throw err;
+						callback();
+						db.close();
 					})
 				} else if (docs.downloaded === true) {
 					callback('dupe');
+					db.close();
 				} else if (docs.downloaded === false) {
 					callback();
+					db.close();
 				}
 			})
 		} else {
 			collection.insertOne({magnet: torrent.link, downloaded: false}, (err, res) => {
-				callback()
+				callback();
+				db.close();
 			})
 		}
 	}
@@ -141,6 +159,7 @@
 						if (docs !== null) {
 							let index = docs.index;
 							callback(index);
+							db.close();
 						}
 					})
 			})
@@ -163,6 +182,7 @@
 			assert.equal(err, null);
 			console.log("Updated the showRSS uri");
 			callback(res);
+			db.close();
 		})
 	}
 	function findDocuments(db, col, callback) {
@@ -174,6 +194,7 @@
 			console.log("Current contents of " + col);
 			console.log(docs);
 			callback(docs);
+			db.close();
 		});
 	}
 	// Use connect method to connect to the Server
@@ -192,13 +213,52 @@
 				assert.equal(err, null);
 				_.each(docs, (elem, index, list) => {
 					addTor(elem.magnet, index, document.getElementById(index));
-				})
+				});
+				db.close();
 			})
 		});
 	}
+
+	function getDlPath(callback) {
+		MongoClient.connect(url, (err, db) => {
+			let collection = db.collection('path');
+			if (collection.find() !== undefined || collection.find() !== null) {
+				collection.find().toArray((err, docs) => {
+					if (docs.length > 0) {
+						callback(docs[0].path);
+						db.close();
+					}
+					else {
+						callback('');
+						db.close();
+					}
+				})
+			} else {
+				callback('');
+			}
+		});
+	}
+
+	function insertDlPath(callback) {
+		let tb = document.getElementById("dlpath");
+		let dlpath = dialog.showOpenDialog({properties: ['openDirectory']});
+		MongoClient.connect(url, (err, db) => {
+			let collection = db.collection('path');
+			collection.drop();
+			collection.insertOne({path: dlpath[0]})
+				.then(() => {
+				})
+		});
+	}
+
 	function addTor(magnet, index) {
 		document.getElementById('Progress').style.display = '';
-		client.add(magnet, {path: 'F:\\media_mate'}, function (torrent) {
+		let dlpath;
+		getDlPath(callback => {
+			dlpath = callback;
+		});
+
+		client.add(magnet, {path: dlpath}, function (torrent) {
 			torrent.index = index;
 			document.getElementsByName(magnet)[0].checked = true;
 			document.getElementsByName(magnet)[0].disabled = true;
@@ -216,6 +276,7 @@
 						assert.equal(err, null);
 //						console.log(res)
 						document.getElementsByName(magnet)[0].parentNode.style.display = 'none';
+						db.close();
 					})
 				});
 				console.log('done');
@@ -231,7 +292,8 @@
 			collection.updateOne({magnet: magnet}, {$set: {index: dbindex}})
 				.then(() => {
 					dbindex++;
-					callback()
+					callback();
+					db.close();
 				});
 		})
 	}

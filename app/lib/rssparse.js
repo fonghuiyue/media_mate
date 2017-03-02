@@ -7,14 +7,14 @@ class RSSParse extends events.EventEmitter {
 		super(rssFeed);
 		this.rssFeed = rssFeed;
 		this._rssContent = [];
-		this.reqFeed()
+		this.reqFeed();
 	}
 
 	reqFeed() {
-		let rssThis = this;
+		const rssThis = this;
 		const req = request(this.rssFeed);
 		const feedparser = new FeedParser();
-		let rssContent = [];
+		const rssContent = [];
 		req.on('error', err => {
 
 		});
@@ -26,7 +26,7 @@ class RSSParse extends events.EventEmitter {
 				this.emit('error', new Error('Bad status code'));
 			} else {
 				stream.pipe(feedparser);
-				let RSS = [];
+				const RSS = [];
 				feedparser.on('error', error => {
 					// always handle errors
 				});
@@ -39,7 +39,7 @@ class RSSParse extends events.EventEmitter {
 
 					while (item = stream.read()) {
 						console.log(item);
-						rssThis.emit('data', item)
+						rssThis.emit('data', item);
 					}
 				});
 			}

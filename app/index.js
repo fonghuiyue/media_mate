@@ -95,21 +95,21 @@ function onClosed() {
  * @returns {BrowserWindow}
  */
 function createMainWindow() {
-	let mainWindowState = windowStateKeeper({
+	const mainWindowState = windowStateKeeper({
 		defaultWidth: 600,
 		defaultHeight: 400
 	});
 	win = new electron.BrowserWindow({
-		'x': mainWindowState.x,
-		'y': mainWindowState.y,
-		'width': mainWindowState.width,
-		'height': mainWindowState.height,
+		x: mainWindowState.x,
+		y: mainWindowState.y,
+		width: mainWindowState.width,
+		height: mainWindowState.height,
 		show: false
 	});
 	mainWindowState.manage(win);
 	win.loadURL(`file://${__dirname}/index.html`);
 	win.once('ready-to-show', () => {
-		win.show()
+		win.show();
 	});
 	win.on('closed', onClosed);
 
@@ -136,83 +136,82 @@ app.on('activate', () => {
  */
 app.on('ready', () => {
 	mainWindow = createMainWindow();
-
 });
 const template = [
 	{
-	label: 'File',
+		label: 'File',
 		submenu: [
+			{
+				label: 'Homepage',
+				click: () => {
+					win.loadURL(`file://${__dirname}/index.html`);
+				}
+			}
+		]
+	},
 	{
-		label: 'Homepage',
-		click: () => {
-			win.loadURL(`file://${__dirname}/index.html`)
-		}
-	}
-]
-},
-{
-	label: 'Edit',
+		label: 'Edit',
 		submenu: [
-	{
-		role: 'cut'
+			{
+				role: 'cut'
+			},
+			{
+				role: 'copy'
+			},
+			{
+				role: 'paste'
+			}
+		]
 	},
 	{
-		role: 'copy'
-	},
-	{
-		role: 'paste'
-	}
-]
-},
-{
-	label: 'View',
+		label: 'View',
 		submenu: [
-	{
-		role: 'reload'
+			{
+				role: 'reload'
+			},
+			{
+				role: 'forcereload'
+			},
+			{
+				type: 'separator'
+			},
+			{
+				type: 'separator'
+			},
+			{
+				role: 'togglefullscreen'
+			}
+		]
 	},
 	{
-		role: 'forcereload'
-	},
-	{
-		type: 'separator'
-	},
-	{
-		type: 'separator'
-	},
-	{
-		role: 'togglefullscreen'
-	}
-]
-},
-{
-	role: 'window',
+		role: 'window',
 		submenu: [
-	{
-		role: 'minimize'
+			{
+				role: 'minimize'
+			},
+			{
+				role: 'close'
+			}
+		]
 	},
 	{
-		role: 'close'
-	}
-]
-},
-{
-	role: 'help',
+		role: 'help',
 		submenu: [
-	{
-		label: 'Learn More about Electron',
-		click () {
-			require('electron').shell.openExternal('http://electron.atom.io')
-		}
-	}, {
-		label: 'About',
-		click: () => openAboutWindow({
-			icon_path: path.join(__dirname, 'icon.png'), // eslint-disable-line camelcase // temp icon till i make one
-			bug_report_url: 'https://github.com/willyb321/media_mate/issues', // eslint-disable-line camelcase
-			homepage: 'https://github.com/willyb321/elite-journal'
-		})
+			{
+				label: 'Learn More about Electron',
+				click() {
+					require('electron').shell.openExternal('http://electron.atom.io');
+				}
+			}, {
+				label: 'About',
+				click: () => openAboutWindow({
+					icon_path: path.join(__dirname, 'icon.png'), // eslint-disable-line camelcase // temp icon till i make one
+					bug_report_url: 'https://github.com/willyb321/media_mate/issues', // eslint-disable-line camelcase
+					homepage: 'https://github.com/willyb321/elite-journal'
+				})
+			}
+		]
 	}
-]
-}
 ];
 
 if (process.platform === 'darwin') {
@@ -278,7 +277,7 @@ if (process.platform === 'darwin') {
 			label: 'Bring All to Front',
 			role: 'front'
 		}
-	]
+	];
 }
 const menu = Menu.buildFromTemplate(template);
 Menu.setApplicationMenu(menu);

@@ -38,7 +38,7 @@ class RSSParse extends events.EventEmitter {
 					let item;
 
 					while (item = stream.read()) {
-						console.log(item);
+						// console.log(item);
 						rssThis.emit('data', item);
 					}
 				});

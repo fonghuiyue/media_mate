@@ -10,8 +10,12 @@ import isDev from 'electron-is-dev';
 import bugsnag from 'bugsnag';
 import openAboutWindow from 'about-window';
 import moment from 'moment';
+import {RSSParse} from './lib/rssparse';
+import MongoClient from 'mongodb';
 
 const windowStateKeeper = require('electron-window-state');
+let eNotify;
+const url = 'mongodb://localhost:27017/media_mate';
 /**
  * The electron app instance
  */
@@ -131,11 +135,70 @@ app.on('activate', () => {
 		mainWindow = createMainWindow();
 	}
 });
+
+function ignoreDupeTorrents(torrent, callback) {
+	MongoClient.connect(url, (err, db) => {
+	const collection = db.collection('torrents');
+	if (collection.find() !== null) {
+		collection.findOne({magnet: torrent.link}, (err, docs) => {
+			if (docs !== null) {
+				if (docs.downloaded === true) {
+					callback('dupe');
+					db.close();
+				} else if (docs.downloaded === false) {
+					callback();
+					db.close();
+				}
+			} else {
+				callback();
+			}
+		});
+	}
+	})
+}
+function getRSSURI(callback) {
+	MongoClient.connect(url, (err, db) => {
+		const collection = db.collection('uri');
+		if (collection.find() !== undefined || collection.find() !== null) {
+			collection.find().toArray((err, docs) => {
+				// console.log(docs);
+				if (docs.length > 0) {
+					callback(docs[0].showRSSURI);
+					db.close();
+				}	else {
+					callback('');
+					db.close();
+				}
+			});
+		} else {
+			callback('');
+		}
+	});
+}
+function watchRSS() {
+	let uri;
+	getRSSURI(cb => {
+		uri = cb;
+	const RSS = new RSSParse(uri);
+	RSS.on('data', data => {
+		ignoreDupeTorrents(data, dupe => {
+			if (!dupe) {
+				eNotify.notify({title: 'New Download Available', text: data.title});
+			} else {
+				console.log('already DL')
+			}
+		});
+		})
+	});
+}
+
 /**
  * Make the main window.
  */
 app.on('ready', () => {
 	mainWindow = createMainWindow();
+	eNotify = require('electron-notify');
+	watchRSS();
 });
 const template = [
 	{

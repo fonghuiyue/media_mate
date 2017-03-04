@@ -105,9 +105,15 @@ gulp.task('clean', () => {
 	return del(['dist/**/*', 'node_modules/', 'app/node_modules/']);
 });
 gulp.task('index', () => {
-	gulp.src(['./app/**/*.html', '!./app/node_modules/**'])
-	.pipe(inject(gulp.src(['./app/*.css', './app/renderjs/*.js', './app/node_modules/bulma/css/bulma.css', './app/node_modules/izitoast/dist/css/iziToast.min.css'], {read: false}), {relative: true}))
+	gulp.src(['./app/downloader.html', '!./app/node_modules/**'])
+	.pipe(inject(gulp.src(['./app/*.css', './app/renderjs/render-err.js', './app/pace.css', './app/renderjs/pace.min.js', './app/renderjs/downloader.js', './app/node_modules/bulma/css/bulma.css', './app/node_modules/izitoast/dist/css/iziToast.min.css'], {read: false}), {relative: true}))
 	.pipe(gulp.dest('./app'));
+	gulp.src(['./app/streamer.html', '!./app/node_modules/**'])
+		.pipe(inject(gulp.src(['./app/*.css', './app/renderjs/render-err.js', './app/pace.css', './app/renderjs/pace.min.js', './app/renderjs/streamer.js', './app/node_modules/bulma/css/bulma.css', './app/node_modules/izitoast/dist/css/iziToast.min.css'], {read: false}), {relative: true}))
+		.pipe(gulp.dest('./app'));
+	gulp.src(['./app/index.html', '!./app/node_modules/**'])
+		.pipe(inject(gulp.src(['./app/*.css', './app/renderjs/render-err.js', './app/pace.css', './app/renderjs/pace.min.js', './app/node_modules/bulma/css/bulma.css', './app/node_modules/izitoast/dist/css/iziToast.min.css'], {read: false}), {relative: true}))
+		.pipe(gulp.dest('./app'));
 });
 
 gulp.task('build:packCI', (cb) => {

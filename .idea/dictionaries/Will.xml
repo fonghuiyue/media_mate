@@ -10,11 +10,14 @@
       <w>dlpath</w>
       <w>endinject</w>
       <w>feedparser</w>
+      <w>fontawesome</w>
+      <w>forcereload</w>
       <w>izitoast</w>
       <w>mainwindow</w>
       <w>nsis</w>
       <w>onerror</w>
       <w>onload</w>
+      <w>opensource</w>
       <w>playerm</w>
       <w>plex</w>
       <w>prog</w>
@@ -26,6 +29,8 @@
       <w>sonarr</w>
       <w>starttag</w>
       <w>submitmagnet</w>
+      <w>tehsuperwilly</w>
+      <w>togglefullscreen</w>
     </words>
   </dictionary>
 </component>

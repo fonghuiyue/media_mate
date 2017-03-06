@@ -82,7 +82,7 @@ function ignoreDupeTorrents(torrent, db, callback) {
 	if (collection.find() !== null) {
 		collection.findOne({magnet: torrent.link}, (err, docs) => {
 			if (docs === null) {
-				collection.insertOne({magnet: torrent.link, downloaded: false}, (err, res) => {
+				collection.insertOne({magnet: torrent.link, title: torrent.title, downloaded: false}, (err, res) => {
 					if (err) {
 						throw err;
 					}
@@ -98,7 +98,7 @@ function ignoreDupeTorrents(torrent, db, callback) {
 			}
 		});
 	} else {
-		collection.insertOne({magnet: torrent.link, downloaded: false}, (err, res) => {
+		collection.insertOne({magnet: torrent.link, title: torrent.title, downloaded: false}, (err, res) => {
 			callback();
 			db.close();
 		});
@@ -277,7 +277,6 @@ function runScript(e) {
 						label.id = i;
 						input.type = 'checkbox';
 						input.className = 'checkbox';
-//							input.textContent = data.title;
 						input.name = data.link;
 						input.addEventListener('click', () => {
 							addTor(input.name, input.id);
@@ -285,11 +284,9 @@ function runScript(e) {
 						magnetURI.push(data.link);
 						label.appendChild(input);
 						dlbox.appendChild(document.createElement('br'));
-//							console.log(input);
 						document.getElementById('dlbox').appendChild(label);
 						addIndexToDB(input.name, () => {
 						});
-//							console.log(i);
 						i++;
 						db.close();
 					} else {

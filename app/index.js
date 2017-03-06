@@ -16,6 +16,7 @@ import MongoClient from 'mongodb';
 const windowStateKeeper = require('electron-window-state');
 let eNotify;
 const url = 'mongodb://localhost:27017/media_mate';
+let notDL = 0;
 /**
  * The electron app instance
  */
@@ -108,15 +109,15 @@ function createMainWindow() {
 		y: mainWindowState.y,
 		width: mainWindowState.width,
 		height: mainWindowState.height,
-		show: false
+		show: false,
+		backgroundColor: '#ffffff'
 	});
-	mainWindowState.manage(win);
-	win.loadURL(`file://${__dirname}/index.html`);
 	win.once('ready-to-show', () => {
 		win.show();
 	});
+	mainWindowState.manage(win);
+	win.loadURL(`file://${__dirname}/index.html`);
 	win.on('closed', onClosed);
-
 	return win;
 }
 /**
@@ -138,22 +139,31 @@ app.on('activate', () => {
 
 function ignoreDupeTorrents(torrent, callback) {
 	MongoClient.connect(url, (err, db) => {
-	const collection = db.collection('torrents');
-	if (collection.find() !== null) {
-		collection.findOne({magnet: torrent.link}, (err, docs) => {
-			if (docs !== null) {
-				if (docs.downloaded === true) {
-					callback('dupe');
-					db.close();
-				} else if (docs.downloaded === false) {
-					callback();
-					db.close();
+		const collection = db.collection('torrents');
+		if (collection.find() !== null) {
+			collection.findOne({magnet: torrent.link}, (err, docs) => {
+				if (docs !== null) {
+					if (docs.downloaded === true) {
+						db.close();
+						callback('dupe');
+					} else if (docs.downloaded === false) {
+						notDL++;
+						db.close();
+						callback('dupe');
+					}
+				} else {
+					collection.insertOne({magnet: torrent.link, title: torrent.title, downloaded: false})
+						.then((err, res) => {
+						if (err) {
+							throw err;
+						}
+						notDL++;
+						db.close();
+						callback();
+					});
 				}
-			} else {
-				callback();
-			}
-		});
-	}
+			});
+		}
 	})
 }
 function getRSSURI(callback) {
@@ -165,7 +175,7 @@ function getRSSURI(callback) {
 				if (docs.length > 0) {
 					callback(docs[0].showRSSURI);
 					db.close();
-				}	else {
+				} else {
 					callback('');
 					db.close();
 				}
@@ -179,15 +189,15 @@ function watchRSS() {
 	let uri;
 	getRSSURI(cb => {
 		uri = cb;
-	const RSS = new RSSParse(uri);
-	RSS.on('data', data => {
-		ignoreDupeTorrents(data, dupe => {
-			if (!dupe) {
-				eNotify.notify({title: 'New Download Available', text: data.title});
-			} else {
-				console.log('already DL')
-			}
-		});
+		const RSS = new RSSParse(uri);
+		RSS.on('data', data => {
+			ignoreDupeTorrents(data, dupe => {
+				if (!dupe) {
+					eNotify.notify({title: 'New Download Available', text: data.title});
+				} else {
+					console.log('already DL');
+				}
+			});
 		})
 	});
 }

@@ -3,7 +3,7 @@ page.png
 coverage/
 test-results.xml
 app/indexbuild*
-
+app/.env
 # Created by https://www.gitignore.io/api/webstorm,node
 
 ### Node ###

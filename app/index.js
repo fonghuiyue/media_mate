@@ -1,4 +1,5 @@
 'use strict';
+require('dotenv').config({path: `${__dirname}/.env`});
 import electron, {Menu, dialog, ipcMain as ipc, shell} from 'electron';
 import path from 'path';
 import os from 'os';
@@ -13,10 +14,16 @@ import moment from 'moment';
 import {RSSParse} from './lib/rssparse';
 import MongoClient from 'mongodb';
 
+const f = require('util').format;
 const windowStateKeeper = require('electron-window-state');
 let eNotify;
-const url = 'mongodb://localhost:27017/media_mate';
 let notDL = 0;
+const user = process.env.DB_USER;
+const password = process.env.DB_PWD;
+const dburi = process.env.DB_URL;
+const authMechanism = 'DEFAULT';
+const url = f('mongodb://%s:%s@%s?authMechanism=%s',
+	user, password, dburi, authMechanism);
 /**
  * The electron app instance
  */
@@ -139,6 +146,7 @@ app.on('activate', () => {
 
 function ignoreDupeTorrents(torrent, callback) {
 	MongoClient.connect(url, (err, db) => {
+		if (err) throw err;
 		const collection = db.collection('torrents');
 		if (collection.find() !== null) {
 			collection.findOne({magnet: torrent.link}, (err, docs) => {

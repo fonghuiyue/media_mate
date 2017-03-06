@@ -1,5 +1,6 @@
 const WebTorrent = require('webtorrent');
 const client = new WebTorrent();
+require('dotenv').config();
 require('events').EventEmitter.prototype._maxListeners = 1000;
 let filesAll = '';
 function runScript(e) {

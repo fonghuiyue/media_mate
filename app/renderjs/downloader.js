@@ -1,3 +1,4 @@
+require('dotenv').config({path: `${__dirname}/.env`});
 const WebTorrent = require('webtorrent');
 const client = new WebTorrent();
 const {dialog} = require('electron').remote;
@@ -8,7 +9,13 @@ const ProgressBar = require('progressbar.js');
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
 const _ = require('underscore');
-const url = 'mongodb://localhost:27017/media_mate';
+const f = require('util').format;
+const user = process.env.DB_USER;
+const password = process.env.DB_PWD;
+const dburi = process.env.DB_URL;
+const authMechanism = 'DEFAULT';
+const url = f('mongodb://%s:%s@%s?authMechanism=%s',
+	user, password, dburi, authMechanism);
 let i = 0;
 let bar;
 let dbindex = 0;
@@ -52,8 +59,6 @@ function dlProgress(torrent, magnet) {
 		_.bind(bar.animate, bar),
 		500
 	);
-	const percent = Math.round(torrent.progress * 100 * 100) / 100;
-	document.getElementsByName(magnet)[0].parentNode.firstChild.nodeValue = percent.toString() + '% downloaded, ' + moment.duration(torrent.timeRemaining / 1000, 'seconds').humanize() + ' remaining.';
 	animateThrottled(client.progress);
 }
 client.on('error', err => {
@@ -67,7 +72,7 @@ function getRSSURI(callback) {
 				if (docs.length > 0) {
 					callback(docs[0].showRSSURI);
 					db.close();
-				}	else {
+				} else {
 					callback('');
 					db.close();
 				}
@@ -183,7 +188,7 @@ function getDlPath(callback) {
 				if (docs.length > 0) {
 					callback(docs[0].path);
 					db.close();
-				}				else {
+				} else {
 					callback('');
 					db.close();
 				}
@@ -208,43 +213,30 @@ function insertDlPath(callback) {
 
 function addTor(magnet, index) {
 	document.getElementById('Progress').style.display = '';
-	let dlpath;
 	getDlPath(callback => {
-		dlpath = callback;
-	});
-
-	client.add(magnet, {path: dlpath}, torrent => {
-		torrent.index = index;
-		document.getElementsByName(magnet)[0].checked = true;
-		document.getElementsByName(magnet)[0].disabled = true;
-		torrent.on('download', bytes => {
-			prog(torrent, magnet);
-
-		});
-		torrent.on('done', () => {
-			MongoClient.connect(url, (err, db) => {
-				const collection = db.collection('torrents');
-				collection.updateOne({magnet: document.getElementsByName(magnet)[0].name}, {$set: {downloaded: true}}, (err, res) => {
-					assert.equal(err, null);
-					document.getElementsByName(magnet)[0].parentNode.style.display = 'none';
-					db.close();
+		client.add(magnet, {path: callback || 'F:\\media_mate'}, torrent => {
+			torrent.index = index;
+			document.getElementsByName(magnet)[0].checked = true;
+			document.getElementsByName(magnet)[0].disabled = true;
+			torrent.on('download', bytes => {
+				prog(torrent, magnet);
+				const percent = Math.round(torrent.progress * 100 * 100) / 100;
+				document.getElementsByName(magnet)[0].parentNode.firstChild.nodeValue = percent.toString() + '% downloaded, ' + moment.duration(torrent.timeRemaining / 1000, 'seconds').humanize() + ' remaining.';
+			});
+			torrent.on('done', () => {
+				MongoClient.connect(url, (err, db) => {
+					const collection = db.collection('torrents');
+					collection.updateOne({magnet: document.getElementsByName(magnet)[0].name}, {$set: {downloaded: true}})
+						.then((err, res) => {
+							assert.equal(err, null);
+							document.getElementsByName(magnet)[0].parentNode.style.display = 'none';
+							db.close();
+						});
 				});
+				console.log('done');
+				torrent.destroy();
 			});
-			console.log('done');
-			torrent.destroy();
 		});
-	});
-}
-function addIndexToDB(magnet, callback) {
-	MongoClient.connect(url, (err, db) => {
-		assert.equal(err, null);
-		const collection = db.collection('torrents');
-		collection.updateOne({magnet}, {$set: {index: dbindex}})
-			.then(() => {
-				dbindex++;
-				callback();
-				db.close();
-			});
 	});
 }
 function runScript(e) {
@@ -285,8 +277,6 @@ function runScript(e) {
 						label.appendChild(input);
 						dlbox.appendChild(document.createElement('br'));
 						document.getElementById('dlbox').appendChild(label);
-						addIndexToDB(input.name, () => {
-						});
 						i++;
 						db.close();
 					} else {

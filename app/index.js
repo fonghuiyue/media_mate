@@ -157,7 +157,7 @@ function ignoreDupeTorrents(torrent, callback) {
 					} else if (docs.downloaded === false) {
 						notDL++;
 						db.close();
-						callback('dupe');
+						callback();
 					}
 				} else {
 					collection.insertOne({magnet: torrent.link, title: torrent.title, downloaded: false})
@@ -197,16 +197,20 @@ function watchRSS() {
 	let uri;
 	getRSSURI(cb => {
 		uri = cb;
-		const RSS = new RSSParse(uri);
-		RSS.on('data', data => {
-			ignoreDupeTorrents(data, dupe => {
-				if (!dupe) {
-					eNotify.notify({title: 'New Download Available', text: data.title});
-				} else {
-					console.log('already DL');
-				}
-			});
-		})
+		if (cb !== '') {
+			const RSS = new RSSParse(uri);
+			RSS.on('data', data => {
+				ignoreDupeTorrents(data, dupe => {
+					if (!dupe) {
+						eNotify.notify({title: 'New Download Available', text: data.title});
+					} else {
+						console.log('already DL');
+					}
+				});
+			})
+		} else {
+			eNotify.notify({title: 'Put your ShowRSS URL into the downloader!', description: 'showrss.info'})
+		}
 	});
 }
 

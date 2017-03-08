@@ -14,12 +14,12 @@ const password = process.env.DB_PWD;
 const dburi = process.env.DB_URL;
 const authMechanism = 'DEFAULT';
 const client = new WebTorrent();
-const url = f('mongodb://%s:%s@%s?authMechanism=%s',
-	user, password, dburi, authMechanism);
+const url = f('mongodb://%s:%s@%s/media_mate?ssl=true&replicaSet=SDD-Major-shard-0&authSource=admin',
+	user, password, dburi);
 let i = 0;
 let bar;
 const dbindex = 0;
-const magnetURI = [];
+let allTorrents = [];
 const prog = _.throttle(dlProgress, 10000);
 window.onload = () => {
 	getRSSURI(callback => {
@@ -88,6 +88,17 @@ function getRSSURI(callback) {
 		}
 	});
 }
+
+function makeSureAllDL(torrent, callback) {
+	if (_.contains(allTorrents, torrent) === true) {
+		console.log('got it');
+		callback();
+	} else {
+		console.log('dont got it');
+		callback('add it');
+	}
+}
+
 function ignoreDupeTorrents(torrent, db, callback) {
 	const collection = db.collection('torrents');
 	if (collection.find() !== null) {
@@ -175,6 +186,7 @@ function findDocuments(db, col, callback) {
 		}
 		console.log('Current contents of ' + col);
 		console.log(docs);
+		_.each(docs, (elem) => allTorrents.push(elem));
 		db.close();
 		callback(docs);
 	});
@@ -307,6 +319,27 @@ function runScript(e) {
 				document.getElementById('dlAll').style.display = 'block';
 				data = _.omit(data, '_id');
 				ignoreDupeTorrents(data, db, dupe => {
+					makeSureAllDL(data, toadd => {
+						if (toadd) {
+							const br = document.createElement('br');
+						const label = document.createElement('label');
+						const input = document.createElement('input');
+						const inputName = document.createTextNode(data.title);
+						label.appendChild(inputName);
+						label.id = i;
+						input.type = 'checkbox';
+						input.className = 'checkbox';
+						input.name = data.link;
+						input.addEventListener('click', () => {
+							addTor(input.name, input.id);
+						});
+						magnetURI.push(data.link);
+						label.appendChild(input);
+						dlbox.appendChild(document.createElement('br'));
+						document.getElementById('dlbox').appendChild(label);
+						i++;
+						}
+					})
 					if (!dupe) {
 						const br = document.createElement('br');
 						const label = document.createElement('label');

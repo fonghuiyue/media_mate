@@ -23,8 +23,8 @@ const user = process.env.DB_USER;
 const password = process.env.DB_PWD;
 const dburi = process.env.DB_URL;
 const authMechanism = 'DEFAULT';
-const url = f('mongodb://%s:%s@%s?authMechanism=%s',
-	user, password, dburi, authMechanism);
+const url = f('mongodb://%s:%s@%s/media_mate?ssl=true&replicaSet=SDD-Major-shard-0&authSource=admin',
+	user, password, dburi);
 /**
  * The electron app instance
  */

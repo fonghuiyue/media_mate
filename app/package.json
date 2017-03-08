@@ -13,8 +13,8 @@
 	"version": "0.0.1",
 	"dependencies": {
 		"about-window": "^1.6.1",
-		"bugsnag": "^1.9.0",
-		"bulma": "^0.3.1",
+		"bugsnag": "^1.9.1",
+		"bulma": "^0.3.2",
 		"coffee-script": "^1.12.4",
 		"debug": "^2.6.1",
 		"dotenv": "^4.0.0",
@@ -22,7 +22,7 @@
 		"electron-is-dev": "^0.1.2",
 		"electron-json-storage": "^3.0.1",
 		"electron-notify": "^0.1.0",
-		"electron-updater": "^1.7.1",
+		"electron-updater": "^1.8.2",
 		"electron-window-state": "^4.0.2",
 		"feedparser": "^2.1.0",
 		"fs-extra": "^2.0.0",
@@ -31,11 +31,11 @@
 		"moment": "^2.17.1",
 		"mongodb": "^2.2.24",
 		"progressbar.js": "^1.0.1",
-		"request": "^2.79.0",
+		"request": "^2.80.0",
 		"source-map-support": "^0.4.11",
 		"tableify": "^1.0.0",
 		"underscore": "^1.8.3",
-		"webtorrent": "^0.98.8"
+		"webtorrent": "^0.98.10"
 	},
 	"xo": false
 }

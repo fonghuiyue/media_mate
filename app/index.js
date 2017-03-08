@@ -1,5 +1,6 @@
 'use strict';
 require('dotenv').config({path: `${__dirname}/.env`});
+
 import electron, {Menu, dialog, ipcMain as ipc, shell} from 'electron';
 import path from 'path';
 import os from 'os';
@@ -11,8 +12,8 @@ import isDev from 'electron-is-dev';
 import bugsnag from 'bugsnag';
 import openAboutWindow from 'about-window';
 import moment from 'moment';
-import {RSSParse} from './lib/rssparse';
 import MongoClient from 'mongodb';
+import {RSSParse} from './lib/rssparse';
 
 const f = require('util').format;
 const windowStateKeeper = require('electron-window-state');
@@ -146,10 +147,15 @@ app.on('activate', () => {
 
 function ignoreDupeTorrents(torrent, callback) {
 	MongoClient.connect(url, (err, db) => {
-		if (err) throw err;
+		if (err) {
+			throw err;
+		}
 		const collection = db.collection('torrents');
 		if (collection.find() !== null) {
 			collection.findOne({magnet: torrent.link}, (err, docs) => {
+				if (err) {
+					throw err;
+				}
 				if (docs !== null) {
 					if (docs.downloaded === true) {
 						db.close();
@@ -162,24 +168,29 @@ function ignoreDupeTorrents(torrent, callback) {
 				} else {
 					collection.insertOne({magnet: torrent.link, title: torrent.title, downloaded: false})
 						.then((err, res) => {
-						if (err) {
-							throw err;
-						}
-						notDL++;
-						db.close();
-						callback();
-					});
+							if (err) {
+								throw err;
+							}
+							notDL++;
+							db.close();
+							callback();
+						});
 				}
 			});
 		}
-	})
+	});
 }
 function getRSSURI(callback) {
 	MongoClient.connect(url, (err, db) => {
+		if (err) {
+			throw err;
+		}
 		const collection = db.collection('uri');
 		if (collection.find() !== undefined || collection.find() !== null) {
 			collection.find().toArray((err, docs) => {
-				// console.log(docs);
+				if (err) {
+					throw err;
+				}
 				if (docs.length > 0) {
 					callback(docs[0].showRSSURI);
 					db.close();
@@ -207,9 +218,9 @@ function watchRSS() {
 						console.log('already DL');
 					}
 				});
-			})
+			});
 		} else {
-			eNotify.notify({title: 'Put your ShowRSS URL into the downloader!', description: 'showrss.info'})
+			eNotify.notify({title: 'Put your ShowRSS URL into the downloader!', description: 'showrss.info'});
 		}
 	});
 }
@@ -365,4 +376,6 @@ if (process.platform === 'darwin') {
 	];
 }
 const menu = Menu.buildFromTemplate(template);
-Menu.setApplicationMenu(menu);
+if (process.platform !== 'darwin') {
+	Menu.setApplicationMenu(menu);
+}

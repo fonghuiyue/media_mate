@@ -1,24 +1,24 @@
 require('dotenv').config({path: `${__dirname}/.env`});
-const WebTorrent = require('webtorrent');
-const client = new WebTorrent();
 const {dialog} = require('electron').remote;
+const WebTorrent = require('webtorrent');
 require('events').EventEmitter.prototype._maxListeners = 1000;
 const moment = require('moment');
-const RSSParse = require('./lib/rssparse').RSSParse;
+const RSSParse = require(require('path').join(__dirname, 'lib', 'rssparse.js')).RSSParse;
 const ProgressBar = require('progressbar.js');
 const MongoClient = require('mongodb').MongoClient;
-const assert = require('assert');
 const _ = require('underscore');
 const f = require('util').format;
+
 const user = process.env.DB_USER;
 const password = process.env.DB_PWD;
 const dburi = process.env.DB_URL;
 const authMechanism = 'DEFAULT';
+const client = new WebTorrent();
 const url = f('mongodb://%s:%s@%s?authMechanism=%s',
 	user, password, dburi, authMechanism);
 let i = 0;
 let bar;
-let dbindex = 0;
+const dbindex = 0;
 const magnetURI = [];
 const prog = _.throttle(dlProgress, 10000);
 window.onload = () => {
@@ -58,7 +58,7 @@ function dlProgress(torrent, magnet) {
 	const animateThrottled = _.throttle(
 		_.bind(bar.animate, bar),
 		500
-	);
+		);
 	animateThrottled(client.progress);
 }
 client.on('error', err => {
@@ -66,9 +66,15 @@ client.on('error', err => {
 });
 function getRSSURI(callback) {
 	MongoClient.connect(url, (err, db) => {
+		if (err) {
+			throw err;
+		}
 		const collection = db.collection('uri');
 		if (collection.find() !== undefined || collection.find() !== null) {
 			collection.find().toArray((err, docs) => {
+				if (err) {
+					throw err;
+				}
 				if (docs.length > 0) {
 					callback(docs[0].showRSSURI);
 					db.close();
@@ -86,6 +92,9 @@ function ignoreDupeTorrents(torrent, db, callback) {
 	const collection = db.collection('torrents');
 	if (collection.find() !== null) {
 		collection.findOne({magnet: torrent.link}, (err, docs) => {
+			if (err) {
+				throw err;
+			}
 			if (docs === null) {
 				collection.insertOne({magnet: torrent.link, title: torrent.title, downloaded: false}, (err, res) => {
 					if (err) {
@@ -104,6 +113,9 @@ function ignoreDupeTorrents(torrent, db, callback) {
 		});
 	} else {
 		collection.insertOne({magnet: torrent.link, title: torrent.title, downloaded: false}, (err, res) => {
+			if (err) {
+				throw err;
+			}
 			callback();
 			db.close();
 		});
@@ -111,27 +123,32 @@ function ignoreDupeTorrents(torrent, db, callback) {
 }
 function getTorIndex(magnet, callback) {
 	MongoClient.connect(url)
-		.then((err, db) => {
-			assert.equal(err, null);
-			const collection = db.collection('torrents');
-			collection.findOne({magnet})
-				.then((err, docs) => {
-					assert.equal(err, null);
-					if (docs !== null) {
-						const index = docs.index;
-						callback(index);
-						db.close();
-					}
-				});
+	.then((err, db) => {
+		if (err) {
+			throw err;
+		}
+		const collection = db.collection('torrents');
+		collection.findOne({magnet})
+		.then((err, docs) => {
+			if (err) {
+				throw err;
+			}
+			if (docs !== null) {
+				const index = docs.index;
+				callback(index);
+				db.close();
+			}
 		});
+	});
 }
 function dropTorrents(callback) {
 	MongoClient.connect(url, (err, db) => {
+		if (err) {
+			throw err;
+		}
 		const collection = db.collection('torrents');
-		collection.drop()
-			.then(() => {
-				db.close();
-			});
+		collection.drop();
+		db.close();
 	});
 }
 function updateURI(uri, db, callback) {
@@ -140,7 +157,9 @@ function updateURI(uri, db, callback) {
 	// Update document where a is 2, set b equal to 1
 	collection.drop();
 	collection.insertOne({showRSSURI: uri}, (err, res) => {
-		assert.equal(err, null);
+		if (err) {
+			throw err;
+		}
 		console.log('Updated the showRSS uri');
 		callback(res);
 		db.close();
@@ -151,16 +170,20 @@ function findDocuments(db, col, callback) {
 	const collection = db.collection(col || 'uri');
 	// Find some documents
 	collection.find({}).toArray((err, docs) => {
-		assert.equal(err, null);
+		if (err) {
+			throw err;
+		}
 		console.log('Current contents of ' + col);
 		console.log(docs);
-		callback(docs);
 		db.close();
+		callback(docs);
 	});
 }
 // Use connect method to connect to the Server
 MongoClient.connect(url, (err, db) => {
-	assert.equal(null, err);
+	if (err) {
+		throw err;
+	}
 	console.log('Connected correctly to server');
 	findDocuments(db, 'torrents', () => {
 		db.close();
@@ -168,10 +191,14 @@ MongoClient.connect(url, (err, db) => {
 });
 function dlAll() {
 	MongoClient.connect(url, (err, db) => {
-		assert.equal(err, null);
+		if (err) {
+			throw err;
+		}
 		const collection = db.collection('torrents');
 		collection.find({downloaded: {$ne: true}}).toArray((err, docs) => {
-			assert.equal(err, null);
+			if (err) {
+				throw err;
+			}
 			_.each(docs, (elem, index, list) => {
 				addTor(elem.magnet, index, document.getElementById(index));
 			});
@@ -182,9 +209,15 @@ function dlAll() {
 
 function getDlPath(callback) {
 	MongoClient.connect(url, (err, db) => {
+		if (err) {
+			throw err;
+		}
 		const collection = db.collection('path');
 		if (collection.find() !== undefined || collection.find() !== null) {
 			collection.find().toArray((err, docs) => {
+				if (err) {
+					throw err;
+				}
 				if (docs.length > 0) {
 					callback(docs[0].path);
 					db.close();
@@ -202,13 +235,18 @@ function getDlPath(callback) {
 function insertDlPath(callback) {
 	const tb = document.getElementById('dlpath');
 	const dlpath = dialog.showOpenDialog({properties: ['openDirectory']});
-	MongoClient.connect(url, (err, db) => {
-		const collection = db.collection('path');
-		collection.drop();
-		collection.insertOne({path: dlpath[0]})
+	if (dlpath !== undefined) {
+		MongoClient.connect(url, (err, db) => {
+			if (err) {
+				throw err;
+			}
+			const collection = db.collection('path');
+			collection.drop();
+			collection.insertOne({path: dlpath[0]})
 			.then(() => {
 			});
-	});
+		});
+	}
 }
 
 function addTor(magnet, index) {
@@ -225,13 +263,18 @@ function addTor(magnet, index) {
 			});
 			torrent.on('done', () => {
 				MongoClient.connect(url, (err, db) => {
+					if (err) {
+						throw err;
+					}
 					const collection = db.collection('torrents');
 					collection.updateOne({magnet: document.getElementsByName(magnet)[0].name}, {$set: {downloaded: true}})
-						.then((err, res) => {
-							assert.equal(err, null);
-							document.getElementsByName(magnet)[0].parentNode.style.display = 'none';
-							db.close();
-						});
+					.then((err, res) => {
+						if (err) {
+							throw err;
+						}
+						document.getElementsByName(magnet)[0].parentNode.style.display = 'none';
+						db.close();
+					});
 				});
 				console.log('done');
 				torrent.destroy();
@@ -244,7 +287,9 @@ function runScript(e) {
 		const tb = document.getElementById('rss');
 		// Use connect method to connect to the Server
 		MongoClient.connect(url, (err, db) => {
-			assert.equal(null, err);
+			if (err) {
+				throw err;
+			}
 			console.log('Connected correctly to server');
 			updateURI(tb.value, db, () => {
 				db.close();
@@ -255,7 +300,9 @@ function runScript(e) {
 		const RSS = new RSSParse(tb.value);
 		RSS.on('data', data => {
 			MongoClient.connect(url, (err, db) => {
-				assert.equal(null, err);
+				if (err) {
+					throw err;
+				}
 				console.log('Connected correctly to server');
 				document.getElementById('dlAll').style.display = 'block';
 				data = _.omit(data, '_id');

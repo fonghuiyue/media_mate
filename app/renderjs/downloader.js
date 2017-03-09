@@ -58,7 +58,7 @@ function dlProgress(torrent, magnet) {
 	const animateThrottled = _.throttle(
 		_.bind(bar.animate, bar),
 		500
-		);
+	);
 	animateThrottled(client.progress);
 }
 client.on('error', err => {
@@ -134,23 +134,23 @@ function ignoreDupeTorrents(torrent, db, callback) {
 }
 function getTorIndex(magnet, callback) {
 	MongoClient.connect(url)
-	.then((err, db) => {
-		if (err) {
-			throw err;
-		}
-		const collection = db.collection('torrents');
-		collection.findOne({magnet})
-		.then((err, docs) => {
+		.then((err, db) => {
 			if (err) {
 				throw err;
 			}
-			if (docs !== null) {
-				const index = docs.index;
-				callback(index);
-				db.close();
-			}
+			const collection = db.collection('torrents');
+			collection.findOne({magnet})
+				.then((err, docs) => {
+					if (err) {
+						throw err;
+					}
+					if (docs !== null) {
+						const index = docs.index;
+						callback(index);
+						db.close();
+					}
+				});
 		});
-	});
 }
 function dropTorrents(callback) {
 	MongoClient.connect(url, (err, db) => {
@@ -186,7 +186,7 @@ function findDocuments(db, col, callback) {
 		}
 		console.log('Current contents of ' + col);
 		console.log(docs);
-		_.each(docs, (elem) => allTorrents.push(elem));
+		_.each(docs, (elem) => allTorrents.push(elem.magnet));
 		db.close();
 		callback(docs);
 	});
@@ -255,8 +255,8 @@ function insertDlPath(callback) {
 			const collection = db.collection('path');
 			collection.drop();
 			collection.insertOne({path: dlpath[0]})
-			.then(() => {
-			});
+				.then(() => {
+				});
 		});
 	}
 }
@@ -279,8 +279,7 @@ function addTor(magnet, index) {
 						throw err;
 					}
 					const collection = db.collection('torrents');
-					collection.updateOne({magnet: document.getElementsByName(magnet)[0].name}, {$set: {downloaded: true}})
-					.then((err, res) => {
+					collection.updateOne({magnet: document.getElementsByName(magnet)[0].name}, {$set: {downloaded: true}}, (err, res) => {
 						if (err) {
 							throw err;
 						}
@@ -319,27 +318,26 @@ function runScript(e) {
 				document.getElementById('dlAll').style.display = 'block';
 				data = _.omit(data, '_id');
 				ignoreDupeTorrents(data, db, dupe => {
-					makeSureAllDL(data, toadd => {
+					makeSureAllDL(data.link, toadd => {
 						if (toadd) {
 							const br = document.createElement('br');
-						const label = document.createElement('label');
-						const input = document.createElement('input');
-						const inputName = document.createTextNode(data.title);
-						label.appendChild(inputName);
-						label.id = i;
-						input.type = 'checkbox';
-						input.className = 'checkbox';
-						input.name = data.link;
-						input.addEventListener('click', () => {
-							addTor(input.name, input.id);
-						});
-						magnetURI.push(data.link);
-						label.appendChild(input);
-						dlbox.appendChild(document.createElement('br'));
-						document.getElementById('dlbox').appendChild(label);
-						i++;
+							const label = document.createElement('label');
+							const input = document.createElement('input');
+							const inputName = document.createTextNode(data.title);
+							label.appendChild(inputName);
+							label.id = i;
+							input.type = 'checkbox';
+							input.className = 'checkbox';
+							input.name = data.link;
+							input.addEventListener('click', () => {
+								addTor(input.name, input.id);
+							});
+							label.appendChild(input);
+							dlbox.appendChild(document.createElement('br'));
+							document.getElementById('dlbox').appendChild(label);
+							i++;
 						}
-					})
+					});
 					if (!dupe) {
 						const br = document.createElement('br');
 						const label = document.createElement('label');
@@ -353,7 +351,6 @@ function runScript(e) {
 						input.addEventListener('click', () => {
 							addTor(input.name, input.id);
 						});
-						magnetURI.push(data.link);
 						label.appendChild(input);
 						dlbox.appendChild(document.createElement('br'));
 						document.getElementById('dlbox').appendChild(label);

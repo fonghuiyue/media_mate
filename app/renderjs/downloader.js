@@ -54,7 +54,7 @@ window.onload = () => {
 		}
 	});
 };
-function dlProgress(torrent, magnet) {
+function dlProgress() {
 	const animateThrottled = _.throttle(
 		_.bind(bar.animate, bar),
 		500

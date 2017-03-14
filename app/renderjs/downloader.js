@@ -309,6 +309,9 @@ function runScript(e) {
 		const dl = document.getElementById('dlbox');
 		document.getElementById('dls').style.display = 'inline';
 		const RSS = new RSSParse(tb.value);
+		RSS.on('error', err => {
+			console.log(err)
+		})
 		RSS.on('data', data => {
 			MongoClient.connect(url, (err, db) => {
 				if (err) {

@@ -298,9 +298,15 @@ dashdash@^1.12.0:
   dependencies:
     assert-plus "^1.0.0"
 
-debug@2.6.1, debug@^2.0.0, debug@^2.1.0, debug@^2.1.3, debug@^2.2.0, debug@^2.5.2, debug@^2.6.1:
-  version "2.6.1"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.1.tgz#79855090ba2c4e3115cc7d8769491d58f0491351"
+debug@2.6.2:
+  version "2.6.2"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.2.tgz#dfa96a861ee9b8c2f29349b3bcc41aa599a71e0f"
+  dependencies:
+    ms "0.7.2"
+
+debug@^2.0.0, debug@^2.1.0, debug@^2.1.3, debug@^2.2.0, debug@^2.5.2, debug@^2.6.3:
+  version "2.6.3"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.3.tgz#0f7eb8c30965ec08c72accfa0130c8b79984141d"
   dependencies:
     ms "0.7.2"
 
@@ -326,11 +332,11 @@ ecc-jsbn@~0.1.1:
   dependencies:
     jsbn "~0.1.0"
 
-electron-builder-http@15.0.1:
-  version "15.0.1"
-  resolved "https://registry.yarnpkg.com/electron-builder-http/-/electron-builder-http-15.0.1.tgz#29c079303acef358c92fbbd1a114038d6b544bef"
+electron-builder-http@15.3.0:
+  version "15.3.0"
+  resolved "https://registry.yarnpkg.com/electron-builder-http/-/electron-builder-http-15.3.0.tgz#913684c984fcacf4273a2138738b9059650cc38f"
   dependencies:
-    debug "2.6.1"
+    debug "2.6.2"
     fs-extra-p "^4.0.2"
 
 electron-debug@^1.1.0:
@@ -365,20 +371,20 @@ electron-notify@^0.1.0:
     async "^0.9.0"
     lodash "^2.4.1"
 
-electron-updater@^1.8.2:
-  version "1.8.2"
-  resolved "https://registry.yarnpkg.com/electron-updater/-/electron-updater-1.8.2.tgz#f32cfaef984534b7281135d51404f8b02b18d411"
+electron-updater@^1.9.0:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/electron-updater/-/electron-updater-1.9.0.tgz#5afa38fec21b955ce60bbabcc48d202020171af8"
   dependencies:
     bluebird-lst "^1.0.1"
-    electron-builder-http "15.0.1"
+    electron-builder-http "15.3.0"
     fs-extra-p "^4.0.2"
     js-yaml "^3.8.2"
     semver "^5.3.0"
     source-map-support "^0.4.11"
 
-electron-window-state@^4.0.2:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/electron-window-state/-/electron-window-state-4.0.2.tgz#f214ddb99c57d905af89bd2b314e1d4cda628963"
+electron-window-state@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/electron-window-state/-/electron-window-state-4.1.0.tgz#2086c190dfad16722e0b77b172742a161f6fe38a"
   dependencies:
     deep-equal "^1.0.1"
     jsonfile "^2.2.3"
@@ -512,7 +518,7 @@ har-schema@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/har-schema/-/har-schema-1.0.5.tgz#d263135f43307c02c602afc8fe95970c0151369e"
 
-har-validator@~4.2.0:
+har-validator@~4.2.1:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/har-validator/-/har-validator-4.2.1.tgz#33481d0f1bbff600dd203d75812a6a5fba002e2a"
   dependencies:
@@ -815,6 +821,12 @@ next-event@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/next-event/-/next-event-1.0.0.tgz#e7778acde2e55802e0ad1879c39cf6f75eda61d8"
 
+node-dir@^0.1.16:
+  version "0.1.16"
+  resolved "https://registry.yarnpkg.com/node-dir/-/node-dir-0.1.16.tgz#d2ef583aa50b90d93db8cdd26fcea58353957fe4"
+  dependencies:
+    minimatch "^3.0.2"
+
 oauth-sign@~0.8.1:
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/oauth-sign/-/oauth-sign-0.8.2.tgz#46a6ab7f0aead8deae9ec0565780b7d4efeb9d43"
@@ -917,9 +929,9 @@ punycode@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
 
-qs@~6.3.0:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/qs/-/qs-6.3.0.tgz#f403b264f23bc01228c74131b407f18d5ea5d442"
+qs@~6.4.0:
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.4.0.tgz#13e26d28ad6b0ffaa91312cd3bf708ed351e7233"
 
 random-access-file@^1.0.1:
   version "1.4.0"
@@ -983,9 +995,9 @@ render-media@^2.8.0:
     stream-to-blob-url "^2.0.0"
     videostream "^2.3.0"
 
-request@2.x, request@^2.80.0:
-  version "2.80.0"
-  resolved "https://registry.yarnpkg.com/request/-/request-2.80.0.tgz#8cc162d76d79381cdefdd3505d76b80b60589bd0"
+request@2.x, request@^2.81.0:
+  version "2.81.0"
+  resolved "https://registry.yarnpkg.com/request/-/request-2.81.0.tgz#c6928946a0e06c5f8d6f8a9333469ffda46298a0"
   dependencies:
     aws-sign2 "~0.6.0"
     aws4 "^1.2.1"
@@ -994,7 +1006,7 @@ request@2.x, request@^2.80.0:
     extend "~3.0.0"
     forever-agent "~0.6.1"
     form-data "~2.1.1"
-    har-validator "~4.2.0"
+    har-validator "~4.2.1"
     hawk "~3.1.3"
     http-signature "~1.1.0"
     is-typedarray "~1.0.0"
@@ -1003,10 +1015,11 @@ request@2.x, request@^2.80.0:
     mime-types "~2.1.7"
     oauth-sign "~0.8.1"
     performance-now "^0.2.0"
-    qs "~6.3.0"
+    qs "~6.4.0"
+    safe-buffer "^5.0.1"
     stringstream "~0.0.4"
     tough-cookie "~2.3.0"
-    tunnel-agent "~0.4.1"
+    tunnel-agent "^0.6.0"
     uuid "^3.0.0"
 
 require_optional@~1.0.0:
@@ -1112,13 +1125,13 @@ sntp@1.x.x:
   dependencies:
     hoek "2.x.x"
 
-source-map-support@^0.4.11:
-  version "0.4.11"
-  resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.4.11.tgz#647f939978b38535909530885303daf23279f322"
+source-map-support@^0.4.11, source-map-support@^0.4.12:
+  version "0.4.12"
+  resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.4.12.tgz#f47d02bf01efaf0c160d3a37d038401b92b1867e"
   dependencies:
-    source-map "^0.5.3"
+    source-map "^0.5.6"
 
-source-map@^0.5.3:
+source-map@^0.5.6:
   version "0.5.6"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.5.6.tgz#75ce38f52bf0733c5a7f0c118d81334a2bb5f412"
 
@@ -1231,9 +1244,11 @@ tough-cookie@~2.3.0:
   dependencies:
     punycode "^1.4.1"
 
-tunnel-agent@~0.4.1:
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/tunnel-agent/-/tunnel-agent-0.4.3.tgz#6373db76909fe570e08d73583365ed828a74eeeb"
+tunnel-agent@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/tunnel-agent/-/tunnel-agent-0.6.0.tgz#27a5dea06b36b04a0a9966774b290868f0fc40fd"
+  dependencies:
+    safe-buffer "^5.0.1"
 
 tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.5"
@@ -1320,9 +1335,9 @@ videostream@^2.3.0:
     pump "^1.0.1"
     range-slice-stream "^1.2.0"
 
-webtorrent@^0.98.10:
-  version "0.98.10"
-  resolved "https://registry.yarnpkg.com/webtorrent/-/webtorrent-0.98.10.tgz#17135500e86b537066949814504ebbd0751a3142"
+webtorrent@^0.98.12:
+  version "0.98.12"
+  resolved "https://registry.yarnpkg.com/webtorrent/-/webtorrent-0.98.12.tgz#714524379f3d3aca422207885fc2cd09ad1c3473"
   dependencies:
     addr-to-ip-port "^1.4.2"
     bitfield "^1.1.2"

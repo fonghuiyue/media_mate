@@ -94,7 +94,7 @@ function getImgs() {
 															.then(res => {
 
 																img.src = `http://thetvdb.com/banners/${res.filename}`;
-																img.style.display = 'block';
+																img.style.display = 'inline';
 															})
 															.catch(err => {
 																throw err;
@@ -194,6 +194,7 @@ function findDL() {
 								mediadiv.appendChild(elem);
 							}
 						}
+						getImgs();
 						indeterminateProgress.end();
 						document.getElementById('Loading').style.display = 'none'
 					});

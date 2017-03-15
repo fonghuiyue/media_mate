@@ -115,7 +115,7 @@ gulp.task('index', () => {
 		.pipe(inject(gulp.src(['./app/*.css', './app/renderjs/render-err.js', './app/pace.css', './app/renderjs/pace.min.js', './app/node_modules/bulma/css/bulma.css', './app/node_modules/izitoast/dist/css/iziToast.min.css'], {read: false}), {relative: true}))
 		.pipe(gulp.dest('./app'));
 	gulp.src(['./app/viewer.html', '!./app/node_modules/**'])
-		.pipe(inject(gulp.src(['./app/*.css', './app/renderjs/render-err.js', './app/pace.css', './app/renderjs/pace.min.js', './app/renderjs/viewer.js', './app/node_modules/bulma/css/bulma.css', './app/node_modules/izitoast/dist/css/iziToast.min.css'], {read: false}), {relative: true}))
+		.pipe(inject(gulp.src(['./app/*.css', './app/renderjs/render-err.js', './app/pace.css', './app/renderjs/pace.min.js', './app/renderjs/viewer.js', './app/node_modules/bulma/css/bulma.css', './app/node_modules/mprogress/mprogress.min.*', './app/node_modules/izitoast/dist/css/iziToast.min.css'], {read: false}), {relative: true}))
 		.pipe(gulp.dest('./app'));
 });
 

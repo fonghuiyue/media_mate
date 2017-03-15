@@ -86,8 +86,8 @@ function getImgs() {
 									.then(res => {
 										res.forEach((elem, index) => {
 											// console.log(tvelem)
-											// console.log(elem)
-											if (_.isMatch(elem, {airedEpisodeNumber: tvelem.episode}) === true) {
+											console.log(elem)
+											if (_.isMatch(elem, {airedEpisodeNumber: tvelem.episode}) === true && _.isMatch(elem, {airedSeason: tvelem.season}) === true) {
 												medianodes.forEach((img, ind) => {
 													if (img.title === path) {
 														tvdb.getEpisodeById(elem.id)

@@ -2,6 +2,7 @@ require('dotenv').config({path: `${__dirname}/.env`});
 const {dialog} = require('electron').remote;
 require('events').EventEmitter.prototype._maxListeners = 1000;
 const moment = require('moment');
+const parser = require('episode-parser');
 const dir = require('node-dir');
 const RSSParse = require(require('path').join(__dirname, 'lib', 'rssparse.js')).RSSParse;
 const MongoClient = require('mongodb').MongoClient;
@@ -20,36 +21,102 @@ const url = f('mongodb://%s:%s@%s/media_mate?ssl=true&replicaSet=SDD-Major-shard
 	user, password, dburi);
 
 const progOpt = {
-  template: 3,
-  parent: '#media',
-  start: true
+	template: 3,
+	parent: '#media',
+	start: true
 };
 let indeterminateProgress;
 window.onload = () => {
 	indeterminateProgress = new Mprogress(progOpt);
 	findDL()
 };
-function isPlayable (file) {
-  return isVideo(file)
+
+function isPlayable(file) {
+	return isVideo(file)
 }
 
 // Checks whether a fileSummary or file path is playable video
-function isVideo (file) {
-  return [
-    '.avi',
-    '.m4v',
-    '.mkv',
-    '.mov',
-    '.mp4',
-    '.mpg',
-    '.ogv',
-    '.webm',
-    '.wmv'
-  ].includes(getFileExtension(file))
+function isVideo(file) {
+	return [
+		'.avi',
+		'.m4v',
+		'.mkv',
+		'.mov',
+		'.mp4',
+		'.mpg',
+		'.ogv',
+		'.webm',
+		'.wmv'
+	].includes(getFileExtension(file))
 }
-function getFileExtension (file) {
-  const name = typeof file === 'string' ? file : file.name;
-  return path.extname(name).toLowerCase()
+
+function getFileExtension(file) {
+	const name = typeof file === 'string' ? file : file.name;
+	return path.extname(name).toLowerCase()
+}
+
+function getPath(callback) {
+	MongoClient.connect(url, (err, db) => {
+		const collection = db.collection('path');
+		collection.find({}).toArray((err, docs) => {
+			if (docs.length > 0) {
+				callback(docs[0].path)
+			}
+		})
+	})
+}
+
+
+function getImgs() {
+	let mediadiv = document.getElementById('media');
+	let medianodes = mediadiv.childNodes;
+	getPath(path => {
+		dir.files(path, (err, files) => {
+			files.forEach((elem, index) => {
+				elem = elem.replace(/^.*[\\\/]/, '');
+				let path = elem;
+				if (isPlayable(elem) === true) {
+					let tvelem = parser(elem);
+					console.log(tvelem)
+					if (_.has(tvelem, 'show') === true) {
+						tvdb.getSeriesByName(tvelem.show)
+							.then(res => {
+								console.log(res);
+								tvdb.getEpisodesBySeriesId(res[0].id)
+									.then(res => {
+										res.forEach((elem, index) => {
+											// console.log(tvelem)
+											// console.log(elem)
+											if (_.isMatch(elem, {airedEpisodeNumber: tvelem.episode}) === true) {
+												medianodes.forEach((img, ind) => {
+													if (img.title === path) {
+														tvdb.getEpisodeById(elem.id)
+															.then(res => {
+
+																img.src = `http://thetvdb.com/banners/${res.filename}`;
+																img.style.display = 'block';
+															})
+															.catch(err => {
+																throw err;
+															})
+													}
+												})
+											}
+										})
+									})
+									.catch(err => {
+										throw err;
+									})
+
+							})
+							.catch(err => {
+								throw err;
+							})
+					}
+				}
+			})
+		})
+	})
 }
 
 function tvdbRen() {
@@ -71,16 +138,16 @@ function tvdbRen() {
 											.then(res => {
 												console.log(res);
 												let elem = mediadiv.childNodes[index];
-													if (elem.tagName === 'IMG') {
-														elem.src = `http://thetvdb.com/banners/${res.filename}`;
-														elem.style.display = 'block';
-													}
-												});
-											})
+												if (elem.tagName === 'IMG') {
+													elem.src = `http://thetvdb.com/banners/${res.filename}`;
+													elem.style.display = 'block';
+												}
+											});
 									})
-									.catch(err => {
-										throw err;
-									})
+							})
+							.catch(err => {
+								throw err;
+							})
 							.catch(err => {
 								throw err;
 							})
@@ -108,24 +175,24 @@ function findDL() {
 						for (let i = 0; i < files.length; i++) {
 							let isVideo = isPlayable(files[i]);
 							if (isVideo === true) {
-							let elem = document.createElement('img');
-							elem.id = i.toString();
-							elem.addEventListener('click', () => {
-								let video = document.createElement('video');
-								video.src = files[i];
-								video.autoPlay = true;
-								video.controls = true;
+								let elem = document.createElement('img');
+								elem.id = i.toString();
+								elem.addEventListener('click', () => {
+									let video = document.createElement('video');
+									video.src = files[i];
+									video.autoPlay = true;
+									video.controls = true;
 
-								if (videodiv.childElementCount > 0) {
-									videodiv.replaceChild(video, videodiv.firstElementChild);
-								} else {
-									videodiv.appendChild(video);
-								}
-							});
-							elem.style.display = 'none';
-							elem.title = files[i].replace(/^.*[\\\/]/, '');
-							mediadiv.appendChild(elem);
-						}
+									if (videodiv.childElementCount > 0) {
+										videodiv.replaceChild(video, videodiv.firstElementChild);
+									} else {
+										videodiv.appendChild(video);
+									}
+								});
+								elem.style.display = 'none';
+								elem.title = files[i].replace(/^.*[\\\/]/, '');
+								mediadiv.appendChild(elem);
+							}
 						}
 						indeterminateProgress.end();
 						document.getElementById('Loading').style.display = 'none'

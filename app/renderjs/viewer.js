@@ -17,6 +17,10 @@ const authMechanism = 'DEFAULT';
 const url = f('mongodb://%s:%s@%s/media_mate?ssl=true&replicaSet=SDD-Major-shard-0&authSource=admin',
 	user, password, dburi);
 
+const progOpt = {
+  template: 3,
+  parent: '#media' // this option will insert bar HTML into this parent Element
+};
 
 function isPlayable (file) {
   return isVideo(file)
@@ -36,13 +40,15 @@ function isVideo (file) {
     '.wmv'
   ].includes(getFileExtension(file))
 }
-
+let indeterminateProgress
 function getFileExtension (file) {
   const name = typeof file === 'string' ? file : file.name
   return path.extname(name).toLowerCase()
 }
 
 window.onload = () => {
+	indeterminateProgress = new Mprogress(progOpt);
+	indeterminateProgress.start()
 	findDL()
 }
 
@@ -71,10 +77,11 @@ function findDL() {
 								mediadiv.innerHTML = '';
 								document.getElementById('video').appendChild(video);
 							});
-							elem.innerText = files[i]
+							elem.innerText = files[i].replace(/^.*[\\\/]/, '')
 							mediadiv.appendChild(elem);
 						}
 						}
+						indeterminateProgress.end()
 					});
 					db.close();
 				} else {

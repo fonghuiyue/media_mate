@@ -19,9 +19,14 @@ const url = f('mongodb://%s:%s@%s/media_mate?ssl=true&replicaSet=SDD-Major-shard
 
 const progOpt = {
   template: 3,
-  parent: '#media' // this option will insert bar HTML into this parent Element
+  parent: '#media',
+  start: true
 };
-
+let indeterminateProgress
+window.onload = () => {
+	indeterminateProgress = new Mprogress(progOpt);
+	findDL()
+}
 function isPlayable (file) {
   return isVideo(file)
 }
@@ -40,16 +45,9 @@ function isVideo (file) {
     '.wmv'
   ].includes(getFileExtension(file))
 }
-let indeterminateProgress
 function getFileExtension (file) {
   const name = typeof file === 'string' ? file : file.name
   return path.extname(name).toLowerCase()
-}
-
-window.onload = () => {
-	indeterminateProgress = new Mprogress(progOpt);
-	indeterminateProgress.start()
-	findDL()
 }
 
 function findDL() {
@@ -74,7 +72,7 @@ function findDL() {
 								video.src = files[i];
 								video.autoPlay = true;
 								video.controls = true;
-								mediadiv.innerHTML = '';
+								// mediadiv.innerHTML = '';
 								document.getElementById('video').appendChild(video);
 							});
 							elem.innerText = files[i].replace(/^.*[\\\/]/, '')
@@ -82,6 +80,7 @@ function findDL() {
 						}
 						}
 						indeterminateProgress.end()
+						document.getElementById('Loading').style.display = 'none'
 					});
 					db.close();
 				} else {

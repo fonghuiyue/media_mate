@@ -14,7 +14,9 @@ import openAboutWindow from 'about-window';
 import moment from 'moment';
 import MongoClient from 'mongodb';
 import {RSSParse} from './lib/rssparse';
+import TVDB from 'node-tvdb';
 
+const tvdb = new TVDB(process.env.TVDB_KEY);
 const f = require('util').format;
 const windowStateKeeper = require('electron-window-state');
 let eNotify;
@@ -166,7 +168,13 @@ function ignoreDupeTorrents(torrent, callback) {
 						callback();
 					}
 				} else {
-					collection.insertOne({magnet: torrent.link, title: torrent.title, downloaded: false})
+					collection.insertOne({
+						magnet: torrent.link,
+						title: torrent.title,
+						tvdbID: torrent["tv:show_name"]["#"],
+						airdate: torrent.pubDate,
+						downloaded: false
+					})
 						.then((err, res) => {
 							if (err) {
 								throw err;
@@ -204,6 +212,40 @@ function getRSSURI(callback) {
 		}
 	});
 }
+
+function tvdbRen() {
+	MongoClient.connect(url, (err, db) => {
+		const collection = db.collection('torrents');
+		collection.find({}).toArray((err, docs) => {
+			if (docs.length > 0) {
+				docs.forEach((elem, index) => {
+					if (_.has(elem, 'tvdbID') === true) {
+						// console.log(elem);
+						tvdb.getSeriesByName(elem.tvdbID)
+							.then(res => {
+								// console.log(res[0]);
+								tvdb.getEpisodesByAirDate(parseInt(res[0].id), moment(elem.airdate).subtract(1, 'days').format('YYYY-MM-DD').toString())
+									.then(res => {
+										// console.log(res[0]);
+										tvdb.getEpisodeById(res[0].id)
+											.then(res => {
+												console.log(res)
+											})
+									})
+									.catch(err => {
+										throw err;
+									})
+							})
+							.catch(err => {
+								throw err;
+							})
+					}
+				})
+			}
+		})
+	});
+}
+
 function watchRSS() {
 	let uri;
 	getRSSURI(cb => {
@@ -232,6 +274,7 @@ app.on('ready', () => {
 	mainWindow = createMainWindow();
 	eNotify = require('electron-notify');
 	watchRSS();
+	tvdbRen();
 });
 const template = [
 	{

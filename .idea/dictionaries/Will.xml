@@ -15,6 +15,7 @@
       <w>forcereload</w>
       <w>izitoast</w>
       <w>mainwindow</w>
+      <w>mediadiv</w>
       <w>nsis</w>
       <w>onerror</w>
       <w>onload</w>
@@ -33,6 +34,10 @@
       <w>tehsuperwilly</w>
       <w>toadd</w>
       <w>togglefullscreen</w>
+      <w>tvdb</w>
+      <w>videodiv</w>
+      <w>webm</w>
+      <w>yyyy</w>
     </words>
   </dictionary>
 </component>

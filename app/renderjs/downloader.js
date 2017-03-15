@@ -107,7 +107,7 @@ function ignoreDupeTorrents(torrent, db, callback) {
 				throw err;
 			}
 			if (docs === null) {
-				collection.insertOne({magnet: torrent.link, title: torrent.title, downloaded: false}, (err, res) => {
+				collection.insertOne({magnet: torrent.link, title: torrent.title, tvdbID: torrent["tv:show_name"]["#"], airdate: torrent.pubDate, downloaded: false}, (err, res) => {
 					if (err) {
 						throw err;
 					}
@@ -123,7 +123,7 @@ function ignoreDupeTorrents(torrent, db, callback) {
 			}
 		});
 	} else {
-		collection.insertOne({magnet: torrent.link, title: torrent.title, downloaded: false}, (err, res) => {
+		collection.insertOne({magnet: torrent.link, title: torrent.title, tvdbID: torrent["tv:show_name"]["#"], airdate: torrent.pubDate, downloaded: false}, (err, res) => {
 			if (err) {
 				throw err;
 			}

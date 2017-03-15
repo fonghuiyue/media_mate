@@ -9,7 +9,9 @@ const _ = require('underscore');
 const f = require('util').format;
 const fs = require('fs-extra');
 const path = require('path');
+const TVDB = require('node-tvdb');
 
+const tvdb = new TVDB(process.env.TVDB_KEY);
 const user = process.env.DB_USER;
 const password = process.env.DB_PWD;
 const dburi = process.env.DB_URL;
@@ -22,11 +24,11 @@ const progOpt = {
   parent: '#media',
   start: true
 };
-let indeterminateProgress
+let indeterminateProgress;
 window.onload = () => {
 	indeterminateProgress = new Mprogress(progOpt);
 	findDL()
-}
+};
 function isPlayable (file) {
   return isVideo(file)
 }
@@ -46,8 +48,47 @@ function isVideo (file) {
   ].includes(getFileExtension(file))
 }
 function getFileExtension (file) {
-  const name = typeof file === 'string' ? file : file.name
+  const name = typeof file === 'string' ? file : file.name;
   return path.extname(name).toLowerCase()
+}
+
+function tvdbRen() {
+	let mediadiv = document.getElementById('media');
+	MongoClient.connect(url, (err, db) => {
+		const collection = db.collection('torrents');
+		collection.find({}).toArray((err, docs) => {
+			if (docs.length > 0) {
+				docs.forEach((elem, index) => {
+					if (_.has(elem, 'tvdbID') === true) {
+						// console.log(elem);
+						tvdb.getSeriesByName(elem.tvdbID)
+							.then(res => {
+								// console.log(res[0]);
+								tvdb.getEpisodesByAirDate(parseInt(res[0].id), moment(elem.airdate).subtract(1, 'days').format('YYYY-MM-DD').toString())
+									.then(res => {
+										// console.log(res[0]);
+										tvdb.getEpisodeById(res[0].id)
+											.then(res => {
+												console.log(res);
+												let elem = mediadiv.childNodes[index];
+													if (elem.tagName === 'IMG') {
+														elem.src = `http://thetvdb.com/banners/${res.filename}`;
+														elem.style.display = 'block';
+													}
+												});
+											})
+									})
+									.catch(err => {
+										throw err;
+									})
+							.catch(err => {
+								throw err;
+							})
+					}
+				})
+			}
+		})
+	});
 }
 
 function findDL() {
@@ -63,23 +104,30 @@ function findDL() {
 						if (err) throw err;
 						console.log(files);
 						let mediadiv = document.getElementById('media');
+						let videodiv = document.getElementById('video');
 						for (let i = 0; i < files.length; i++) {
 							let isVideo = isPlayable(files[i]);
 							if (isVideo === true) {
-							let elem = document.createElement('p');
+							let elem = document.createElement('img');
+							elem.id = i.toString();
 							elem.addEventListener('click', () => {
 								let video = document.createElement('video');
 								video.src = files[i];
 								video.autoPlay = true;
 								video.controls = true;
-								// mediadiv.innerHTML = '';
-								document.getElementById('video').appendChild(video);
+
+								if (videodiv.childElementCount > 0) {
+									videodiv.replaceChild(video, videodiv.firstElementChild);
+								} else {
+									videodiv.appendChild(video);
+								}
 							});
-							elem.innerText = files[i].replace(/^.*[\\\/]/, '')
+							elem.style.display = 'none';
+							elem.title = files[i].replace(/^.*[\\\/]/, '');
 							mediadiv.appendChild(elem);
 						}
 						}
-						indeterminateProgress.end()
+						indeterminateProgress.end();
 						document.getElementById('Loading').style.display = 'none'
 					});
 					db.close();

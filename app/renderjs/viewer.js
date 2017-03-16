@@ -77,22 +77,21 @@ function getImgs() {
 				let path = elem;
 				if (isPlayable(elem) === true) {
 					let tvelem = parser(elem);
-					console.log(tvelem)
+					// console.log(tvelem)
 					if (_.has(tvelem, 'show') === true) {
 						tvdb.getSeriesByName(tvelem.show)
 							.then(res => {
-								console.log(res);
+								// console.log(res);
 								tvdb.getEpisodesBySeriesId(res[0].id)
 									.then(res => {
 										res.forEach((elem, index) => {
 											// console.log(tvelem)
-											console.log(elem)
+											// console.log(elem)
 											if (_.isMatch(elem, {airedEpisodeNumber: tvelem.episode}) === true && _.isMatch(elem, {airedSeason: tvelem.season}) === true) {
 												medianodes.forEach((img, ind) => {
-													if (img.title === path) {
+													if (img.id === path) {
 														tvdb.getEpisodeById(elem.id)
 															.then(res => {
-
 																img.src = `http://thetvdb.com/banners/${res.filename}`;
 																img.style.display = 'inline';
 															})
@@ -113,6 +112,7 @@ function getImgs() {
 								throw err;
 							})
 					}
+					indeterminateProgress.end();
 				}
 			})
 		})
@@ -174,6 +174,8 @@ function findDL() {
 						let videodiv = document.getElementById('video');
 						for (let i = 0; i < files.length; i++) {
 							let isVideo = isPlayable(files[i]);
+							files[i] = files[i].replace(/^.*[\\\/]/, '');
+							let parsedName = parser(files[i]);
 							if (isVideo === true) {
 								let elem = document.createElement('img');
 								elem.id = i.toString();
@@ -190,12 +192,12 @@ function findDL() {
 									}
 								});
 								elem.style.display = 'none';
-								elem.title = files[i].replace(/^.*[\\\/]/, '');
+								elem.id = files[i];
+								elem.title = parsedName.show + ': ' + `S${parsedName.season}E${parsedName.episode}`
 								mediadiv.appendChild(elem);
 							}
 						}
 						getImgs();
-						indeterminateProgress.end();
 						document.getElementById('Loading').style.display = 'none'
 					});
 					db.close();

@@ -213,39 +213,6 @@ function getRSSURI(callback) {
 	});
 }
 
-function tvdbRen() {
-	MongoClient.connect(url, (err, db) => {
-		const collection = db.collection('torrents');
-		collection.find({}).toArray((err, docs) => {
-			if (docs.length > 0) {
-				docs.forEach((elem, index) => {
-					if (_.has(elem, 'tvdbID') === true) {
-						// console.log(elem);
-						tvdb.getSeriesByName(elem.tvdbID)
-							.then(res => {
-								// console.log(res[0]);
-								tvdb.getEpisodesByAirDate(parseInt(res[0].id), moment(elem.airdate).subtract(1, 'days').format('YYYY-MM-DD').toString())
-									.then(res => {
-										// console.log(res[0]);
-										tvdb.getEpisodeById(res[0].id)
-											.then(res => {
-												console.log(res);
-											});
-									})
-									.catch(err => {
-										throw err;
-									});
-							})
-							.catch(err => {
-								throw err;
-							});
-					}
-				});
-			}
-		});
-	});
-}
-
 function watchRSS() {
 	let uri;
 	getRSSURI(cb => {
@@ -267,6 +234,10 @@ function watchRSS() {
 	});
 }
 
+ipc.on('dldone', (event, data) => {
+	eNotify.notify({title: 'Download Finished', text: data});
+});
+
 /**
  * Make the main window.
  */
@@ -274,7 +245,6 @@ app.on('ready', () => {
 	mainWindow = createMainWindow();
 	eNotify = require('electron-notify');
 	watchRSS();
-	tvdbRen();
 });
 const template = [
 	{

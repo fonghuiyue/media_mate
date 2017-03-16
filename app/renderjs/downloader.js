@@ -9,6 +9,7 @@ const MongoClient = require('mongodb').MongoClient;
 const _ = require('underscore');
 const f = require('util').format;
 const storage = require('electron-json-storage');
+const ipc = require('electron').ipcRenderer;
 
 const user = process.env.DB_USER;
 const password = process.env.DB_PWD;
@@ -320,6 +321,7 @@ function addTor(magnet, index) {
 					});
 				});
 				console.log('done');
+				ipc.send('dldone', torrent.name);
 				torrent.destroy();
 			});
 		});

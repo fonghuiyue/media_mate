@@ -171,7 +171,7 @@ function ignoreDupeTorrents(torrent, callback) {
 					collection.insertOne({
 						magnet: torrent.link,
 						title: torrent.title,
-						tvdbID: torrent["tv:show_name"]["#"],
+						tvdbID: torrent['tv:show_name']['#'],
 						airdate: torrent.pubDate,
 						downloaded: false
 					})
@@ -229,20 +229,20 @@ function tvdbRen() {
 										// console.log(res[0]);
 										tvdb.getEpisodeById(res[0].id)
 											.then(res => {
-												console.log(res)
-											})
+												console.log(res);
+											});
 									})
 									.catch(err => {
 										throw err;
-									})
+									});
 							})
 							.catch(err => {
 								throw err;
-							})
+							});
 					}
-				})
+				});
 			}
-		})
+		});
 	});
 }
 

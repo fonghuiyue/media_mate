@@ -29,11 +29,11 @@ const progOpt = {
 let indeterminateProgress;
 window.onload = () => {
 	indeterminateProgress = new Mprogress(progOpt);
-	findDL()
+	findDL();
 };
 
 function isPlayable(file) {
-	return isVideo(file)
+	return isVideo(file);
 }
 
 // Checks whether a fileSummary or file path is playable video
@@ -48,95 +48,92 @@ function isVideo(file) {
 		'.ogv',
 		'.webm',
 		'.wmv'
-	].includes(getFileExtension(file))
+	].includes(getFileExtension(file));
 }
 
 function getFileExtension(file) {
 	const name = typeof file === 'string' ? file : file.name;
-	return path.extname(name).toLowerCase()
+	return path.extname(name).toLowerCase();
 }
 
 function getPath(callback) {
 	storage.get('path', (err, data) => {
-		if (err) throw err;
-		if (_.isEmpty(data) === false) {
-			callback(data.path)
-		} else {
-			callback(path.join(os.homedir(), 'media_mate_dl'))
+		if (err) {
+			throw err;
 		}
-	})
+		if (_.isEmpty(data) === false) {
+			callback(data.path);
+		} else {
+			callback(path.join(os.homedir(), 'media_mate_dl'));
+		}
+	});
 }
 
-
 function getImgs() {
-	let mediadiv = document.getElementById('media');
-	let medianodes = mediadiv.childNodes;
+	const mediadiv = document.getElementById('media');
+	const medianodes = mediadiv.childNodes;
 	getPath(path => {
 		dir.files(path, (err, files) => {
-			files.forEach((elem, index) => {
+			files = _.filter(files, isPlayable);
+			files.forEach(elem => {
 				elem = elem.replace(/^.*[\\\/]/, '');
-				let path = elem;
-				if (isPlayable(elem) === true) {
-					let tvelem = parser(elem);
-					// console.log(tvelem)
-					if (_.has(tvelem, 'show') === true) {
-						tvdb.getSeriesByName(tvelem.show)
-							.then(res => {
-								// console.log(res);
-								tvdb.getEpisodesBySeriesId(res[0].id)
-									.then(res => {
-										res.forEach((elem, index) => {
-											// console.log(tvelem)
-											// console.log(elem)
-											if (_.isMatch(elem, {airedEpisodeNumber: tvelem.episode}) === true && _.isMatch(elem, {airedSeason: tvelem.season}) === true) {
-												medianodes.forEach((img, ind) => {
-													if (img.id === path) {
-														tvdb.getEpisodeById(elem.id)
-															.then(res => {
-																img.children[0].src = `http://thetvdb.com/banners/${res.filename}`;
-																img.children[0].parentNode.style.display = 'inline-block';
-																indeterminateProgress.end();
-																document.getElementById('Loading').style.display = 'none'
-															})
-															.catch(err => {
-																throw err;
-															})
-													}
-												})
-											}
-										})
-									})
-									.catch(err => {
-										throw err;
-									})
-
-							})
-							.catch(err => {
-								throw err;
-							})
-					}
+				const path = elem;
+				const tvelem = parser(elem);
+				if (_.has(tvelem, 'show') === true) {
+					tvdb.getSeriesByName(tvelem.show)
+						.then(res => {
+							tvdb.getEpisodesBySeriesId(res[0].id)
+								.then(res => {
+									res.forEach(elem => {
+										if (_.isMatch(elem, {airedEpisodeNumber: tvelem.episode}) === true && _.isMatch(elem, {airedSeason: tvelem.season}) === true) {
+											medianodes.forEach(img => {
+												if (img.id === path) {
+													tvdb.getEpisodeById(elem.id)
+														.then(res => {
+															img.children[0].src = `http://thetvdb.com/banners/${res.filename}`;
+															img.children[0].parentNode.style.display = 'inline-block';
+															indeterminateProgress.end();
+															document.getElementById('Loading').style.display = 'none';
+														})
+														.catch(err => {
+															throw err;
+														});
+												}
+											});
+										}
+									});
+								})
+								.catch(err => {
+									throw err;
+								});
+						})
+						.catch(err => {
+							throw err;
+						});
 				}
-			})
-		})
-	})
+			});
+		});
+	});
 }
 
 function findDL() {
 	getPath(path => {
 		dir.files(path, (err, files) => {
-			if (err) throw err;
-			let mediadiv = document.getElementById('media');
-			let videodiv = document.getElementById('video');
-			files = _.filter(files, isPlayable)
-			console.log(files)
+			if (err) {
+				throw err;
+			}
+			const mediadiv = document.getElementById('media');
+			const videodiv = document.getElementById('video');
+			files = _.filter(files, isPlayable);
+			console.log(files);
 			for (let i = 0; i < files.length; i++) {
-				let parsedName = parser(files[i].replace(/^.*[\\\/]/, ''));
+				const parsedName = parser(files[i].replace(/^.*[\\\/]/, ''));
 				if (parsedName !== null) {
-					let figelem = document.createElement('figure');
-					let figcap = document.createElement('figcaption');
-					let imgelem = document.createElement('img');
+					const figelem = document.createElement('figure');
+					const figcap = document.createElement('figcaption');
+					const imgelem = document.createElement('img');
 					figelem.addEventListener('click', () => {
-						let video = document.createElement('video');
+						const video = document.createElement('video');
 						video.src = files[i];
 						video.autoPlay = true;
 						video.controls = true;
@@ -158,5 +155,5 @@ function findDL() {
 			}
 			getImgs();
 		});
-	})
+	});
 }

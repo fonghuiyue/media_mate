@@ -93,7 +93,8 @@ function getImgs() {
 														tvdb.getEpisodeById(elem.id)
 															.then(res => {
 																img.src = `http://thetvdb.com/banners/${res.filename}`;
-																img.style.display = 'inline';
+																img.parentNode.style.display = 'inline';
+																indeterminateProgress.end();
 															})
 															.catch(err => {
 																throw err;
@@ -112,7 +113,6 @@ function getImgs() {
 								throw err;
 							})
 					}
-					indeterminateProgress.end();
 				}
 			})
 		})
@@ -140,7 +140,7 @@ function tvdbRen() {
 												let elem = mediadiv.childNodes[index];
 												if (elem.tagName === 'IMG') {
 													elem.src = `http://thetvdb.com/banners/${res.filename}`;
-													elem.style.display = 'block';
+													elem.parentNode.style.display = 'block';
 												}
 											});
 									})
@@ -176,9 +176,11 @@ function findDL() {
 							let isVideo = isPlayable(files[i]);
 							let parsedName = parser(files[i].replace(/^.*[\\\/]/, ''));
 							if (isVideo === true && parsedName !== null) {
-								let elem = document.createElement('img');
-								elem.id = i.toString();
-								elem.addEventListener('click', () => {
+								let figelem = document.createElement('figure');
+								let figcap = document.createElement('figcaption');
+								imgelem.id = i.toString();
+								let imgelem = document.createElement('img');
+								figelem.addEventListener('click', () => {
 									let video = document.createElement('video');
 									video.src = files[i];
 									video.autoPlay = true;
@@ -190,10 +192,13 @@ function findDL() {
 										videodiv.appendChild(video);
 									}
 								});
-								elem.style.display = 'none';
-								elem.id = files[i].replace(/^.*[\\\/]/, '');
-								elem.title = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`
-								mediadiv.appendChild(elem);
+								figelem.style.display = 'none';
+								imgelem.id = files[i].replace(/^.*[\\\/]/, '');
+								imgelem.title = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;
+								figcap.innerText = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;
+								figelem.appendChild(imgelem);
+								figelem.appendChild(figcap);
+								mediadiv.appendChild(figelem);
 							}
 						}
 						getImgs();

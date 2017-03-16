@@ -64,7 +64,7 @@ function getPath(callback) {
 		if (_.isEmpty(data) === false) {
 			callback(data.path);
 		} else {
-			callback(path.join(os.homedir(), 'media_mate_dl'));
+			callback(path.join(require('os').homedir(), 'media_mate_dl'));
 		}
 	});
 }

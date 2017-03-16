@@ -13,9 +13,11 @@
       <w>feedparser</w>
       <w>fontawesome</w>
       <w>forcereload</w>
+      <w>imgs</w>
       <w>izitoast</w>
       <w>mainwindow</w>
       <w>mediadiv</w>
+      <w>medianodes</w>
       <w>nsis</w>
       <w>onerror</w>
       <w>onload</w>
@@ -35,6 +37,7 @@
       <w>toadd</w>
       <w>togglefullscreen</w>
       <w>tvdb</w>
+      <w>tvelem</w>
       <w>videodiv</w>
       <w>webm</w>
       <w>yyyy</w>

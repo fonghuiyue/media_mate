@@ -478,14 +478,7 @@ fs-extra-p@^4.0.2:
     bluebird-lst "^1.0.1"
     fs-extra "^2.0.0"
 
-fs-extra@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-2.0.0.tgz#337352bded4a0b714f3eb84de8cea765e9d37600"
-  dependencies:
-    graceful-fs "^4.1.2"
-    jsonfile "^2.1.0"
-
-fs-extra@^2.1.1:
+fs-extra@^2.0.0, fs-extra@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-2.1.1.tgz#f8a34cc890522fc233896f34944ff2e35948959f"
   dependencies:

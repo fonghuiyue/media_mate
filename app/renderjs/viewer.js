@@ -192,7 +192,7 @@ function findDL() {
 								});
 								elem.style.display = 'none';
 								elem.id = files[i].replace(/^.*[\\\/]/, '');
-								elem.title = parsedName.show + ': ' + `S${parsedName.season}E${parsedName.episode}`
+								elem.title = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`
 								mediadiv.appendChild(elem);
 							}
 						}

@@ -175,7 +175,7 @@ function findDL() {
 						for (let i = 0; i < files.length; i++) {
 							let isVideo = isPlayable(files[i]);
 							let parsedName = parser(files[i].replace(/^.*[\\\/]/, ''));
-							if (isVideo === true) {
+							if (isVideo === true && parsedName !== null) {
 								let elem = document.createElement('img');
 								elem.id = i.toString();
 								elem.addEventListener('click', () => {

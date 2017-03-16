@@ -121,95 +121,42 @@ function getImgs() {
 	})
 }
 
-function tvdbRen() {
-	let mediadiv = document.getElementById('media');
-	MongoClient.connect(url, (err, db) => {
-		const collection = db.collection('torrents');
-		collection.find({}).toArray((err, docs) => {
-			if (docs.length > 0) {
-				docs.forEach((elem, index) => {
-					if (_.has(elem, 'tvdbID') === true) {
-						// console.log(elem);
-						tvdb.getSeriesByName(elem.tvdbID)
-							.then(res => {
-								// console.log(res[0]);
-								tvdb.getEpisodesByAirDate(parseInt(res[0].id), moment(elem.airdate).subtract(1, 'days').format('YYYY-MM-DD').toString())
-									.then(res => {
-										// console.log(res[0]);
-										tvdb.getEpisodeById(res[0].id)
-											.then(res => {
-												console.log(res);
-												let elem = mediadiv.childNodes[index];
-												if (elem.tagName === 'IMG') {
-													elem.src = `http://thetvdb.com/banners/${res.filename}`;
-													elem.parentNode.style.display = 'block';
-												}
-											});
-									})
-							})
-							.catch(err => {
-								throw err;
-							})
-							.catch(err => {
-								throw err;
-							})
-					}
-				})
-			}
-		})
-	});
-}
-
 function findDL() {
-	MongoClient.connect(url, (err, db) => {
-		const collection = db.collection('path');
-		if (collection.find() !== undefined || collection.find() !== null) {
-			collection.find().toArray((err, docs) => {
-				if (err) {
-					throw err;
-				}
-				if (docs.length > 0) {
-					dir.files(docs[0].path, (err, files) => {
-						if (err) throw err;
-						console.log(files);
-						let mediadiv = document.getElementById('media');
-						let videodiv = document.getElementById('video');
-						for (let i = 0; i < files.length; i++) {
-							let isVideo = isPlayable(files[i]);
-							let parsedName = parser(files[i].replace(/^.*[\\\/]/, ''));
-							if (isVideo === true && parsedName !== null) {
-								let figelem = document.createElement('figure');
-								let figcap = document.createElement('figcaption');
-								let imgelem = document.createElement('img');
-								figelem.addEventListener('click', () => {
-									let video = document.createElement('video');
-									video.src = files[i];
-									video.autoPlay = true;
-									video.controls = true;
-
-									if (videodiv.childElementCount > 0) {
-										videodiv.replaceChild(video, videodiv.firstElementChild);
-									} else {
-										videodiv.appendChild(video);
-									}
-								});
-								figelem.style.display = 'none';
-								// imgelem.id = files[i].replace(/^.*[\\\/]/, '');
-								figelem.id = files[i].replace(/^.*[\\\/]/, '');
-								imgelem.title = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;
-								figcap.innerText = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;
-								figelem.appendChild(imgelem);
-								figelem.appendChild(figcap);
-								mediadiv.appendChild(figelem);
-							}
+	getPath(path => {
+		dir.files(path, (err, files) => {
+			if (err) throw err;
+			let mediadiv = document.getElementById('media');
+			let videodiv = document.getElementById('video');
+			files = _.filter(files, isPlayable)
+			console.log(files)
+			for (let i = 0; i < files.length; i++) {
+				let parsedName = parser(files[i].replace(/^.*[\\\/]/, ''));
+				if (parsedName !== null) {
+					let figelem = document.createElement('figure');
+					let figcap = document.createElement('figcaption');
+					let imgelem = document.createElement('img');
+					figelem.addEventListener('click', () => {
+						let video = document.createElement('video');
+						video.src = files[i];
+						video.autoPlay = true;
+						video.controls = true;
+						if (videodiv.childElementCount > 0) {
+							videodiv.replaceChild(video, videodiv.firstElementChild);
+						} else {
+							videodiv.appendChild(video);
 						}
-						getImgs();
 					});
-					db.close();
-				} else {
-					db.close();
+					figelem.style.display = 'none';
+					// imgelem.id = files[i].replace(/^.*[\\\/]/, '');
+					figelem.id = files[i].replace(/^.*[\\\/]/, '');
+					imgelem.title = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;
+					figcap.innerText = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;
+					figelem.appendChild(imgelem);
+					figelem.appendChild(figcap);
+					mediadiv.appendChild(figelem);
 				}
-			});
-		} else {}
-	});
+			}
+			getImgs();
+		});
+	})
 }

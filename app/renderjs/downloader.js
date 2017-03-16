@@ -8,6 +8,7 @@ const ProgressBar = require('progressbar.js');
 const MongoClient = require('mongodb').MongoClient;
 const _ = require('underscore');
 const f = require('util').format;
+const storage = require('electron-json-storage');
 
 const user = process.env.DB_USER;
 const password = process.env.DB_PWD;
@@ -32,7 +33,10 @@ window.onload = () => {
 		color: '#FFEA82',
 		trailColor: '#eee',
 		trailWidth: 1,
-		svgStyle: {width: '100%', height: '100%'},
+		svgStyle: {
+			width: '100%',
+			height: '100%'
+		},
 		text: {
 			style: {
 				// Text color.
@@ -40,20 +44,25 @@ window.onload = () => {
 				color: '#999',
 				position: 'absolute',
 				right: '0',
-//				top: '30px',
+				//				top: '30px',
 				padding: 0,
 				margin: 0,
 				transform: null
 			},
 			autoStyleContainer: false
 		},
-		from: {color: '#FFEA82'},
-		to: {color: '#ED6A5A'},
+		from: {
+			color: '#FFEA82'
+		},
+		to: {
+			color: '#ED6A5A'
+		},
 		step: (state, bar) => {
 			bar.setText(Math.round(bar.value() * 100) + ' %');
 		}
 	});
 };
+
 function dlProgress() {
 	const animateThrottled = _.throttle(
 		_.bind(bar.animate, bar),
@@ -64,6 +73,7 @@ function dlProgress() {
 client.on('error', err => {
 	console.error('ERROR: ' + err.message);
 });
+
 function getRSSURI(callback) {
 	MongoClient.connect(url, (err, db) => {
 		if (err) {
@@ -102,12 +112,20 @@ function makeSureAllDL(torrent, callback) {
 function ignoreDupeTorrents(torrent, db, callback) {
 	const collection = db.collection('torrents');
 	if (collection.find() !== null) {
-		collection.findOne({magnet: torrent.link}, (err, docs) => {
+		collection.findOne({
+			magnet: torrent.link
+		}, (err, docs) => {
 			if (err) {
 				throw err;
 			}
 			if (docs === null) {
-				collection.insertOne({magnet: torrent.link, title: torrent.title, tvdbID: torrent["tv:show_name"]["#"], airdate: torrent.pubDate, downloaded: false}, (err, res) => {
+				collection.insertOne({
+					magnet: torrent.link,
+					title: torrent.title,
+					tvdbID: torrent["tv:show_name"]["#"],
+					airdate: torrent.pubDate,
+					downloaded: false
+				}, (err, res) => {
 					if (err) {
 						throw err;
 					}
@@ -123,7 +141,13 @@ function ignoreDupeTorrents(torrent, db, callback) {
 			}
 		});
 	} else {
-		collection.insertOne({magnet: torrent.link, title: torrent.title, tvdbID: torrent["tv:show_name"]["#"], airdate: torrent.pubDate, downloaded: false}, (err, res) => {
+		collection.insertOne({
+			magnet: torrent.link,
+			title: torrent.title,
+			tvdbID: torrent["tv:show_name"]["#"],
+			airdate: torrent.pubDate,
+			downloaded: false
+		}, (err, res) => {
 			if (err) {
 				throw err;
 			}
@@ -132,6 +156,7 @@ function ignoreDupeTorrents(torrent, db, callback) {
 		});
 	}
 }
+
 function getTorIndex(magnet, callback) {
 	MongoClient.connect(url)
 		.then((err, db) => {
@@ -139,7 +164,9 @@ function getTorIndex(magnet, callback) {
 				throw err;
 			}
 			const collection = db.collection('torrents');
-			collection.findOne({magnet})
+			collection.findOne({
+					magnet
+				})
 				.then((err, docs) => {
 					if (err) {
 						throw err;
@@ -152,6 +179,7 @@ function getTorIndex(magnet, callback) {
 				});
 		});
 }
+
 function dropTorrents(callback) {
 	MongoClient.connect(url, (err, db) => {
 		if (err) {
@@ -162,12 +190,15 @@ function dropTorrents(callback) {
 		db.close();
 	});
 }
+
 function updateURI(uri, db, callback) {
 	// Get the documents collection
 	const collection = db.collection('uri');
 	// Update document where a is 2, set b equal to 1
 	collection.drop();
-	collection.insertOne({showRSSURI: uri}, (err, res) => {
+	collection.insertOne({
+		showRSSURI: uri
+	}, (err, res) => {
 		if (err) {
 			throw err;
 		}
@@ -176,6 +207,7 @@ function updateURI(uri, db, callback) {
 		db.close();
 	});
 }
+
 function findDocuments(db, col, callback) {
 	// Get the documents collection
 	const collection = db.collection(col || 'uri');
@@ -201,13 +233,18 @@ MongoClient.connect(url, (err, db) => {
 		db.close();
 	});
 });
+
 function dlAll() {
 	MongoClient.connect(url, (err, db) => {
 		if (err) {
 			throw err;
 		}
 		const collection = db.collection('torrents');
-		collection.find({downloaded: {$ne: true}}).toArray((err, docs) => {
+		collection.find({
+			downloaded: {
+				$ne: true
+			}
+		}).toArray((err, docs) => {
 			if (err) {
 				throw err;
 			}
@@ -220,51 +257,38 @@ function dlAll() {
 }
 
 function getDlPath(callback) {
-	MongoClient.connect(url, (err, db) => {
-		if (err) {
-			throw err;
-		}
-		const collection = db.collection('path');
-		if (collection.find() !== undefined || collection.find() !== null) {
-			collection.find().toArray((err, docs) => {
-				if (err) {
-					throw err;
-				}
-				if (docs.length > 0) {
-					callback(docs[0].path);
-					db.close();
-				} else {
-					callback('');
-					db.close();
-				}
-			});
+	storage.get('path', (err, data) => {
+		if (err) throw err;
+		if (_.isEmpty(data) === false) {
+			callback(data.path)
 		} else {
-			callback('');
+			callback('')
 		}
-	});
+	})
 }
 
 function insertDlPath(callback) {
 	const tb = document.getElementById('dlpath');
-	const dlpath = dialog.showOpenDialog({properties: ['openDirectory']});
+	const dlpath = dialog.showOpenDialog({
+		properties: ['openDirectory']
+	});
 	if (dlpath !== undefined) {
-		MongoClient.connect(url, (err, db) => {
-			if (err) {
-				throw err;
-			}
-			const collection = db.collection('path');
-			collection.drop();
-			collection.insertOne({path: dlpath[0]})
-				.then(() => {
-				});
+		storage.set('path', {
+			path: dlpath[0]
+		}, function (error) {
+			if (error) throw error;
 		});
+
+
 	}
 }
 
 function addTor(magnet, index) {
 	document.getElementById('Progress').style.display = '';
 	getDlPath(callback => {
-		client.add(magnet, {path: callback || 'F:\\media_mate'}, torrent => {
+		client.add(magnet, {
+			path: callback || 'F:\\media_mate'
+		}, torrent => {
 			torrent.index = index;
 			document.getElementsByName(magnet)[0].checked = true;
 			document.getElementsByName(magnet)[0].disabled = true;
@@ -279,7 +303,13 @@ function addTor(magnet, index) {
 						throw err;
 					}
 					const collection = db.collection('torrents');
-					collection.updateOne({magnet: document.getElementsByName(magnet)[0].name}, {$set: {downloaded: true}}, (err, res) => {
+					collection.updateOne({
+						magnet: document.getElementsByName(magnet)[0].name
+					}, {
+						$set: {
+							downloaded: true
+						}
+					}, (err, res) => {
 						if (err) {
 							throw err;
 						}
@@ -293,6 +323,7 @@ function addTor(magnet, index) {
 		});
 	});
 }
+
 function runScript(e) {
 	if (e.keyCode == 13) {
 		const tb = document.getElementById('rss');

@@ -11,6 +11,7 @@ const f = require('util').format;
 const fs = require('fs-extra');
 const path = require('path');
 const TVDB = require('node-tvdb');
+const storage = require('electron-json-storage');
 
 const tvdb = new TVDB(process.env.TVDB_KEY);
 const user = process.env.DB_USER;
@@ -56,13 +57,13 @@ function getFileExtension(file) {
 }
 
 function getPath(callback) {
-	MongoClient.connect(url, (err, db) => {
-		const collection = db.collection('path');
-		collection.find({}).toArray((err, docs) => {
-			if (docs.length > 0) {
-				callback(docs[0].path)
-			}
-		})
+	storage.get('path', (err, data) => {
+		if (err) throw err;
+		if (_.isEmpty(data) === false) {
+			callback(data.path)
+		} else {
+			callback(path.join(os.homedir(), 'media_mate_dl'))
+		}
 	})
 }
 
@@ -92,9 +93,10 @@ function getImgs() {
 													if (img.id === path) {
 														tvdb.getEpisodeById(elem.id)
 															.then(res => {
-																img.src = `http://thetvdb.com/banners/${res.filename}`;
-																img.parentNode.style.display = 'inline';
+																img.children[0].src = `http://thetvdb.com/banners/${res.filename}`;
+																img.children[0].parentNode.style.display = 'inline-block';
 																indeterminateProgress.end();
+																document.getElementById('Loading').style.display = 'none'
 															})
 															.catch(err => {
 																throw err;
@@ -178,7 +180,6 @@ function findDL() {
 							if (isVideo === true && parsedName !== null) {
 								let figelem = document.createElement('figure');
 								let figcap = document.createElement('figcaption');
-								imgelem.id = i.toString();
 								let imgelem = document.createElement('img');
 								figelem.addEventListener('click', () => {
 									let video = document.createElement('video');
@@ -193,7 +194,8 @@ function findDL() {
 									}
 								});
 								figelem.style.display = 'none';
-								imgelem.id = files[i].replace(/^.*[\\\/]/, '');
+								// imgelem.id = files[i].replace(/^.*[\\\/]/, '');
+								figelem.id = files[i].replace(/^.*[\\\/]/, '');
 								imgelem.title = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;
 								figcap.innerText = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;
 								figelem.appendChild(imgelem);
@@ -202,7 +204,6 @@ function findDL() {
 							}
 						}
 						getImgs();
-						document.getElementById('Loading').style.display = 'none'
 					});
 					db.close();
 				} else {

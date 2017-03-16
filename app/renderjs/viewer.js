@@ -174,8 +174,7 @@ function findDL() {
 						let videodiv = document.getElementById('video');
 						for (let i = 0; i < files.length; i++) {
 							let isVideo = isPlayable(files[i]);
-							files[i] = files[i].replace(/^.*[\\\/]/, '');
-							let parsedName = parser(files[i]);
+							let parsedName = parser(files[i].replace(/^.*[\\\/]/, ''));
 							if (isVideo === true) {
 								let elem = document.createElement('img');
 								elem.id = i.toString();
@@ -192,7 +191,7 @@ function findDL() {
 									}
 								});
 								elem.style.display = 'none';
-								elem.id = files[i];
+								elem.id = files[i].replace(/^.*[\\\/]/, '');
 								elem.title = parsedName.show + ': ' + `S${parsedName.season}E${parsedName.episode}`
 								mediadiv.appendChild(elem);
 							}

@@ -20,7 +20,7 @@ const url = f('mongodb://%s:%s@%s/media_mate?ssl=true&replicaSet=SDD-Major-shard
 let i = 0;
 let bar;
 const dbindex = 0;
-let allTorrents = [];
+const allTorrents = [];
 const prog = _.throttle(dlProgress, 10000);
 window.onload = () => {
 	getRSSURI(callback => {
@@ -122,7 +122,7 @@ function ignoreDupeTorrents(torrent, db, callback) {
 				collection.insertOne({
 					magnet: torrent.link,
 					title: torrent.title,
-					tvdbID: torrent["tv:show_name"]["#"],
+					tvdbID: torrent['tv:show_name']['#'],
 					airdate: torrent.pubDate,
 					downloaded: false
 				}, (err, res) => {
@@ -144,7 +144,7 @@ function ignoreDupeTorrents(torrent, db, callback) {
 		collection.insertOne({
 			magnet: torrent.link,
 			title: torrent.title,
-			tvdbID: torrent["tv:show_name"]["#"],
+			tvdbID: torrent['tv:show_name']['#'],
 			airdate: torrent.pubDate,
 			downloaded: false
 		}, (err, res) => {
@@ -165,8 +165,8 @@ function getTorIndex(magnet, callback) {
 			}
 			const collection = db.collection('torrents');
 			collection.findOne({
-					magnet
-				})
+				magnet
+			})
 				.then((err, docs) => {
 					if (err) {
 						throw err;
@@ -218,7 +218,7 @@ function findDocuments(db, col, callback) {
 		}
 		console.log('Current contents of ' + col);
 		console.log(docs);
-		_.each(docs, (elem) => allTorrents.push(elem.magnet));
+		_.each(docs, elem => allTorrents.push(elem.magnet));
 		db.close();
 		callback(docs);
 	});
@@ -258,13 +258,15 @@ function dlAll() {
 
 function getDlPath(callback) {
 	storage.get('path', (err, data) => {
-		if (err) throw err;
-		if (_.isEmpty(data) === false) {
-			callback(data.path)
-		} else {
-			callback('')
+		if (err) {
+			throw err;
 		}
-	})
+		if (_.isEmpty(data) === false) {
+			callback(data.path);
+		} else {
+			callback('');
+		}
+	});
 }
 
 function insertDlPath(callback) {
@@ -275,11 +277,11 @@ function insertDlPath(callback) {
 	if (dlpath !== undefined) {
 		storage.set('path', {
 			path: dlpath[0]
-		}, function (error) {
-			if (error) throw error;
+		}, error => {
+			if (error) {
+				throw error;
+			}
 		});
-
-
 	}
 }
 
@@ -341,8 +343,8 @@ function runScript(e) {
 		document.getElementById('dls').style.display = 'inline';
 		const RSS = new RSSParse(tb.value);
 		RSS.on('error', err => {
-			console.log(err)
-		})
+			console.log(err);
+		});
 		RSS.on('data', data => {
 			MongoClient.connect(url, (err, db) => {
 				if (err) {

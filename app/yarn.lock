@@ -478,9 +478,16 @@ fs-extra-p@^4.0.2:
     bluebird-lst "^1.0.1"
     fs-extra "^2.0.0"
 
-fs-extra@^2.0.0, fs-extra@^2.1.1:
+fs-extra@^2.0.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-2.1.1.tgz#f8a34cc890522fc233896f34944ff2e35948959f"
+  dependencies:
+    graceful-fs "^4.1.2"
+    jsonfile "^2.1.0"
+
+fs-extra@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-2.1.2.tgz#046c70163cef9aad46b0e4a7fa467fb22d71de35"
   dependencies:
     graceful-fs "^4.1.2"
     jsonfile "^2.1.0"
@@ -1158,6 +1165,12 @@ sntp@1.x.x:
 source-map-support@^0.4.12:
   version "0.4.12"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.4.12.tgz#f47d02bf01efaf0c160d3a37d038401b92b1867e"
+  dependencies:
+    source-map "^0.5.6"
+
+source-map-support@^0.4.13:
+  version "0.4.13"
+  resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.4.13.tgz#9782e6f7deb424d5f173327a1879eb46453bdcd4"
   dependencies:
     source-map "^0.5.6"
 

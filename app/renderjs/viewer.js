@@ -87,14 +87,17 @@ function getImgs() {
 								.then(res => {
 									res.forEach(elem => {
 										if (_.isMatch(elem, {airedEpisodeNumber: tvelem.episode}) === true && _.isMatch(elem, {airedSeason: tvelem.season}) === true) {
-											medianodes.forEach(img => {
+											medianodes.forEach((img, ind) => {
 												if (img.id === path) {
 													tvdb.getEpisodeById(elem.id)
 														.then(res => {
 															img.children[0].src = `http://thetvdb.com/banners/${res.filename}`;
 															img.children[0].parentNode.style.display = 'inline-block';
-															indeterminateProgress.end();
-															document.getElementById('Loading').style.display = 'none';
+															console.log(ind, img)
+															if (ind === medianodes.length - 1) {
+																indeterminateProgress.end();
+																document.getElementById('Loading').style.display = 'none';
+														}
 														})
 														.catch(err => {
 															console.log(err);

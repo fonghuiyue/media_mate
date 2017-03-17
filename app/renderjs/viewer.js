@@ -66,8 +66,13 @@ function getPath(callback) {
 			callback(data.path);
 		} else {
 			let dir = path.join(require('os').homedir(), 'media_mate_dl')
-			fs.ensureDir(dir);
-			callback(dir);
+			fs.ensureDir(dir, err => {
+				if (err !== null) {
+					callback(dir);
+				} else {
+					throw err;
+				}
+			});
 		}
 	});
 }

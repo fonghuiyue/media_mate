@@ -96,6 +96,7 @@ function getImgs() {
 															document.getElementById('Loading').style.display = 'none';
 														})
 														.catch(err => {
+															console.log(err);
 															throw err;
 														});
 												}
@@ -104,10 +105,12 @@ function getImgs() {
 									});
 								})
 								.catch(err => {
+									console.log(err);
 									throw err;
 								});
 						})
 						.catch(err => {
+							console.log(err);
 							throw err;
 						});
 				}

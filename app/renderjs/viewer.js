@@ -104,7 +104,7 @@ function getImgs() {
 															if (ind === medianodes.length - 1) {
 																indeterminateProgress.end();
 																document.getElementById('Loading').style.display = 'none';
-														}
+															}
 														})
 														.catch(err => {
 															console.log(err);
@@ -135,9 +135,9 @@ function getImgs() {
 function vidFinished(e) {
 	const filename = this.getAttribute('data-file-name');
 	storage.get(filename, (err, data) => {
-			storage.set(filename, {file: filename, watched: true, time: this.currentTime}, err => {
-				if (err) throw err;
-			})
+		storage.set(filename, {file: filename, watched: true, time: this.currentTime}, err => {
+			if (err) throw err;
+		})
 	})
 }
 

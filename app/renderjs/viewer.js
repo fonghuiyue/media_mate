@@ -65,7 +65,9 @@ function getPath(callback) {
 		if (_.isEmpty(data) === false) {
 			callback(data.path);
 		} else {
-			callback(path.join(require('os').homedir(), 'media_mate_dl'));
+			let dir = path.join(require('os').homedir(), 'media_mate_dl')
+			fs.ensureDir(dir);
+			callback(dir);
 		}
 	});
 }
@@ -93,7 +95,7 @@ function getImgs() {
 														.then(res => {
 															img.children[0].src = `http://thetvdb.com/banners/${res.filename}`;
 															img.children[0].parentNode.style.display = 'inline-block';
-															console.log(ind, img)
+															console.log(ind, img);
 															if (ind === medianodes.length - 1) {
 																indeterminateProgress.end();
 																document.getElementById('Loading').style.display = 'none';

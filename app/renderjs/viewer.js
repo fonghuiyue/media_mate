@@ -18,6 +18,7 @@ const user = process.env.DB_USER;
 const password = process.env.DB_PWD;
 const dburi = process.env.DB_URL;
 const authMechanism = 'DEFAULT';
+const vidProgressthrottled = _.throttle(vidProgress, 1000)
 const url = f('mongodb://%s:%s@%s/media_mate?ssl=true&replicaSet=SDD-Major-shard-0&authSource=admin',
 	user, password, dburi);
 
@@ -121,6 +122,39 @@ function getImgs() {
 	});
 }
 
+function vidFinished(e) {
+	const filename = this.getAttribute('data-file-name');
+	storage.get(filename, (err, data) => {
+			storage.set(filename, {file: filename, watched: true, time: this.currentTime}, err => {
+				if (err) throw err;
+			})
+	})
+}
+
+function handleVids(e) {
+	const filename = this.getAttribute('data-file-name');
+	storage.get(filename, (err, data) => {
+		if (_.isEmpty(data) === true) {
+			storage.set(filename, {file: filename, watched: false, time: this.currentTime}, err => {
+				if (err) throw err;
+			})
+		} else {
+			this.currentTime = data.time;
+		}
+	})
+}
+
+function vidProgress(e) {
+	const filename = this.getAttribute('data-file-name');
+	storage.get(filename, (err, data) => {
+		if (_.isEmpty(data) === false) {
+			storage.set(filename, {file: filename, watched: false, time: this.currentTime})
+		} else {
+			console.log('dunno');
+		}
+	})
+}
+
 function findDL() {
 	getPath(path => {
 		dir.files(path, (err, files) => {
@@ -140,8 +174,12 @@ function findDL() {
 					figelem.addEventListener('click', () => {
 						const video = document.createElement('video');
 						video.src = files[i];
-						video.autoPlay = true;
+						video.setAttribute('data-file-name', files[i].replace(/^.*[\\\/]/, ''))
+						video.autoplay = true;
 						video.controls = true;
+						video.addEventListener('loadedmetadata', handleVids, false);
+						video.addEventListener('ended', vidFinished, false);
+						video.addEventListener('timeupdate', vidProgressthrottled, false);
 						if (videodiv.childElementCount > 0) {
 							videodiv.replaceChild(video, videodiv.firstElementChild);
 						} else {

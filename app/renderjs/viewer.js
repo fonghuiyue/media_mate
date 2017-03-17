@@ -82,7 +82,9 @@ function getImgs() {
 	const medianodes = mediadiv.childNodes;
 	getPath(path => {
 		dir.files(path, (err, files) => {
+			files.sort();
 			files = _.filter(files, isPlayable);
+			console.log(files);
 			files.forEach(elem => {
 				elem = elem.replace(/^.*[\\\/]/, '');
 				const path = elem;
@@ -174,7 +176,7 @@ function findDL() {
 			const mediadiv = document.getElementById('media');
 			const videodiv = document.getElementById('video');
 			files = _.filter(files, isPlayable);
-			console.log(files);
+			files.sort();
 			for (let i = 0; i < files.length; i++) {
 				const parsedName = parser(files[i].replace(/^.*[\\\/]/, ''));
 				if (parsedName !== null) {

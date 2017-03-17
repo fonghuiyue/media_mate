@@ -110,8 +110,10 @@ function getImgs() {
 								});
 						})
 						.catch(err => {
-							console.log(err);
-							throw err;
+							if (err.message !== 'Resource not found') {
+								console.log(err);
+								throw err;
+							}
 						});
 				}
 			});

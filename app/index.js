@@ -16,6 +16,7 @@ import MongoClient from 'mongodb';
 import {RSSParse} from './lib/rssparse';
 import TVDB from 'node-tvdb';
 
+require('electron-debug')()
 const tvdb = new TVDB(process.env.TVDB_KEY);
 const f = require('util').format;
 const windowStateKeeper = require('electron-window-state');
@@ -128,6 +129,23 @@ function createMainWindow() {
 	mainWindowState.manage(win);
 	win.loadURL(`file://${__dirname}/index.html`);
 	win.on('closed', onClosed);
+	win.on('unresponsive', function () {
+		console.log("I've frozen. Sorry about that.")
+	})
+	win.on('responsive', function () {
+		console.log("I've unfrozen. Sorry.")
+	})
+	win.webContents.on('crashed', function (e, killed) {
+		if (killed === true) {
+			console.log(e);
+			mainWindow = null;
+			if (process.platform === 'darwin') {
+				app.quit();
+			}
+		} else {
+			console.log(e);
+		}
+	})
 	return win;
 }
 /**

@@ -17,6 +17,7 @@
 		"bulma": "^0.4.0",
 		"coffee-script": "^1.12.4",
 		"debug": "^2.6.3",
+		"devtron": "^1.4.0",
 		"dotenv": "^4.0.0",
 		"electron-debug": "^1.1.0",
 		"electron-is-dev": "^0.1.2",

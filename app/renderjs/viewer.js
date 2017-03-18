@@ -179,7 +179,9 @@ function vidProgress(e) {
 	const filename = this.getAttribute('data-file-name');
 	storage.get(filename, (err, data) => {
 		if (_.isEmpty(data) === false) {
-			storage.set(filename, {file: filename, watched: false, time: this.currentTime})
+			storage.set(filename, {file: filename, watched: false, time: this.currentTime}, err => {
+				if (err) throw err;
+			})
 		} else {
 			console.log('dunno');
 		}

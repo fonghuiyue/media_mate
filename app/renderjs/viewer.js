@@ -12,6 +12,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const TVDB = require('node-tvdb');
 const storage = require('electron-json-storage');
+const {app, BrowserWindow} = require('electron');
 
 const tvdb = new TVDB(process.env.TVDB_KEY);
 const user = process.env.DB_USER;
@@ -21,6 +22,16 @@ const authMechanism = 'DEFAULT';
 const vidProgressthrottled = _.throttle(vidProgress, 1000)
 const url = f('mongodb://%s:%s@%s/media_mate?ssl=true&replicaSet=SDD-Major-shard-0&authSource=admin',
 	user, password, dburi);
+
+require('electron-context-menu')({
+	prepend: (params, browserWindow) => [{
+		label: 'Reset Time Watched',
+		click: () => {resetTime(params)},
+		// only show it when right-clicking images
+		visible: params.mediaType === 'image'
+	}]
+});
+
 
 const progOpt = {
 	template: 3,
@@ -156,6 +167,14 @@ function handleVids(e) {
 	})
 }
 
+function resetTime(params) {
+	const filename = document.elementFromPoint(params.x, params.y).parentNode.getAttribute('data-file-name');
+	console.log(document.elementFromPoint(params.x, params.y).parentNode);
+	storage.remove(filename, (err) => {
+		if (err) throw err;
+	})
+}
+
 function vidProgress(e) {
 	const filename = this.getAttribute('data-file-name');
 	storage.get(filename, (err, data) => {
@@ -186,7 +205,7 @@ function findDL() {
 					figelem.addEventListener('click', () => {
 						const video = document.createElement('video');
 						video.src = files[i];
-						video.setAttribute('data-file-name', files[i].replace(/^.*[\\\/]/, ''))
+						video.setAttribute('data-file-name', files[i].replace(/^.*[\\\/]/, ''));
 						video.autoplay = true;
 						video.controls = true;
 						video.addEventListener('loadedmetadata', handleVids, false);
@@ -201,6 +220,7 @@ function findDL() {
 					figelem.style.display = 'none';
 					// imgelem.id = files[i].replace(/^.*[\\\/]/, '');
 					figelem.id = files[i].replace(/^.*[\\\/]/, '');
+					figelem.setAttribute('data-file-name', files[i].replace(/^.*[\\\/]/, ''));
 					imgelem.title = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;
 					figcap.innerText = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;
 					figelem.appendChild(imgelem);

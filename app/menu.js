@@ -154,36 +154,6 @@ function getMenuTemplate() {
 			]
 		});
 		// Edit menu.
-		template[1].submenu.push(
-			{
-				submenu: [
-					{
-						label: 'Homepage',
-						click: () => {
-							win.loadURL(`file://${__dirname}/index.html`);
-						}
-					},
-					{
-						label: 'Downloader',
-						click: () => {
-							win.loadURL(`file://${__dirname}/downloader.html`);
-						}
-					},
-					{
-						label: 'Viewer',
-						click: () => {
-							win.loadURL(`file://${__dirname}/viewer.html`);
-						}
-					},
-					{
-						label: 'Streamer',
-						click: () => {
-							win.loadURL(`file://${__dirname}/streamer.html`);
-						}
-					}
-				]
-			}
-		);
 		// Window menu.
 		template[3].submenu = [
 			{

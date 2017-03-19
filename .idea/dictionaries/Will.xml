@@ -9,6 +9,7 @@
       <w>dirname</w>
       <w>dlbox</w>
       <w>dlpath</w>
+      <w>elems</w>
       <w>endinject</w>
       <w>feedparser</w>
       <w>fontawesome</w>
@@ -18,6 +19,7 @@
       <w>mainwindow</w>
       <w>mediadiv</w>
       <w>medianodes</w>
+      <w>navtoggle</w>
       <w>nsis</w>
       <w>onerror</w>
       <w>onload</w>
@@ -25,6 +27,7 @@
       <w>playerm</w>
       <w>plex</w>
       <w>prog</w>
+      <w>progressthrottled</w>
       <w>renderjs</w>
       <w>rssp</w>
       <w>rssparse</w>

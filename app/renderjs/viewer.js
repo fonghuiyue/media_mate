@@ -113,7 +113,6 @@ function getImgs() {
 														.then(res => {
 															img.children[0].src = `http://thetvdb.com/banners/${res.filename}`;
 															img.children[0].parentNode.style.display = 'inline-block';
-															console.log(ind, img);
 															if (ind === medianodes.length - 1) {
 																indeterminateProgress.end();
 																document.getElementById('Loading').style.display = 'none';

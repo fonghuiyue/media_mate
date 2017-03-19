@@ -1,4 +1,5 @@
 'use strict';
+console.time('init');
 require('dotenv').config({path: `${__dirname}/.env`});
 
 import electron, {Menu, dialog, ipcMain as ipc, shell} from 'electron';
@@ -123,6 +124,7 @@ function createMainWindow() {
 	});
 	win.once('ready-to-show', () => {
 		win.show();
+		console.timeEnd('init');
 	});
 	mainWindowState.manage(win);
 	win.loadURL(`file://${__dirname}/index.html`);

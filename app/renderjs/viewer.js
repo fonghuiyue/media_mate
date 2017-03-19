@@ -19,7 +19,7 @@ const user = process.env.DB_USER;
 const password = process.env.DB_PWD;
 const dburi = process.env.DB_URL;
 const authMechanism = 'DEFAULT';
-const vidProgressthrottled = _.throttle(vidProgress, 1000)
+const vidProgressthrottled = _.throttle(vidProgress, 1000);
 const url = f('mongodb://%s:%s@%s/media_mate?ssl=true&replicaSet=SDD-Major-shard-0&authSource=admin',
 	user, password, dburi);
 
@@ -224,6 +224,8 @@ function findDL() {
 					figelem.id = files[i].replace(/^.*[\\\/]/, '');
 					figelem.setAttribute('data-file-name', files[i].replace(/^.*[\\\/]/, ''));
 					imgelem.title = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;
+					imgelem.style.width = '400px';
+					imgelem.style.height = '225px';
 					figcap.innerText = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;
 					figelem.appendChild(imgelem);
 					figelem.appendChild(figcap);

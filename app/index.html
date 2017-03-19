@@ -1,21 +1,25 @@
 <!doctype html>
 <html lang="en">
 <head>
-	<link rel="stylesheet" href="index.css">
 	<!-- inject:css -->
+	<link rel="stylesheet" href="node_modules/bulma/css/bulma.css">
 	<link rel="stylesheet" href="index.css">
 	<link rel="stylesheet" href="pace.css">
-	<link rel="stylesheet" href="node_modules/bulma/css/bulma.css">
 	<link rel="stylesheet" href="node_modules/izitoast/dist/css/iziToast.min.css">
 	<!-- endinject -->
+	<script>if (typeof module === 'object') {
+		window.module = module;
+		module = undefined;
+	}</script>
 	<!-- inject:js -->
 	<script src="renderjs/render-err.js"></script>
+	<script src="node_modules/jquery/dist/jquery.min.js"></script>
 	<script src="renderjs/pace.min.js"></script>
 	<!-- endinject -->
+	<script>if (window.module) module = window.module;</script>
 	<script src="https://use.fontawesome.com/c7450b3c67.js"></script>
 	<meta charset="UTF-8">
-	<meta name="viewport"
-		  content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Media Mate</title>
 </head>
@@ -36,9 +40,9 @@
 <section class="section">
 	<div class="container">
 		<h1 class="title">Downloader</h1>
-			<a href="./downloader.html" class="button is-primary">
-				Go to Downloader
-			</a>
+		<a href="./downloader.html" class="button is-primary">
+			Go to Downloader
+		</a>
 	</div>
 	<hr>
 </section>
@@ -59,20 +63,5 @@
 		</a>
 	</div>
 </section>
-<!--<footer class="footer footers is-hidden-mobile">-->
-	<!--<div class="container">-->
-		<!--<div class="content has-text-centered">-->
-			<!--<p>-->
-				<!--<strong>Media Mate</strong> by <a href="https://tehsuperwilly.tech">William Blythe</a>. The source code is licensed-->
-				<!--<a href="http://opwensource.org/licenses/mit-license.php">MIT</a>.-->
-			<!--</p>-->
-			<!--<p>-->
-				<!--<a href="https://github.com/willyb321/media_mate">-->
-					<!--Source<br><i class="fa fa-github"></i>-->
-				<!--</a>-->
-			<!--</p>-->
-		<!--</div>-->
-	<!--</div>-->
-<!--</footer>-->
 </body>
 </html>

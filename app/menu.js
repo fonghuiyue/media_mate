@@ -4,6 +4,8 @@ module.exports = {
 };
 const electron = require('electron');
 const {BrowserWindow} = require('electron');
+const openAboutWindow = require('about-window').default;
+const path = require('path');
 const app = electron.app;
 let win;
 let menu;

@@ -14,8 +14,11 @@
       <w>feedparser</w>
       <w>fontawesome</w>
       <w>forcereload</w>
+      <w>hbwj</w>
       <w>imgs</w>
       <w>izitoast</w>
+      <w>jumbotron</w>
+      <w>lwhe</w>
       <w>mainwindow</w>
       <w>mediadiv</w>
       <w>medianodes</w>
@@ -28,6 +31,7 @@
       <w>plex</w>
       <w>prog</w>
       <w>progressthrottled</w>
+      <w>purecss</w>
       <w>renderjs</w>
       <w>rssp</w>
       <w>rssparse</w>
@@ -41,9 +45,12 @@
       <w>togglefullscreen</w>
       <w>tvdb</w>
       <w>tvelem</w>
+      <w>unpkg</w>
       <w>videodiv</w>
       <w>webm</w>
+      <w>wscjemy</w>
       <w>yyyy</w>
+      <w>zffs</w>
     </words>
   </dictionary>
 </component>

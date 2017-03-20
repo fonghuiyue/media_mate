@@ -1,15 +1,19 @@
+/* eslint-disable no-unused-vars */
 const WebTorrent = require('webtorrent');
-const client = new WebTorrent();
 require('dotenv').config();
 require('events').EventEmitter.prototype._maxListeners = 1000;
+
+const client = new WebTorrent();
 let filesAll = '';
+
 function runScript(e) {
-	if (e.keyCode == 13) {
+	if (e.keyCode === 13) {
 		const tb = document.getElementById('magnet');
 		submitmagnet(tb.value);
 		return false;
 	}
 }
+
 function chooseFile(files) {
 	const select = document.getElementById('selectNumber');
 	console.log(files);
@@ -22,6 +26,7 @@ function chooseFile(files) {
 		select.appendChild(el);
 	}
 }
+
 function startPlaying(file) {
 	file.renderTo('#playerm8', (err, elem) => {
 		if (err) {
@@ -44,11 +49,13 @@ function startPlaying(file) {
 		});
 	}); // Append the file to the DOM
 }
+
 function getFile() {
 	const e = document.getElementById('selectNumber');
 	const text = e.options[e.selectedIndex].value;
 	startPlaying(filesAll[text]);
 }
+
 function submitmagnet(magnet) {
 	client.add(magnet, torrent => {
 		chooseFile(torrent.files);
@@ -56,6 +63,7 @@ function submitmagnet(magnet) {
 		document.getElementById('myForm').style.display = 'inline';
 	});
 }
+
 function stop() {
 	process.torrent.destroy(tor => {
 		document.getElementById('playerm8').style.display = 'none';

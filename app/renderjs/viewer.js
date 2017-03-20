@@ -206,7 +206,7 @@ function findDL() {
 					figelem.addEventListener('click', () => {
 						const video = document.createElement('video');
 						video.src = files[i];
-						video.setAttribute('data-file-name', files[i].replace(/^.*[\\\/]/, ''));
+						video.setAttribute('data-file-name', `${parsedName.show.replace(' ', '')}S${parsedName.season}E${parsedName.episode}`);
 						video.autoplay = true;
 						video.controls = true;
 						video.addEventListener('loadedmetadata', handleVids, false);

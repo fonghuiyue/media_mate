@@ -26,7 +26,7 @@ function startPlaying(file) {
 	file.renderTo('#playerm8', (err, elem) => {
 		if (err) {
 			throw err;
-		} // file failed to download or display in the DOM
+		} // File failed to download or display in the DOM
 		console.log('New DOM node with the content', elem);
 		elem.style.display = 'block';
 		elem.style.width = '100%';
@@ -42,7 +42,7 @@ function startPlaying(file) {
 			console.log(a);
 			document.getElementById('dl').appendChild(a);
 		});
-	}); // append the file to the DOM
+	}); // Append the file to the DOM
 }
 function getFile() {
 	const e = document.getElementById('selectNumber');

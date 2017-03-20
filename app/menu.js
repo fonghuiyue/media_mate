@@ -10,18 +10,20 @@ const app = electron.app;
 let win;
 let menu;
 
-function init () {
+function init() {
 	menu = electron.Menu.buildFromTemplate(getMenuTemplate());
 	electron.Menu.setApplicationMenu(menu);
 	win = BrowserWindow.getAllWindows()[0];
 }
 
-function getMenuItem (label) {
+function getMenuItem(label) {
 	for (let i = 0; i < menu.items.length; i++) {
-		let menuItem = menu.items[i].submenu.items.find(function (item) {
-			return item.label === label
+		const menuItem = menu.items[i].submenu.items.find(item => {
+			return item.label === label;
 		});
-		if (menuItem) return menuItem
+		if (menuItem) {
+			return menuItem;
+		}
 	}
 }
 

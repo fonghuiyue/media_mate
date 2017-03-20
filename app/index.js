@@ -77,10 +77,10 @@ autoUpdater.on('error', error => {
 autoUpdater.on('download-progress', percent => {
 
 });
-// adds debug features like hotkeys for triggering dev tools and reload
+// Adds debug features like hotkeys for triggering dev tools and reload
 require('electron-debug')();
 
-// prevent window being garbage collected
+// Prevent window being garbage collected
 let mainWindow;
 /**
  * Catch any uncaught errors and report them.
@@ -93,15 +93,15 @@ process.on('uncaughtError', err => {
  * Called from renderer process when an error occurs
  */
 ipc.on('errorInWindow', (event, data) => {
-	// bugsnag.notify(data);
+	// Bugsnag.notify(data);
 	console.log(data);
-	// console.log('ERROR! The error is: ' + data);
+	// Console.log('ERROR! The error is: ' + data);
 });
 /**
  * Called when window closed.
  */
 function onClosed() {
-	// dereference the window
+	// Dereference the window
 	// for multiple windows store them in an array
 	mainWindow = null;
 }
@@ -129,13 +129,13 @@ function createMainWindow() {
 	mainWindowState.manage(win);
 	win.loadURL(`file://${__dirname}/index.html`);
 	win.on('closed', onClosed);
-	win.on('unresponsive', function () {
-		console.log("I've frozen. Sorry about that.")
+	win.on('unresponsive', () => {
+		console.log('I\'ve frozen. Sorry about that.');
 	});
-	win.on('responsive', function () {
-		console.log("I've unfrozen. Sorry.")
+	win.on('responsive', () => {
+		console.log('I\'ve unfrozen. Sorry.');
 	});
-	win.webContents.on('crashed', function (e, killed) {
+	win.webContents.on('crashed', (e, killed) => {
 		if (killed === true) {
 			console.log(e);
 			mainWindow = null;

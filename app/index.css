@@ -1,6 +1,3 @@
-html {
-	height: 100%;
-}
 body {
 	min-height: 100%;
 }
@@ -10,6 +7,11 @@ body {
 	bottom: 0;
 	height: 20%;
 }
+
+.section {
+	background: rgb(238, 238, 238);
+}
+
 @keyframes fadein {
 	from {
 		opacity: 0;
@@ -29,7 +31,7 @@ html {
 
 	/* Make sure this matches the native window background color that you pass to
      * electron.BrowserWindow({...}), otherwise your app startup will look janky. */
-	background: rgb(255, 255, 255);
+	background: rgb(238, 238, 238);
 
 	/* Smoother startup */
 	animation: fadein 0.5s;

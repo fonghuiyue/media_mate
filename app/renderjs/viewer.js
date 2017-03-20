@@ -1,20 +1,22 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable max-nested-callbacks */
 require('dotenv').config({path: `${__dirname}/.env`});
 const {dialog} = require('electron').remote;
 require('events').EventEmitter.prototype._maxListeners = 1000;
-const moment = require('moment');
-const parser = require('episode-parser');
-const dir = require('node-dir');
 const RSSParse = require(require('path').join(__dirname, 'lib', 'rssparse.js')).RSSParse;
-const MongoClient = require('mongodb').MongoClient;
-const _ = require('underscore');
-const f = require('util').format;
-const fs = require('fs-extra');
 const path = require('path');
+const {app, BrowserWindow} = require('electron');
+const f = require('util').format;
+const version = require('electron').remote.app.getVersion();
+const fs = require('fs-extra');
 const TVDB = require('node-tvdb');
 const storage = require('electron-json-storage');
-const {app, BrowserWindow} = require('electron');
 const bugsnag = require('bugsnag');
-const version = require('electron').remote.app.getVersion();
+const moment = require('moment');
+const MongoClient = require('mongodb').MongoClient;
+const _ = require('underscore');
+const parser = require('episode-parser');
+const dir = require('node-dir');
 
 const tvdb = new TVDB(process.env.TVDB_KEY);
 const user = process.env.DB_USER;
@@ -98,6 +100,13 @@ function getImgs() {
 	const medianodes = mediadiv.childNodes;
 	getPath(path => {
 		dir.files(path, (err, files) => {
+			if (err) {
+				bugsnag.notify(new Error(err), {
+					subsystem: {
+						name: 'Viewer'
+					}
+				});
+			}
 			files.sort();
 			files = _.filter(files, isPlayable);
 			console.log(files);

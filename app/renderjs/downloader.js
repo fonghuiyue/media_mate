@@ -1,15 +1,19 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable max-nested-callbacks */
 require('dotenv').config({path: `${__dirname}/.env`});
 const {dialog} = require('electron').remote;
-const WebTorrent = require('webtorrent');
+const path = require('path');
+const f = require('util').format;
+const ipc = require('electron').ipcRenderer;
 require('events').EventEmitter.prototype._maxListeners = 1000;
 const moment = require('moment');
-const RSSParse = require(require('path').join(__dirname, 'lib', 'rssparse.js')).RSSParse;
+
+const RSSParse = require(`${__dirname}/lib/rssparse.js`).RSSParse;
 const ProgressBar = require('progressbar.js');
 const MongoClient = require('mongodb').MongoClient;
 const _ = require('underscore');
-const f = require('util').format;
 const storage = require('electron-json-storage');
-const ipc = require('electron').ipcRenderer;
+const WebTorrent = require('webtorrent');
 
 const user = process.env.DB_USER;
 const password = process.env.DB_PWD;
@@ -141,7 +145,7 @@ function ignoreDupeTorrents(torrent, db, callback) {
 				db.close();
 			}
 		});
-	} else {
+	} else if (collection.find() === null) {
 		collection.insertOne({
 			magnet: torrent.link,
 			title: torrent.title,
@@ -159,26 +163,22 @@ function ignoreDupeTorrents(torrent, db, callback) {
 }
 
 function getTorIndex(magnet, callback) {
-	MongoClient.connect(url)
-		.then((err, db) => {
+	MongoClient.connect(url, (err, db) => {
+		if (err) {
+			throw err;
+		}
+		const collection = db.collection('torrents');
+		collection.findOne({magnet}, (err, docs) => {
 			if (err) {
 				throw err;
 			}
-			const collection = db.collection('torrents');
-			collection.findOne({
-				magnet
-			})
-				.then((err, docs) => {
-					if (err) {
-						throw err;
-					}
-					if (docs !== null) {
-						const index = docs.index;
-						callback(index);
-						db.close();
-					}
-				});
+			if (docs !== null) {
+				const index = docs.index;
+				callback(index);
+				db.close();
+			}
 		});
+	});
 }
 
 function dropTorrents(callback) {
@@ -329,7 +329,7 @@ function addTor(magnet, index) {
 }
 
 function runScript(e) {
-	if (e.keyCode == 13) {
+	if (e.keyCode === 13) {
 		const tb = document.getElementById('rss');
 		// Use connect method to connect to the Server
 		MongoClient.connect(url, (err, db) => {
@@ -341,7 +341,7 @@ function runScript(e) {
 				db.close();
 			});
 		});
-		const dl = document.getElementById('dlbox');
+		const dlbox = document.getElementById('dlbox');
 		document.getElementById('dls').style.display = 'inline';
 		const RSS = new RSSParse(tb.value);
 		RSS.on('error', err => {
@@ -394,7 +394,7 @@ function runScript(e) {
 						document.getElementById('dlbox').appendChild(label);
 						i++;
 						db.close();
-					} else {
+					} else if (dupe) {
 						console.log('dupe');
 						db.close();
 					}

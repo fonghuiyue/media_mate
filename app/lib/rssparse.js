@@ -1,6 +1,10 @@
+const events = require('events');
+const version = require('electron').remote.app.getVersion();
 const FeedParser = require('feedparser');
 const request = require('request'); // For fetching the feed
-const events = require('events');
+const bugsnag = require('bugsnag');
+
+bugsnag.register('03b389d77abc2d10136d8c859391f952', {appVersion: version, sendCode: true});
 
 class RSSParse extends events.EventEmitter {
 	constructor(rssFeed) {
@@ -14,34 +18,41 @@ class RSSParse extends events.EventEmitter {
 		const rssThis = this;
 		const req = request(this.rssFeed);
 		const feedparser = new FeedParser();
-		const rssContent = [];
 		req.on('error', err => {
-
+			bugsnag.notify(new Error(err), {
+				subsystem: {
+					name: 'RSS Parser'
+				}
+			});
 		});
 
 		req.on('response', function (res) {
 			const stream = this; // `this` is `req`, which is a stream
 
-			if (res.statusCode !== 200) {
-				this.emit('error', new Error('Bad status code'));
-			} else {
+			if (res.statusCode === 200) {
 				stream.pipe(feedparser);
-				const RSS = [];
-				feedparser.on('error', error => {
-					// Always handle errors
+				feedparser.on('error', err => {
+					bugsnag.notify(new Error(err), {
+						subsystem: {
+							name: 'RSS Parser'
+						}
+					});
 				});
 
 				feedparser.on('readable', function () {
 					// This is where the action is!
 					const stream = this; // `this` is `feedparser`, which is a stream
-					const meta = this.meta; // **NOTE** the "meta" is always available in the context of the feedparser instance
+					// **NOTE** the "meta" is always available in the context of the feedparser instance
+					const meta = this.meta; // eslint-disable-line no-unused-vars
 					let item;
 
-					while (item = stream.read()) {
+					while (item === stream.read()) {
 						// Console.log(item);
 						rssThis.emit('data', item);
 					}
 				});
+			} else {
+				this.emit('error', new Error('Bad status code'));
 			}
 		});
 	}

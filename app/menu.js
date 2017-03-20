@@ -3,9 +3,11 @@ module.exports = {
 	getMenuItem
 };
 const electron = require('electron');
+const {shell} = require('electron');
 const {BrowserWindow} = require('electron');
-const openAboutWindow = require('about-window').default;
 const path = require('path');
+const openAboutWindow = require('about-window').default;
+
 const app = electron.app;
 let win;
 let menu;
@@ -114,7 +116,7 @@ function getMenuTemplate() {
 				}, {
 					label: 'About',
 					click: () => openAboutWindow({
-						icon_path: path.join(__dirname, 'icon.png'), // eslint-disable-line camelcase // temp icon till i make one
+						icon_path: path.join(__dirname, 'icon.png'), // eslint-disable-line camelcase
 						bug_report_url: 'https://github.com/willyb321/media_mate/issues', // eslint-disable-line camelcase
 						homepage: 'https://github.com/willyb321/elite-journal'
 					})

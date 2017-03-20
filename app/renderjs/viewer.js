@@ -224,7 +224,8 @@ function findDL() {
 							videodiv.appendChild(video);
 						}
 					});
-					figelem.style.display = 'none';
+					imgelem.src = `file:///${__dirname}/loading.png`;
+					figelem.style.display = 'inline-block';
 					// imgelem.id = files[i].replace(/^.*[\\\/]/, '');
 					figelem.id = files[i].replace(/^.*[\\\/]/, '');
 					figelem.setAttribute('data-file-name', files[i].replace(/^.*[\\\/]/, ''));

@@ -1,4 +1,4 @@
-// const electron = require('electron').remote.app.getVersion();
+// Const electron = require('electron').remote.app.getVersion();
 // const bugsnag = require('bugsnag');
 //
 // bugsnag.register('03b389d77abc2d10136d8c859391f952', {appVersion: electron, sendCode: true});

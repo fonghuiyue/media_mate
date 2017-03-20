@@ -30,12 +30,13 @@ bugsnag.register('03b389d77abc2d10136d8c859391f952', {appVersion: version, sendC
 require('electron-context-menu')({
 	prepend: (params, browserWindow) => [{
 		label: 'Reset Time Watched',
-		click: () => {resetTime(params)},
-		// only show it when right-clicking images
+		click: () => {
+			resetTime(params);
+		},
+		// Only show it when right-clicking images
 		visible: params.mediaType === 'image'
 	}]
 });
-
 
 const progOpt = {
 	template: 3,
@@ -80,7 +81,7 @@ function getPath(callback) {
 		if (_.isEmpty(data) === false) {
 			callback(data.path);
 		} else {
-			let dir = path.join(require('os').homedir(), 'media_mate_dl')
+			const dir = path.join(require('os').homedir(), 'media_mate_dl');
 			fs.ensureDir(dir, err => {
 				if (err !== null) {
 					callback(dir);
@@ -122,7 +123,6 @@ function getImgs() {
 															if (res.filename !== '') {
 																img.children[0].src = `http://thetvdb.com/banners/${res.filename}`;
 																img.children[0].parentNode.style.display = 'inline-block';
-
 															} else {
 																img.children[0].src = `file:///${__dirname}/404.png`;
 																img.children[0].parentNode.style.display = 'inline-block';
@@ -132,7 +132,7 @@ function getImgs() {
 															console.log(err);
 															bugsnag.notify(new Error(err), {
 																subsystem: {
-																	name: "Viewer"
+																	name: 'Viewer'
 																}
 															});
 														});
@@ -145,7 +145,7 @@ function getImgs() {
 									console.log(err);
 									bugsnag.notify(new Error(err), {
 										subsystem: {
-											name: "Viewer"
+											name: 'Viewer'
 										}
 									});
 								});
@@ -154,11 +154,11 @@ function getImgs() {
 							if (err.message !== 'Resource not found') {
 								bugsnag.notify(new Error(err), {
 									subsystem: {
-										name: "Viewer"
+										name: 'Viewer'
 									}
 								});
 							} else {
-								console.log(err)
+								console.log(err);
 							}
 						});
 				}
@@ -171,9 +171,11 @@ function vidFinished(e) {
 	const filename = this.getAttribute('data-file-name');
 	storage.get(filename, (err, data) => {
 		storage.set(filename, {file: filename, watched: true, time: this.currentTime}, err => {
-			if (err) throw err;
-		})
-	})
+			if (err) {
+				throw err;
+			}
+		});
+	});
 }
 
 function handleVids(e) {
@@ -181,20 +183,24 @@ function handleVids(e) {
 	storage.get(filename, (err, data) => {
 		if (_.isEmpty(data) === true) {
 			storage.set(filename, {file: filename, watched: false, time: this.currentTime}, err => {
-				if (err) throw err;
-			})
+				if (err) {
+					throw err;
+				}
+			});
 		} else {
 			this.currentTime = data.time;
 		}
-	})
+	});
 }
 
 function resetTime(params) {
 	const filename = document.elementFromPoint(params.x, params.y).parentNode.getAttribute('data-file-name');
 	console.log(document.elementFromPoint(params.x, params.y).parentNode);
-	storage.remove(filename, (err) => {
-		if (err) throw err;
-	})
+	storage.remove(filename, err => {
+		if (err) {
+			throw err;
+		}
+	});
 }
 
 function vidProgress(e) {
@@ -202,12 +208,14 @@ function vidProgress(e) {
 	storage.get(filename, (err, data) => {
 		if (_.isEmpty(data) === false) {
 			storage.set(filename, {file: filename, watched: false, time: this.currentTime}, err => {
-				if (err) throw err;
-			})
+				if (err) {
+					throw err;
+				}
+			});
 		} else {
 			console.log('dunno');
 		}
-	})
+	});
 }
 
 function findDL() {
@@ -243,7 +251,7 @@ function findDL() {
 					});
 					imgelem.src = `file:///${__dirname}/loading.png`;
 					figelem.style.display = 'inline-block';
-					// imgelem.id = files[i].replace(/^.*[\\\/]/, '');
+					// Imgelem.id = files[i].replace(/^.*[\\\/]/, '');
 					figelem.id = files[i].replace(/^.*[\\\/]/, '');
 					figelem.setAttribute('data-file-name', files[i].replace(/^.*[\\\/]/, ''));
 					imgelem.title = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;

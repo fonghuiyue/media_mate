@@ -1,5 +1,5 @@
 const FeedParser = require('feedparser');
-const request = require('request'); // for fetching the feed
+const request = require('request'); // For fetching the feed
 const events = require('events');
 
 class RSSParse extends events.EventEmitter {
@@ -28,7 +28,7 @@ class RSSParse extends events.EventEmitter {
 				stream.pipe(feedparser);
 				const RSS = [];
 				feedparser.on('error', error => {
-					// always handle errors
+					// Always handle errors
 				});
 
 				feedparser.on('readable', function () {
@@ -38,7 +38,7 @@ class RSSParse extends events.EventEmitter {
 					let item;
 
 					while (item = stream.read()) {
-						// console.log(item);
+						// Console.log(item);
 						rssThis.emit('data', item);
 					}
 				});

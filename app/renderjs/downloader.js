@@ -45,7 +45,7 @@ window.onload = () => {
 				color: '#999',
 				position: 'absolute',
 				right: '0',
-				//				top: '30px',
+				//				Top: '30px',
 				padding: 0,
 				margin: 0,
 				transform: null

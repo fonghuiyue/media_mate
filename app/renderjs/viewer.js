@@ -13,6 +13,8 @@ const path = require('path');
 const TVDB = require('node-tvdb');
 const storage = require('electron-json-storage');
 const {app, BrowserWindow} = require('electron');
+const bugsnag = require('bugsnag');
+const version = require('electron').remote.app.getVersion();
 
 const tvdb = new TVDB(process.env.TVDB_KEY);
 const user = process.env.DB_USER;
@@ -22,6 +24,8 @@ const authMechanism = 'DEFAULT';
 const vidProgressthrottled = _.throttle(vidProgress, 1000);
 const url = f('mongodb://%s:%s@%s/media_mate?ssl=true&replicaSet=SDD-Major-shard-0&authSource=admin',
 	user, password, dburi);
+
+bugsnag.register('03b389d77abc2d10136d8c859391f952', {appVersion: version, sendCode: true});
 
 require('electron-context-menu')({
 	prepend: (params, browserWindow) => [{
@@ -126,7 +130,11 @@ function getImgs() {
 														})
 														.catch(err => {
 															console.log(err);
-															throw err;
+															bugsnag.notify(new Error(err), {
+																subsystem: {
+																	name: "Viewer"
+																}
+															});
 														});
 												}
 											});
@@ -135,13 +143,22 @@ function getImgs() {
 								})
 								.catch(err => {
 									console.log(err);
-									throw err;
+									bugsnag.notify(new Error(err), {
+										subsystem: {
+											name: "Viewer"
+										}
+									});
 								});
 						})
 						.catch(err => {
 							if (err.message !== 'Resource not found') {
-								console.log(err);
-								throw err;
+								bugsnag.notify(new Error(err), {
+									subsystem: {
+										name: "Viewer"
+									}
+								});
+							} else {
+								console.log(err)
 							}
 						});
 				}

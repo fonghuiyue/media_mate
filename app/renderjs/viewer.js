@@ -111,11 +111,17 @@ function getImgs() {
 												if (img.id === path) {
 													tvdb.getEpisodeById(elem.id)
 														.then(res => {
-															img.children[0].src = `http://thetvdb.com/banners/${res.filename}`;
-															img.children[0].parentNode.style.display = 'inline-block';
 															if (ind === medianodes.length - 1) {
 																indeterminateProgress.end();
 																document.getElementById('Loading').style.display = 'none';
+															}
+															if (res.filename !== '') {
+																img.children[0].src = `http://thetvdb.com/banners/${res.filename}`;
+																img.children[0].parentNode.style.display = 'inline-block';
+
+															} else {
+																img.children[0].src = `file:///${__dirname}/404.png`;
+																img.children[0].parentNode.style.display = 'inline-block';
 															}
 														})
 														.catch(err => {

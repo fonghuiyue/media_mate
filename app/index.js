@@ -120,7 +120,7 @@ function createMainWindow() {
 		width: mainWindowState.width,
 		height: mainWindowState.height,
 		show: false,
-		backgroundColor: '#ffffff'
+		backgroundColor: '#eeeeee'
 	});
 	win.once('ready-to-show', () => {
 		win.show();

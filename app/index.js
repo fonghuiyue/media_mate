@@ -16,7 +16,7 @@ import moment from 'moment';
 import MongoClient from 'mongodb';
 import {RSSParse} from './lib/rssparse';
 import TVDB from 'node-tvdb';
-import {init, getMenuItem} from './lib/menu.js';
+import {init, getMenuItem} from './menu.js';
 require('electron-debug')();
 const tvdb = new TVDB(process.env.TVDB_KEY);
 const f = require('util').format;

@@ -29,6 +29,7 @@
 		"episode-parser": "willyb321/episode-parser.git#9008e1da6ed5152349e1d35ff65b68b9684a9b9e",
 		"feedparser": "^2.1.0",
 		"fs-extra": "^2.1.2",
+		"is-electron-renderer": "^2.0.1",
 		"izitoast": "^1.1.1",
 		"jquery": "^3.2.0",
 		"json-stringify-safe": "^5.0.1",

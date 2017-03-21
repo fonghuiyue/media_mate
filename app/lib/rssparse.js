@@ -1,8 +1,13 @@
 const events = require('events');
-const version = require('electron').remote.app.getVersion();
 const FeedParser = require('feedparser');
 const request = require('request'); // For fetching the feed
-const bugsnag = require('bugsnag');
+const bugsnag = require('bugsnag'); // Catch bugs / errors
+const isRenderer = require('is-electron-renderer');
+
+let version;
+// Make sure that version can be got from both render and main process
+isRenderer ? version = require('electron').remote.app.getVersion() : // eslint-disable-line no-unused-expressions
+version = require('electron').app.getVersion();
 
 bugsnag.register('03b389d77abc2d10136d8c859391f952', {appVersion: version, sendCode: true});
 

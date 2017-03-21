@@ -47,7 +47,7 @@ const progOpt = {
 };
 let indeterminateProgress;
 window.onload = () => {
-	indeterminateProgress = new Mprogress(progOpt);
+	indeterminateProgress = new Mprogress(progOpt); // eslint-disable-line no-undef
 	findDL();
 };
 
@@ -75,47 +75,52 @@ function getFileExtension(file) {
 	return path.extname(name).toLowerCase();
 }
 
-function getPath(callback) {
-	storage.get('path', (err, data) => {
-		if (err) {
-			throw err;
-		}
-		if (_.isEmpty(data) === false) {
-			callback(data.path);
-		} else {
-			const dir = path.join(require('os').homedir(), 'media_mate_dl');
-			fs.ensureDir(dir, err => {
-				if (err !== null) {
-					callback(dir);
-				} else {
-					throw err;
-				}
-			});
-		}
+function getPath() {
+	return new Promise(resolve => {
+		storage.get('path', (err, data) => {
+			if (err) {
+				throw err;
+			}
+			if (_.isEmpty(data) === false) {
+				resolve({path: data.path});
+			} else {
+				const dir = path.join(require('os').homedir(), 'media_mate_dl');
+				fs.ensureDir(dir, err => {
+					if (err) {
+						bugsnag.notify(new Error(err), {
+							subsystem: {
+								name: 'Viewer'
+							}
+						});
+					}
+					resolve({path: dir});
+				});
+			}
+		});
 	});
 }
 
-function getImgs() {
+async function getImgs() {
 	const mediadiv = document.getElementById('media');
 	const medianodes = mediadiv.childNodes;
-	getPath(path => {
-		dir.files(path, (err, files) => {
-			if (err) {
-				bugsnag.notify(new Error(err), {
-					subsystem: {
-						name: 'Viewer'
-					}
-				});
-			}
-			files.sort();
-			files = _.filter(files, isPlayable);
-			console.log(files);
-			files.forEach(elem => {
-				elem = elem.replace(/^.*[\\\/]/, '');
-				const path = elem;
-				const tvelem = parser(elem);
-				if (_.has(tvelem, 'show') === true) {
-					tvdb.getSeriesByName(tvelem.show)
+	const path = await getPath();
+	dir.files(path.path, (err, files) => {
+		if (err) {
+			bugsnag.notify(new Error(err), {
+				subsystem: {
+					name: 'Viewer'
+				}
+			});
+		}
+		files.sort();
+		files = _.filter(files, isPlayable);
+		console.log(files);
+		files.forEach(elem => {
+			elem = elem.replace(/^.*[\\/]/, '');
+			const path = elem;
+			const tvelem = parser(elem);
+			if (_.has(tvelem, 'show') === true) {
+				tvdb.getSeriesByName(tvelem.show)
 						.then(res => {
 							tvdb.getEpisodesBySeriesId(res[0].id)
 								.then(res => {
@@ -170,8 +175,7 @@ function getImgs() {
 								console.log(err);
 							}
 						});
-				}
-			});
+			}
 		});
 	});
 }
@@ -179,9 +183,20 @@ function getImgs() {
 function vidFinished(e) {
 	const filename = this.getAttribute('data-file-name');
 	storage.get(filename, (err, data) => {
+		if (err) {
+			bugsnag.notify(new Error(err), {
+				subsystem: {
+					name: 'Viewer'
+				}
+			});
+		}
 		storage.set(filename, {file: filename, watched: true, time: this.currentTime}, err => {
 			if (err) {
-				throw err;
+				bugsnag.notify(new Error(err), {
+					subsystem: {
+						name: 'Viewer'
+					}
+				});
 			}
 		});
 	});
@@ -190,6 +205,13 @@ function vidFinished(e) {
 function handleVids(e) {
 	const filename = this.getAttribute('data-file-name');
 	storage.get(filename, (err, data) => {
+		if (err) {
+			bugsnag.notify(new Error(err), {
+				subsystem: {
+					name: 'Viewer'
+				}
+			});
+		}
 		if (_.isEmpty(data) === true) {
 			storage.set(filename, {file: filename, watched: false, time: this.currentTime}, err => {
 				if (err) {
@@ -215,6 +237,13 @@ function resetTime(params) {
 function vidProgress(e) {
 	const filename = this.getAttribute('data-file-name');
 	storage.get(filename, (err, data) => {
+		if (err) {
+			bugsnag.notify(new Error(err), {
+				subsystem: {
+					name: 'Viewer'
+				}
+			});
+		}
 		if (_.isEmpty(data) === false) {
 			storage.set(filename, {file: filename, watched: false, time: this.currentTime}, err => {
 				if (err) {
@@ -227,52 +256,51 @@ function vidProgress(e) {
 	});
 }
 
-function findDL() {
-	getPath(path => {
-		dir.files(path, (err, files) => {
-			if (err) {
-				throw err;
-			}
-			const mediadiv = document.getElementById('media');
-			const videodiv = document.getElementById('video');
-			files = _.filter(files, isPlayable);
-			files.sort();
-			for (let i = 0; i < files.length; i++) {
-				const parsedName = parser(files[i].replace(/^.*[\\\/]/, ''));
-				if (parsedName !== null) {
-					const figelem = document.createElement('figure');
-					const figcap = document.createElement('figcaption');
-					const imgelem = document.createElement('img');
-					figelem.addEventListener('click', () => {
-						const video = document.createElement('video');
-						video.src = files[i];
-						video.setAttribute('data-file-name', `${parsedName.show.replace(' ', '')}S${parsedName.season}E${parsedName.episode}`);
-						video.autoplay = true;
-						video.controls = true;
-						video.addEventListener('loadedmetadata', handleVids, false);
-						video.addEventListener('ended', vidFinished, false);
-						video.addEventListener('timeupdate', vidProgressthrottled, false);
-						if (videodiv.childElementCount > 0) {
-							videodiv.replaceChild(video, videodiv.firstElementChild);
-						} else {
-							videodiv.appendChild(video);
-						}
-					});
-					imgelem.src = `file:///${__dirname}/loading.png`;
-					figelem.style.display = 'inline-block';
+async function findDL() {
+	const path = await getPath();
+	dir.files(path.path, (err, files) => {
+		if (err) {
+			throw err;
+		}
+		const mediadiv = document.getElementById('media');
+		const videodiv = document.getElementById('video');
+		files = _.filter(files, isPlayable);
+		files.sort();
+		for (let i = 0; i < files.length; i++) {
+			const parsedName = parser(files[i].replace(/^.*[\\\/]/, ''));
+			if (parsedName !== null) {
+				const figelem = document.createElement('figure');
+				const figcap = document.createElement('figcaption');
+				const imgelem = document.createElement('img');
+				figelem.addEventListener('click', () => {
+					const video = document.createElement('video');
+					video.src = files[i];
+					video.setAttribute('data-file-name', `${parsedName.show.replace(' ', '')}S${parsedName.season}E${parsedName.episode}`);
+					video.autoplay = true;
+					video.controls = true;
+					video.addEventListener('loadedmetadata', handleVids, false);
+					video.addEventListener('ended', vidFinished, false);
+					video.addEventListener('timeupdate', vidProgressthrottled, false);
+					if (videodiv.childElementCount > 0) {
+						videodiv.replaceChild(video, videodiv.firstElementChild);
+					} else {
+						videodiv.appendChild(video);
+					}
+				});
+				imgelem.src = `file:///${__dirname}/loading.png`;
+				figelem.style.display = 'inline-block';
 					// Imgelem.id = files[i].replace(/^.*[\\\/]/, '');
-					figelem.id = files[i].replace(/^.*[\\\/]/, '');
-					figelem.setAttribute('data-file-name', files[i].replace(/^.*[\\\/]/, ''));
-					imgelem.title = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;
-					imgelem.style.width = '400px';
-					imgelem.style.height = '225px';
-					figcap.innerText = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;
-					figelem.appendChild(imgelem);
-					figelem.appendChild(figcap);
-					mediadiv.appendChild(figelem);
-				}
+				figelem.id = files[i].replace(/^.*[\\\/]/, '');
+				figelem.setAttribute('data-file-name', files[i].replace(/^.*[\\\/]/, ''));
+				imgelem.title = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;
+				imgelem.style.width = '400px';
+				imgelem.style.height = '225px';
+				figcap.innerText = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;
+				figelem.appendChild(imgelem);
+				figelem.appendChild(figcap);
+				mediadiv.appendChild(figelem);
 			}
-			getImgs();
-		});
+		}
+		getImgs();
 	});
 }

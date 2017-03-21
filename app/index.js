@@ -1,4 +1,5 @@
 'use strict';
+/* eslint-disable no-unused-vars */
 console.time('init');
 require('dotenv').config({path: `${__dirname}/.env`});
 
@@ -18,11 +19,9 @@ import {RSSParse} from './lib/rssparse';
 import TVDB from 'node-tvdb';
 import {init, getMenuItem} from './menu.js';
 require('electron-debug')();
-const tvdb = new TVDB(process.env.TVDB_KEY);
 const f = require('util').format;
 const windowStateKeeper = require('electron-window-state');
 let eNotify;
-let notDL = 0;
 const user = process.env.DB_USER;
 const password = process.env.DB_PWD;
 const dburi = process.env.DB_URL;
@@ -176,16 +175,7 @@ function ignoreDupeTorrents(torrent, callback) {
 				if (err) {
 					throw err;
 				}
-				if (docs !== null) {
-					if (docs.downloaded === true) {
-						db.close();
-						callback('dupe');
-					} else if (docs.downloaded === false) {
-						notDL++;
-						db.close();
-						callback();
-					}
-				} else {
+				if (docs === null) {
 					collection.insertOne({
 						magnet: torrent.link,
 						title: torrent.title,
@@ -197,10 +187,15 @@ function ignoreDupeTorrents(torrent, callback) {
 							if (err) {
 								throw err;
 							}
-							notDL++;
 							db.close();
 							callback();
 						});
+				} else if (docs.downloaded === true) {
+					db.close();
+					callback('dupe');
+				} else if (docs.downloaded === false) {
+					db.close();
+					callback();
 				}
 			});
 		}
@@ -235,19 +230,19 @@ function watchRSS() {
 	let uri;
 	getRSSURI(cb => {
 		uri = cb;
-		if (cb !== '') {
+		if (cb === '') {
+			eNotify.notify({title: 'Put your ShowRSS URL into the downloader!', description: 'showrss.info'});
+		} else {
 			const RSS = new RSSParse(uri);
 			RSS.on('data', data => {
 				ignoreDupeTorrents(data, dupe => {
-					if (!dupe) {
-						eNotify.notify({title: 'New Download Available', text: data.title});
-					} else {
+					if (dupe) {
 						console.log('already DL');
+					} else {
+						eNotify.notify({title: 'New Download Available', text: data.title});
 					}
 				});
 			});
-		} else {
-			eNotify.notify({title: 'Put your ShowRSS URL into the downloader!', description: 'showrss.info'});
 		}
 	});
 }

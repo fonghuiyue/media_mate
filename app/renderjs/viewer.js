@@ -165,14 +165,14 @@ async function getImgs() {
 								});
 						})
 						.catch(err => {
-							if (err.message !== 'Resource not found') {
+							if (err.message === 'Resource not found') {
+								console.log(err);
+							} else {
 								bugsnag.notify(new Error(err), {
 									subsystem: {
 										name: 'Viewer'
 									}
 								});
-							} else {
-								console.log(err);
 							}
 						});
 			}

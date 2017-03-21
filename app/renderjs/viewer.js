@@ -267,7 +267,7 @@ async function findDL() {
 		files = _.filter(files, isPlayable);
 		files.sort();
 		for (let i = 0; i < files.length; i++) {
-			const parsedName = parser(files[i].replace(/^.*[\\\/]/, ''));
+			const parsedName = parser(files[i].replace(/^.*[\\/]/, ''));
 			if (parsedName !== null) {
 				const figelem = document.createElement('figure');
 				const figcap = document.createElement('figcaption');
@@ -290,8 +290,8 @@ async function findDL() {
 				imgelem.src = `file:///${__dirname}/loading.png`;
 				figelem.style.display = 'inline-block';
 					// Imgelem.id = files[i].replace(/^.*[\\\/]/, '');
-				figelem.id = files[i].replace(/^.*[\\\/]/, '');
-				figelem.setAttribute('data-file-name', files[i].replace(/^.*[\\\/]/, ''));
+				figelem.id = files[i].replace(/^.*[\\/]/, '');
+				figelem.setAttribute('data-file-name', files[i].replace(/^.*[\\/]/, ''));
 				imgelem.title = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;
 				imgelem.style.width = '400px';
 				imgelem.style.height = '225px';

@@ -1,0 +1,8 @@
+{
+	"extends": "xo",
+	"globals": {
+		"document": true,
+		"process": true,
+		"window": true
+	}
+}

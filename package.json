@@ -37,6 +37,8 @@
 		"devtron": "^1.4.0",
 		"electron": "^1.6.2",
 		"electron-builder": "^15.6.2",
+		"eslint": "^3.18.0",
+		"eslint-config-xo": "^0.18.1",
 		"gulp": "^3.9.1",
 		"gulp-ava": "^0.16.0",
 		"gulp-babel": "^6.1.2",
@@ -51,8 +53,7 @@
 		"jsdoc-export-default-interop": "^0.3.1",
 		"release-it": "^2.6.0",
 		"rimraf": "^2.6.1",
-		"spectron": "^3.6.0",
-		"xo": "^0.18.0"
+		"spectron": "^3.6.0"
 	},
 	"ava": {},
 	"xo": {

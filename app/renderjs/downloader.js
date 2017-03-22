@@ -27,6 +27,9 @@ let bar;
 const dbindex = 0;
 const allTorrents = [];
 const prog = _.throttle(dlProgress, 10000);
+/**
+ * Make sure that everything is loaded before doing the good stuff.
+ */
 window.onload = () => {
 	getRSSURI(callback => {
 		document.getElementById('rss').value = callback;
@@ -67,7 +70,9 @@ window.onload = () => {
 		}
 	});
 };
-
+/**
+ * Update the download progress bar, but make sure not to do it too often.
+ */
 function dlProgress() {
 	const animateThrottled = _.throttle(
 		_.bind(bar.animate, bar),
@@ -75,10 +80,16 @@ function dlProgress() {
 	);
 	animateThrottled(client.progress);
 }
+/**
+ * WebTorrent on error, handle it.
+ */
 client.on('error', err => {
 	console.error('ERROR: ' + err.message);
 });
-
+/**
+ * Get the ShowRSS URI from the db
+ * @param callback - return it.
+ */
 function getRSSURI(callback) {
 	MongoClient.connect(url, (err, db) => {
 		if (err) {
@@ -103,7 +114,11 @@ function getRSSURI(callback) {
 		}
 	});
 }
-
+/**
+ * Make sure that the torrents are downloaded and in the DB.
+ * @param torrent - the torrent object to be checked
+ * @param callback
+ */
 function makeSureAllDL(torrent, callback) {
 	if (_.contains(allTorrents, torrent) === true) {
 		console.log('got it');
@@ -113,7 +128,12 @@ function makeSureAllDL(torrent, callback) {
 		callback('add it');
 	}
 }
-
+/**
+ * Make sure not to add torrents already downloaded.
+ * @param torrent - the torrent object to be checked
+ * @param db - the MongoDB instance to be checked
+ * @param callback - You know what it is.
+ */
 function ignoreDupeTorrents(torrent, db, callback) {
 	const collection = db.collection('torrents');
 	if (collection.find() !== null) {
@@ -161,7 +181,11 @@ function ignoreDupeTorrents(torrent, db, callback) {
 		});
 	}
 }
-
+/**
+ * Get the index of the torrent being checked by the magnet URI
+ * @param magnet - the magnet URI for checking.
+ * @param callback - Do I really need to say what this is :)
+ */
 function getTorIndex(magnet, callback) {
 	MongoClient.connect(url, (err, db) => {
 		if (err) {
@@ -180,7 +204,10 @@ function getTorIndex(magnet, callback) {
 		});
 	});
 }
-
+/**
+ * Drop the torrent database. Mainly for testing purpose.
+ * @param callback - let em know.
+ */
 function dropTorrents(callback) {
 	MongoClient.connect(url, (err, db) => {
 		if (err) {
@@ -191,7 +218,12 @@ function dropTorrents(callback) {
 		db.close();
 	});
 }
-
+/**
+ * Make sure that the ShowRSS URI is update.
+ * @param uri - the ShowRSS URI
+ * @param db - the MongoDB instance
+ * @param callback
+ */
 function updateURI(uri, db, callback) {
 	// Get the documents collection
 	const collection = db.collection('uri');
@@ -208,7 +240,12 @@ function updateURI(uri, db, callback) {
 		db.close();
 	});
 }
-
+/**
+ * Initial load, get the torrents in the db.
+ * @param db - MongoDB instance
+ * @param col - MongoDB Collection
+ * @param callback
+ */
 function findDocuments(db, col, callback) {
 	// Get the documents collection
 	const collection = db.collection(col || 'uri');
@@ -224,7 +261,9 @@ function findDocuments(db, col, callback) {
 		callback(docs);
 	});
 }
-// Use connect method to connect to the Server
+/**
+ * Use connect method to connect to the Server
+ */
 MongoClient.connect(url, (err, db) => {
 	if (err) {
 		throw err;
@@ -234,7 +273,9 @@ MongoClient.connect(url, (err, db) => {
 		db.close();
 	});
 });
-
+/**
+ * Download all of the torrents, after they are added to the DOM.
+ */
 function dlAll() {
 	MongoClient.connect(url, (err, db) => {
 		if (err) {
@@ -256,7 +297,10 @@ function dlAll() {
 		});
 	});
 }
-
+/**
+ * Get the path for torrents to be downloaded to, from JSON storage.
+ * @param callback
+ */
 function getDlPath(callback) {
 	storage.get('path', (err, data) => {
 		if (err) {
@@ -285,7 +329,11 @@ function insertDlPath(callback) {
 		});
 	}
 }
-
+/**
+ * Add a torrent to WebTorrent and the DB.
+ * @param magnet - the magnet URI for WebTorrent
+ * @param index - the index of the torrent.
+ */
 function addTor(magnet, index) {
 	document.getElementById('Progress').style.display = '';
 	getDlPath(callback => {
@@ -327,7 +375,11 @@ function addTor(magnet, index) {
 		});
 	});
 }
-
+/**
+ * Called on hitting enter in the Magnet URI box.
+ * @param e - the keypress event.
+ * @returns {boolean} - whether the key was enter or not.
+ */
 function runScript(e) {
 	if (e.keyCode === 13) {
 		const tb = document.getElementById('rss');

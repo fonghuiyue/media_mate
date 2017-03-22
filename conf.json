@@ -12,7 +12,7 @@
 		"node_modules/jsdoc-strip-async-await"
 	],
 	"templates": {
-		"cleverLinks": false,
+		"cleverLinks": true,
 		"monospaceLinks": false
 	},
 	"opts": {

@@ -4,7 +4,7 @@
 		"dictionaries": ["jsdoc","closure"]
 	},
 	"source": {
-		"include": ["app/"],
+		"include": ["app/", "app/renderjs"],
 		"exclude": "app/node_modules/"
 	},
 	"plugins": [

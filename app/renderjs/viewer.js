@@ -139,7 +139,7 @@ async function getImgs() {
 		console.log(files);
 		files.forEach(elem => {
 			elem = elem.replace(/^.*[\\/]/, '');
-			const path = elem;
+			const elempath = elem;
 			const tvelem = parser(elem);
 			if (_.has(tvelem, 'show') === true) {
 				tvdb.getSeriesByName(tvelem.show)
@@ -149,7 +149,7 @@ async function getImgs() {
 									res.forEach(elem => {
 										if (_.isMatch(elem, {airedEpisodeNumber: tvelem.episode}) === true && _.isMatch(elem, {airedSeason: tvelem.season}) === true) {
 											medianodes.forEach((img, ind) => {
-												if (img.id === path) {
+												if (img.id === elempath) {
 													tvdb.getEpisodeById(elem.id)
 														.then(res => {
 															if (ind === medianodes.length - 1) {

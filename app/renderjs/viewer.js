@@ -28,7 +28,9 @@ const url = f('mongodb://%s:%s@%s/media_mate?ssl=true&replicaSet=SDD-Major-shard
 	user, password, dburi);
 
 bugsnag.register('03b389d77abc2d10136d8c859391f952', {appVersion: version, sendCode: true});
-
+/**
+ * Add a context menu so that we can reset time watched.
+ */
 require('electron-context-menu')({
 	prepend: (params, browserWindow) => [{
 		label: 'Reset Time Watched',
@@ -46,16 +48,27 @@ const progOpt = {
 	start: true
 };
 let indeterminateProgress;
+/**
+ * Make sure that the window is loaded.
+ */
 window.onload = () => {
 	indeterminateProgress = new Mprogress(progOpt); // eslint-disable-line no-undef
 	findDL();
 };
-
+/**
+ * Return true if file is playable
+ * @param file - the filename with extension
+ * @returns {boolean} - if its playable or not.
+ */
 function isPlayable(file) {
 	return isVideo(file);
 }
 
-// Checks whether a fileSummary or file path is playable video
+/**
+ * Checks whether the file path is playable video
+ * @param file - the path to the file
+ * @returns {boolean}
+ */
 function isVideo(file) {
 	return [
 		'.avi',
@@ -69,12 +82,19 @@ function isVideo(file) {
 		'.wmv'
 	].includes(getFileExtension(file));
 }
-
+/**
+ * Get the extension of {file}
+ * @param file - the file name / path
+ * @returns {string} - extension of the file.
+ */
 function getFileExtension(file) {
 	const name = typeof file === 'string' ? file : file.name;
 	return path.extname(name).toLowerCase();
 }
-
+/**
+ * Get the path for downloads.
+ * @returns {Promise}
+ */
 function getPath() {
 	return new Promise(resolve => {
 		storage.get('path', (err, data) => {
@@ -99,7 +119,9 @@ function getPath() {
 		});
 	});
 }
-
+/**
+ * Get images for each of the downloaded files.
+ */
 async function getImgs() {
 	const mediadiv = document.getElementById('media');
 	const medianodes = mediadiv.childNodes;
@@ -179,7 +201,10 @@ async function getImgs() {
 		});
 	});
 }
-
+/**
+ * Called when a video is finished.
+ * @param e - the event.
+ */
 function vidFinished(e) {
 	const filename = this.getAttribute('data-file-name');
 	storage.get(filename, (err, data) => {
@@ -201,7 +226,10 @@ function vidFinished(e) {
 		});
 	});
 }
-
+/**
+ * On video metadata loaded, add it to the JSON.
+ * @param e - event.
+ */
 function handleVids(e) {
 	const filename = this.getAttribute('data-file-name');
 	storage.get(filename, (err, data) => {
@@ -223,7 +251,10 @@ function handleVids(e) {
 		}
 	});
 }
-
+/**
+ * Reset the time watched.
+ * @param params - the x / y of the image.
+ */
 function resetTime(params) {
 	const filename = document.elementFromPoint(params.x, params.y).parentNode.getAttribute('data-file-name');
 	console.log(document.elementFromPoint(params.x, params.y).parentNode);
@@ -233,7 +264,10 @@ function resetTime(params) {
 		}
 	});
 }
-
+/**
+ * On time update in the video, throttled for every few seconds.
+ * @param e - video event.
+ */
 function vidProgress(e) {
 	const filename = this.getAttribute('data-file-name');
 	storage.get(filename, (err, data) => {
@@ -255,7 +289,9 @@ function vidProgress(e) {
 		}
 	});
 }
-
+/**
+ * Get files downloaded and process them to the DOM.
+ */
 async function findDL() {
 	const path = await getPath();
 	dir.files(path.path, (err, files) => {

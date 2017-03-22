@@ -90,5 +90,8 @@
 			"iconUrl": "https://github.com/willyb321/elite-journal/blob/master/build/icon.ico?raw=true",
 			"remoteReleases": true
 		}
+	},
+	"dependencies": {
+		"jsdoc-strip-async-await": "^0.1.0"
 	}
 }

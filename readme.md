@@ -15,7 +15,7 @@
 Media Mate is a media centre, along the lines of [Plex](https://plex.tv), with the features of [Sonarr](https://sonarr.tv), downloading and organising your media in a good looking way. Media Mate also allows you to automatically download the shows that *you* want to watch, thanks to [ShowRSS](http://showrss.info/).
 
 ## Whats it look like then?
-![Media Mate UI](https://github.com/willyb321/media_mate/blob/develop/ui.png?raw=true)
+<img align="center" style="width: 100%; height:100%;" src="https://raw.githubusercontent.com/willyb321/media_mate/develop/ui.png" alt="Media Mate UI">
 
 
 

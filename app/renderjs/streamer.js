@@ -5,7 +5,11 @@ require('events').EventEmitter.prototype._maxListeners = 1000;
 
 const client = new WebTorrent();
 let filesAll = '';
-
+/**
+ * On keypress on the <input>
+ * @param e - the event
+ * @returns {boolean} - whether enter was pressed or not.
+ */
 function runScript(e) {
 	if (e.keyCode === 13) {
 		const tb = document.getElementById('magnet');
@@ -13,7 +17,10 @@ function runScript(e) {
 		return false;
 	}
 }
-
+/**
+ * Allow the user to choose what file to stream.
+ * @param files - files in the torrent
+ */
 function chooseFile(files) {
 	const select = document.getElementById('selectNumber');
 	console.log(files);
@@ -26,7 +33,10 @@ function chooseFile(files) {
 		select.appendChild(el);
 	}
 }
-
+/**
+ * Start playing the file
+ * @param file - the file
+ */
 function startPlaying(file) {
 	file.renderTo('#playerm8', (err, elem) => {
 		if (err) {
@@ -49,13 +59,18 @@ function startPlaying(file) {
 		});
 	}); // Append the file to the DOM
 }
-
+/**
+ * Get file when selected
+ */
 function getFile() {
 	const e = document.getElementById('selectNumber');
 	const text = e.options[e.selectedIndex].value;
 	startPlaying(filesAll[text]);
 }
-
+/**
+ * Add magnet to WebTorrent
+ * @param magnet - the magnet URI
+ */
 function submitmagnet(magnet) {
 	client.add(magnet, torrent => {
 		chooseFile(torrent.files);
@@ -63,7 +78,9 @@ function submitmagnet(magnet) {
 		document.getElementById('myForm').style.display = 'inline';
 	});
 }
-
+/**
+ * Stop downloading the torrent.
+ */
 function stop() {
 	process.torrent.destroy(tor => {
 		document.getElementById('playerm8').style.display = 'none';

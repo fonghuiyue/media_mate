@@ -4,19 +4,14 @@ console.time('init');
 require('dotenv').config({path: `${__dirname}/.env`});
 
 import electron, {Menu, dialog, ipcMain as ipc, shell} from 'electron';
-import path from 'path';
-import os from 'os';
 import {autoUpdater} from 'electron-updater';
 import fs from 'fs-extra';
-import tableify from 'tableify';
 import _ from 'underscore';
 import isDev from 'electron-is-dev';
 import bugsnag from 'bugsnag';
-import openAboutWindow from 'about-window';
 import moment from 'moment';
 import MongoClient from 'mongodb';
 import {RSSParse} from './lib/rssparse';
-import TVDB from 'node-tvdb';
 import {init, getMenuItem} from './menu.js';
 require('electron-debug')();
 const f = require('util').format;
@@ -83,6 +78,7 @@ require('electron-debug')();
 let mainWindow;
 /**
  * Catch any uncaught errors and report them.
+ * @param err - The error to be handled.
  */
 process.on('uncaughtError', err => {
 	bugsnag.notify(err);
@@ -97,7 +93,7 @@ ipc.on('errorInWindow', (event, data) => {
 	// Console.log('ERROR! The error is: ' + data);
 });
 /**
- * Called when window closed.
+ * Dereference the window to make sure that things are collected properly.
  */
 function onClosed() {
 	// Dereference the window
@@ -105,7 +101,7 @@ function onClosed() {
 	mainWindow = null;
 }
 /**
- * Called on app ready
+ * Make the window, get the state, then return.
  * @returns {BrowserWindow}
  */
 function createMainWindow() {
@@ -163,7 +159,11 @@ app.on('activate', () => {
 		mainWindow = createMainWindow();
 	}
 });
-
+/**
+ * @description Make sure to not add torrents that are already in the database / downloaded
+ * @param torrent - the torrent object to be checked
+ * @param callback - The callback.
+ */
 function ignoreDupeTorrents(torrent, callback) {
 	MongoClient.connect(url, (err, db) => {
 		if (err) {
@@ -201,6 +201,10 @@ function ignoreDupeTorrents(torrent, callback) {
 		}
 	});
 }
+/**
+ * @description Get the ShowRSS URI from the DB.
+ * @param callback - Callbacks
+ */
 function getRSSURI(callback) {
 	MongoClient.connect(url, (err, db) => {
 		if (err) {

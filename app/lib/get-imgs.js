@@ -70,8 +70,11 @@ class GetImgs extends events.EventEmitter {
 		this._op = null;
 		this._timer = null;
 		this._die = false;
-		this.files();
-		this._loop();
+		this._operation = 0;
+		this.files()
+			.then(() => {
+				this._loop();
+			});
 	}
 	async files() {
 		const ret = await this.findFiles();
@@ -86,20 +89,42 @@ class GetImgs extends events.EventEmitter {
 				files.sort();
 				this._files = files;
 				this._files = _.filter(this._files, isPlayable);
+				console.log(this._files);
 				resolve({files: this._files});
 			});
 		});
 	}
 	async _loop() {
-		await this.findFiles();
-		this._files.forEach(elem => {
-			elem = elem.replace(/^.*[\\/]/, '');
-			this.elempath = elem;
-			this.tvelem = parser(elem);
-			if (_.has(this.tvelem, 'show') === true) {
-				this._getSeriesByName();
+		this._op = null;
+		if (this._ops.length === 0) {
+			this._timer = setTimeout(() => {
+				if (this._operation <= this._files.length - 1) {
+					this._ops.push(this._operation);
+					setImmediate(() => this._loop());
+				}
+			}, POLL_INTERVAL);
+			return;
+		}
+
+		this._op = this._ops.shift();
+		try {
+			if (this._operation <= this._files.length - 1) {
+				let elem = this._files[this._operation];
+				console.log(this._operation, elem);
+				if (elem !== undefined) {
+					elem = elem.replace(/^.*[\\/]/, '');
+					this.elempath = elem;
+					this.tvelem = parser(elem);
+					if (_.has(this.tvelem, 'show') === true) {
+						this._getSeriesByName();
+						this._operation++;
+					}
+				}
 			}
-		});
+		} catch (err) {
+			bugsnag.notify(new Error(err));
+			setImmediate(() => this._loop());
+		}
 	}
 	_getSeriesByName() {
 		tvdb.getSeriesByName(this.tvelem.show)
@@ -126,6 +151,7 @@ class GetImgs extends events.EventEmitter {
 		this._episodes.forEach(elem => {
 			if (_.isMatch(elem, {airedEpisodeNumber: this.tvelem.episode}) === true && _.isMatch(elem, {airedSeason: this.tvelem.season}) === true) {
 				this.emit('episode', [elem, this.tvelem, this.elempath]);
+				setImmediate(() => this._loop());
 			}
 		});
 	}
@@ -138,7 +164,7 @@ module.exports = {
 	isPlayable
 };
 if (!module.parent) {
-	let m8 = new GetImgs('F:\\media_mate');
+	let m8 = new GetImgs('/Users/willb/media_matedl');
 	// Console.log(m8);
 	m8.on('episode', data => {
 		console.log(data);

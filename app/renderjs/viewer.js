@@ -120,11 +120,16 @@ function getPath() {
 		});
 	});
 }
-
-async function newGetImgs() {
+/**
+ * Get images for each of the downloaded files.
+ */
+async function getImgs() {
 	const mediadiv = document.getElementById('media');
 	const medianodes = mediadiv.childNodes;
-	const getimgs = new Getimg('F:\\media_mate');
+	let dlpath = await getPath();
+	console.log(dlpath);
+	dlpath = dlpath.path.toString();
+	const getimgs = new Getimg(dlpath);
 	getimgs.on('episode', data => {
 		console.log('ep');
 		let elempath = data[2];
@@ -154,89 +159,6 @@ async function newGetImgs() {
 							}
 						});
 					});
-			}
-		});
-	});
-}
-
-/**
- * Get images for each of the downloaded files.
- */
-async function getImgs() {
-	const mediadiv = document.getElementById('media');
-	const medianodes = mediadiv.childNodes;
-	const path = await getPath();
-	dir.files(path.path, (err, files) => {
-		if (err) {
-			bugsnag.notify(new Error(err), {
-				subsystem: {
-					name: 'Viewer'
-				}
-			});
-		}
-		files.sort();
-		files = _.filter(files, isPlayable);
-		console.log(files);
-		files.forEach(elem => {
-			elem = elem.replace(/^.*[\\/]/, '');
-			const elempath = elem;
-			const tvelem = parser(elem);
-			if (_.has(tvelem, 'show') === true) {
-				tvdb.getSeriesByName(tvelem.show)
-						.then(res => {
-							tvdb.getEpisodesBySeriesId(res[0].id)
-								.then(res => {
-									res.forEach(elem => {
-										if (_.isMatch(elem, {airedEpisodeNumber: tvelem.episode}) === true && _.isMatch(elem, {airedSeason: tvelem.season}) === true) {
-											medianodes.forEach((img, ind) => {
-												if (img.id === elempath) {
-													tvdb.getEpisodeById(elem.id)
-														.then(res => {
-															if (ind === medianodes.length - 1) {
-																indeterminateProgress.end();
-																document.getElementById('Loading').style.display = 'none';
-															}
-															if (res.filename !== '') {
-																img.children[0].src = `http://thetvdb.com/banners/${res.filename}`;
-																img.children[0].parentNode.style.display = 'inline-block';
-															} else if (res.filename) {
-																img.children[0].src = `file:///${__dirname}/404.png`;
-																img.children[0].parentNode.style.display = 'inline-block';
-															}
-														})
-														.catch(err => {
-															console.log(err);
-															bugsnag.notify(new Error(err), {
-																subsystem: {
-																	name: 'Viewer'
-																}
-															});
-														});
-												}
-											});
-										}
-									});
-								})
-								.catch(err => {
-									console.log(err);
-									bugsnag.notify(new Error(err), {
-										subsystem: {
-											name: 'Viewer'
-										}
-									});
-								});
-						})
-						.catch(err => {
-							if (err.message === 'Resource not found') {
-								console.log(err);
-							} else {
-								bugsnag.notify(new Error(err), {
-									subsystem: {
-										name: 'Viewer'
-									}
-								});
-							}
-						});
 			}
 		});
 	});
@@ -377,6 +299,6 @@ async function findDL() {
 				mediadiv.appendChild(figelem);
 			}
 		}
-		// GetImgs();
+		getImgs();
 	});
 }

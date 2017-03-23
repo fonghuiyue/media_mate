@@ -4,6 +4,7 @@ require('dotenv').config({path: `${__dirname}/.env`});
 const {dialog} = require('electron').remote;
 require('events').EventEmitter.prototype._maxListeners = 1000;
 const RSSParse = require(require('path').join(__dirname, 'lib', 'rssparse.js')).RSSParse;
+const Getimg = require(require('path').join(__dirname, 'lib', 'get-imgs.js')).GetImgs;
 const path = require('path');
 const {app, BrowserWindow} = require('electron');
 const f = require('util').format;
@@ -119,6 +120,45 @@ function getPath() {
 		});
 	});
 }
+
+async function newGetImgs() {
+	const mediadiv = document.getElementById('media');
+	const medianodes = mediadiv.childNodes;
+	const getimgs = new Getimg('F:\\media_mate');
+	getimgs.on('episode', data => {
+		console.log('ep');
+		let elempath = data[2];
+		let elem = data[0];
+		let tvelem = data[1];
+		medianodes.forEach((img, ind) => {
+			if (img.id === elempath) {
+				tvdb.getEpisodeById(elem.id)
+					.then(res => {
+						if (ind === medianodes.length - 1) {
+							indeterminateProgress.end();
+							document.getElementById('Loading').style.display = 'none';
+						}
+						if (res.filename !== '') {
+							img.children[0].src = `http://thetvdb.com/banners/${res.filename}`;
+							img.children[0].parentNode.style.display = 'inline-block';
+						} else if (res.filename) {
+							img.children[0].src = `file:///${__dirname}/404.png`;
+							img.children[0].parentNode.style.display = 'inline-block';
+						}
+					})
+					.catch(err => {
+						console.log(err);
+						bugsnag.notify(new Error(err), {
+							subsystem: {
+								name: 'Viewer'
+							}
+						});
+					});
+			}
+		});
+	});
+}
+
 /**
  * Get images for each of the downloaded files.
  */
@@ -337,6 +377,6 @@ async function findDL() {
 				mediadiv.appendChild(figelem);
 			}
 		}
-		getImgs();
+		// GetImgs();
 	});
 }

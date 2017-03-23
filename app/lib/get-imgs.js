@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable max-nested-callbacks */
+require('dotenv').config({path: `${__dirname}/../.env`});
 const events = require('events');
 const FeedParser = require('feedparser');
 const request = require('request'); // For fetching the feed
@@ -12,6 +13,8 @@ const dir = require('node-dir');
 const _ = require('underscore');
 const path = require('path');
 
+const tvdb = new TVDB(process.env.TVDB_KEY);
+const POLL_INTERVAL = 200;
 let version;
 // Make sure that version can be got from both render and main process
 // if (isRenderer) {
@@ -20,7 +23,7 @@ let version;
 // 	version = require('electron').app.getVersion();
 // }
 
-// bugsnag.register('03b389d77abc2d10136d8c859391f952', {appVersion: version, sendCode: true});
+bugsnag.register('03b389d77abc2d10136d8c859391f952', {sendCode: true});
 /**
  * Return true if file is playable
  * @param file - the filename with extension
@@ -63,10 +66,15 @@ class GetImgs extends events.EventEmitter {
 		super();
 		this._directory = directory;
 		this._files = [];
+		this._ops = [];
+		this._op = null;
+		this._timer = null;
+		this._die = false;
+		this.files();
+		this._loop();
 	}
 	async files() {
 		const ret = await this.findFiles();
-		console.log(ret.files);
 		return ret.files;
 	}
 	findFiles() {
@@ -82,6 +90,45 @@ class GetImgs extends events.EventEmitter {
 			});
 		});
 	}
+	async _loop() {
+		await this.findFiles();
+		this._files.forEach(elem => {
+			elem = elem.replace(/^.*[\\/]/, '');
+			this.elempath = elem;
+			this.tvelem = parser(elem);
+			if (_.has(this.tvelem, 'show') === true) {
+				this._getSeriesByName();
+			}
+		});
+	}
+	_getSeriesByName() {
+		tvdb.getSeriesByName(this.tvelem.show)
+			.then(res => {
+				console.log(this.tvelem.show);
+				this._series = res;
+				this._getEpisodes();
+			})
+			.catch(err => {
+				bugsnag.notify(new Error(err));
+			});
+	}
+	_getEpisodes() {
+		tvdb.getEpisodesBySeriesId(this._series[0].id)
+			.then(res => {
+				this._episodes = res;
+				this._findRightEp();
+			})
+			.catch(err => {
+				bugsnag.notify(new Error(err));
+			});
+	}
+	_findRightEp() {
+		this._episodes.forEach(elem => {
+			if (_.isMatch(elem, {airedEpisodeNumber: this.tvelem.episode}) === true && _.isMatch(elem, {airedSeason: this.tvelem.season}) === true) {
+				this.emit('episode', [elem, this.tvelem, this.elempath]);
+			}
+		});
+	}
 }
 
 module.exports = {
@@ -91,6 +138,9 @@ module.exports = {
 	isPlayable
 };
 if (!module.parent) {
-	let m8 = new GetImgs('/Users/willb/media_matedl/');
-	console.log(m8.files());
+	let m8 = new GetImgs('F:\\media_mate');
+	// Console.log(m8);
+	m8.on('episode', data => {
+		console.log(data);
+	});
 }

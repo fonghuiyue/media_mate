@@ -14,7 +14,7 @@ const _ = require('underscore');
 const path = require('path');
 
 const tvdb = new TVDB(process.env.TVDB_KEY);
-const POLL_INTERVAL = 200;
+const POLL_INTERVAL = 100;
 let version;
 // Make sure that version can be got from both render and main process
 // if (isRenderer) {
@@ -67,7 +67,6 @@ class GetImgs extends events.EventEmitter {
 		this._directory = directory;
 		this._files = [];
 		this._ops = [];
-		this._op = null;
 		this._timer = null;
 		this._die = false;
 		this._operation = 0;
@@ -95,7 +94,6 @@ class GetImgs extends events.EventEmitter {
 		});
 	}
 	async _loop() {
-		this._op = null;
 		if (this._ops.length === 0) {
 			this._timer = setTimeout(() => {
 				if (this._operation <= this._files.length - 1) {
@@ -105,8 +103,6 @@ class GetImgs extends events.EventEmitter {
 			}, POLL_INTERVAL);
 			return;
 		}
-
-		this._op = this._ops.shift();
 		try {
 			if (this._operation <= this._files.length - 1) {
 				let elem = this._files[this._operation];
@@ -118,6 +114,9 @@ class GetImgs extends events.EventEmitter {
 					if (_.has(this.tvelem, 'show') === true) {
 						this._getSeriesByName();
 						this._operation++;
+					} else if (this.tvelem === null) {
+						this._operation++;
+						setImmediate(() => this._loop());
 					} else {
 						this._operation++;
 						setImmediate(() => this._loop());

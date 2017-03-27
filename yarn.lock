@@ -1666,9 +1666,9 @@ electron-builder-util@16.0.0, electron-builder-util@~16.0.0:
     stat-mode "^0.2.2"
     tunnel-agent "^0.6.0"
 
-electron-builder@^16.2.1:
-  version "16.2.1"
-  resolved "https://registry.yarnpkg.com/electron-builder/-/electron-builder-16.2.1.tgz#d4e783b66417936a87fadb43f6af0d1e7ba9c091"
+electron-builder@^16.3.0:
+  version "16.3.1"
+  resolved "https://registry.yarnpkg.com/electron-builder/-/electron-builder-16.3.1.tgz#f7d9a85a82cadc71e3ed55c861bbf1f94e3289bd"
   dependencies:
     "7zip-bin" "^2.0.4"
     ajv "^5.0.4-beta.0"
@@ -1688,7 +1688,6 @@ electron-builder@^16.2.1:
     is-ci "^1.0.10"
     isbinaryfile "^3.0.2"
     js-yaml "^3.8.2"
-    mime "^1.3.4"
     minimatch "^3.0.3"
     node-forge "^0.7.0"
     normalize-package-data "^2.3.6"

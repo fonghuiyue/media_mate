@@ -370,9 +370,9 @@ electron-is-dev@^0.1.0, electron-is-dev@^0.1.1, electron-is-dev@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/electron-is-dev/-/electron-is-dev-0.1.2.tgz#8a1043e32b3a1da1c3f553dce28ce764246167e3"
 
-electron-json-storage@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/electron-json-storage/-/electron-json-storage-3.0.1.tgz#a5552b23bda9d28b1df163fbd4ebcf78615c1fe7"
+electron-json-storage@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/electron-json-storage/-/electron-json-storage-3.0.2.tgz#6778d43b170e519531d9501f31e2b0f7236172e3"
   dependencies:
     async "^2.0.0"
     exists-file "^3.0.0"

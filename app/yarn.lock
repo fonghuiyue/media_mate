@@ -338,9 +338,9 @@ ecc-jsbn@~0.1.1:
   dependencies:
     jsbn "~0.1.0"
 
-electron-builder-http@~15.6.3:
-  version "15.6.3"
-  resolved "https://registry.yarnpkg.com/electron-builder-http/-/electron-builder-http-15.6.3.tgz#f941a9b25245a3ae678eeb11e02cce59759402e6"
+electron-builder-http@~16.4.0:
+  version "16.4.0"
+  resolved "https://registry.yarnpkg.com/electron-builder-http/-/electron-builder-http-16.4.0.tgz#9be0088736120801c18deb79c9f0532af62e94cb"
   dependencies:
     debug "2.6.3"
     fs-extra-p "^4.1.0"
@@ -391,12 +391,12 @@ electron-notify@^0.1.0:
     async "^0.9.0"
     lodash "^2.4.1"
 
-electron-updater@^1.11.0:
-  version "1.11.0"
-  resolved "https://registry.yarnpkg.com/electron-updater/-/electron-updater-1.11.0.tgz#3038675503a3837ffed3cbe41c222d55ed62c71d"
+electron-updater@^1.11.1:
+  version "1.11.1"
+  resolved "https://registry.yarnpkg.com/electron-updater/-/electron-updater-1.11.1.tgz#e30d080310486c22e3b25a671c155300b0cdfa22"
   dependencies:
     bluebird-lst "^1.0.2"
-    electron-builder-http "~15.6.3"
+    electron-builder-http "~16.4.0"
     fs-extra-p "^4.1.0"
     js-yaml "^3.8.2"
     semver "^5.3.0"

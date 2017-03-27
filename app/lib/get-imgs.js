@@ -118,6 +118,9 @@ class GetImgs extends events.EventEmitter {
 					if (_.has(this.tvelem, 'show') === true) {
 						this._getSeriesByName();
 						this._operation++;
+					} else {
+						this._operation++;
+						setImmediate(() => this._loop());
 					}
 				}
 			}
@@ -134,7 +137,11 @@ class GetImgs extends events.EventEmitter {
 				this._getEpisodes();
 			})
 			.catch(err => {
-				bugsnag.notify(new Error(err));
+				if (err.message === 'Resource not found') {
+					setImmediate(() => this._loop());
+				} else {
+					bugsnag.notify(new Error(err));
+				}
 			});
 	}
 	_getEpisodes() {
@@ -144,7 +151,11 @@ class GetImgs extends events.EventEmitter {
 				this._findRightEp();
 			})
 			.catch(err => {
-				bugsnag.notify(new Error(err));
+				if (err.message === 'Resource not found') {
+					setImmediate(() => this._loop());
+				} else {
+					bugsnag.notify(new Error(err));
+				}
 			});
 	}
 	_findRightEp() {

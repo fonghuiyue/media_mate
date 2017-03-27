@@ -36,7 +36,7 @@
 		"del": "^2.2.2",
 		"devtron": "^1.4.0",
 		"electron": "^1.6.2",
-		"electron-builder": "^16.3.0",
+		"electron-builder": "^16.4.2",
 		"eslint": "^3.18.0",
 		"eslint-config-xo": "^0.18.1",
 		"gulp": "^3.9.1",

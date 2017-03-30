@@ -27,6 +27,7 @@ class RSSParse extends events.EventEmitter {
 		const req = request(this.rssFeed);
 		const feedparser = new FeedParser();
 		req.on('error', err => {
+			console.log(err);
 			bugsnag.notify(new Error(err), {
 				subsystem: {
 					name: 'RSS Parser'
@@ -49,13 +50,12 @@ class RSSParse extends events.EventEmitter {
 
 				feedparser.on('readable', function () {
 					// This is where the action is!
-					const stream = this; // `this` is `feedparser`, which is a stream
+					let stream = this; // `this` is `feedparser`, which is a stream
 					// **NOTE** the "meta" is always available in the context of the feedparser instance
 					const meta = this.meta; // eslint-disable-line no-unused-vars
 					let item;
-
-					while (item === stream.read()) {
-						// Console.log(item);
+					// eslint-disable-next-line no-cond-assign
+					while (item = stream.read()) { // Don't loop to the point of crashing ;)
 						rssThis.emit('data', item);
 					}
 				});

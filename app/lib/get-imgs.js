@@ -17,11 +17,11 @@ const tvdb = new TVDB(process.env.TVDB_KEY);
 const POLL_INTERVAL = 100;
 let version;
 // Make sure that version can be got from both render and main process
-// if (isRenderer) {
-// 	version = require('electron').remote.app.getVersion();
-// } else {
-// 	version = require('electron').app.getVersion();
-// }
+if (isRenderer) {
+	version = require('electron').remote.app.getVersion();
+} else {
+	version = require('electron').app.getVersion();
+}
 
 bugsnag.register('03b389d77abc2d10136d8c859391f952', {sendCode: true});
 /**
@@ -83,7 +83,7 @@ class GetImgs extends events.EventEmitter {
 		return new Promise(resolve => {
 			dir.files(this._directory, (err, files) => {
 				if (err) {
-					bugsnag.notify(err);
+					bugsnag.notify(new Error(err));
 				}
 				files.sort();
 				this._files = files;

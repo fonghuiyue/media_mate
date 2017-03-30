@@ -346,7 +346,7 @@ function addTor(magnet, index) {
 			torrent.on('download', bytes => {
 				prog(torrent, magnet);
 				const percent = Math.round(torrent.progress * 100 * 100) / 100;
-				document.getElementsByName(magnet)[0].parentNode.firstChild.nodeValue = percent.toString() + '% downloaded, ' + moment.duration(torrent.timeRemaining / 1000, 'seconds').humanize() + ' remaining.';
+				document.getElementsByName(magnet)[0].parentNode.childNodes[1].nodeValue = '- ' + percent.toString() + '% downloaded, ' + moment.duration(torrent.timeRemaining / 1000, 'seconds').humanize() + ' remaining.';
 			});
 			torrent.on('done', () => {
 				MongoClient.connect(url, (err, db) => {
@@ -360,7 +360,7 @@ function addTor(magnet, index) {
 						$set: {
 							downloaded: true
 						}
-					}, (err, res) => {
+					}, err => {
 						if (err) {
 							throw err;
 						}
@@ -409,12 +409,13 @@ function runScript(e) {
 				data = _.omit(data, '_id');
 				ignoreDupeTorrents(data, db, dupe => {
 					makeSureAllDL(data.link, toadd => {
-						if (toadd) {
+						if (toadd || !dupe) {
 							const br = document.createElement('br');
 							const label = document.createElement('label');
+							label.innerText = data.title;
 							const input = document.createElement('input');
-							const inputName = document.createTextNode(data.title);
-							label.appendChild(inputName);
+							const dlprogTitle = document.createTextNode(' ');
+							label.appendChild(dlprogTitle);
 							label.id = i;
 							input.type = 'checkbox';
 							input.className = 'checkbox';
@@ -426,30 +427,11 @@ function runScript(e) {
 							dlbox.appendChild(document.createElement('br'));
 							document.getElementById('dlbox').appendChild(label);
 							i++;
+						} else if (dupe) {
+							console.log('dupe');
+							db.close();
 						}
 					});
-					if (!dupe) {
-						const br = document.createElement('br');
-						const label = document.createElement('label');
-						const input = document.createElement('input');
-						const inputName = document.createTextNode(data.title);
-						label.appendChild(inputName);
-						label.id = i;
-						input.type = 'checkbox';
-						input.className = 'checkbox';
-						input.name = data.link;
-						input.addEventListener('click', () => {
-							addTor(input.name, input.id);
-						});
-						label.appendChild(input);
-						dlbox.appendChild(document.createElement('br'));
-						document.getElementById('dlbox').appendChild(label);
-						i++;
-						db.close();
-					} else if (dupe) {
-						console.log('dupe');
-						db.close();
-					}
 				});
 			});
 		});

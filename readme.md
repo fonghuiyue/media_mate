@@ -1,7 +1,7 @@
 # Media Mate
 > A full media server/player/downloader - in one program
 
-![logo](build/icon.png)
+<p align="center"><img src="https://raw.githubusercontent.com/willyb321/media_mate/develop/build/icon.png"></p>
 
 <!-- MarkdownTOC -->
 

@@ -313,7 +313,10 @@ function getDlPath(callback) {
 		}
 	});
 }
-
+/**
+ * Insert the download path to electron-json-storage
+ * @param callback - callback, obviously
+ */
 function insertDlPath(callback) {
 	const tb = document.getElementById('dlpath');
 	const dlpath = dialog.showOpenDialog({

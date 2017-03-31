@@ -102,7 +102,7 @@ function onClosed() {
 }
 /**
  * Make the window, get the state, then return.
- * @returns {BrowserWindow}
+ * @returns {*}
  */
 function createMainWindow() {
 	const mainWindowState = windowStateKeeper({
@@ -183,7 +183,7 @@ function ignoreDupeTorrents(torrent, callback) {
 						airdate: torrent.pubDate,
 						downloaded: false
 					})
-						.then((err, res) => {
+						.then(err => {
 							if (err) {
 								throw err;
 							}
@@ -229,7 +229,9 @@ function getRSSURI(callback) {
 		}
 	});
 }
-
+/**
+ * @description Watch the ShowRSS feed for new releases, and notify user when there is one.
+ */
 function watchRSS() {
 	let uri;
 	getRSSURI(cb => {

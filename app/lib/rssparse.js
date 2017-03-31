@@ -13,15 +13,23 @@ if (isRenderer) {
 }
 
 bugsnag.register('03b389d77abc2d10136d8c859391f952', {appVersion: version, sendCode: true});
-
+/**
+ * Class for parsing RSS
+ */
 class RSSParse extends events.EventEmitter {
+	/**
+	 * The constructor for RSSParse
+	 * @param {string} rssFeed - string with url to a showRSS feed.
+	 */
 	constructor(rssFeed) {
 		super(rssFeed);
 		this.rssFeed = rssFeed;
-		this._rssContent = [];
 		this.reqFeed();
 	}
 
+	/**
+	 * Send a HTTP request to the url from {@link RSSParse#rssFeed}
+	 */
 	reqFeed() {
 		const rssThis = this;
 		const req = request(this.rssFeed);

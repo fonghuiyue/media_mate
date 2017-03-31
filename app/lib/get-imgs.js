@@ -60,8 +60,14 @@ function getFileExtension(file) {
 	const name = typeof file === 'string' ? file : file.name;
 	return path.extname(name).toLowerCase();
 }
-
+/**
+ * Class for getting images from files in the download directory
+ */
 class GetImgs extends events.EventEmitter {
+	/**
+	 * The constructor for {@link GetImgs}
+	 * @param {string} directory - a string with path to downloaded files
+	 */
 	constructor(directory) {
 		super();
 		this._directory = directory;
@@ -75,10 +81,20 @@ class GetImgs extends events.EventEmitter {
 				this._loop();
 			});
 	}
+
+	/**
+	 * Promise for getting a list of files in {@link GetImgs}
+	 * @returns {Promise.<void>}
+	 */
 	async files() {
 		const ret = await this.findFiles();
 		return ret.files;
 	}
+
+	/**
+	 * Get all the files in {@link GetImgs#files}
+	 * @returns {Promise}
+	 */
 	findFiles() {
 		return new Promise(resolve => {
 			dir.files(this._directory, (err, files) => {
@@ -93,6 +109,11 @@ class GetImgs extends events.EventEmitter {
 			});
 		});
 	}
+
+	/**
+	 * Loop through each file in {@link GetImgs#findFiles}
+	 * @returns {Promise.<void>}
+	 */
 	async _loop() {
 		if (this._ops.length === 0) {
 			this._timer = setTimeout(() => {
@@ -128,6 +149,10 @@ class GetImgs extends events.EventEmitter {
 			setImmediate(() => this._loop());
 		}
 	}
+
+	/**
+	 * Make an api call to TVDB to get the series info from its name.
+	 */
 	_getSeriesByName() {
 		tvdb.getSeriesByName(this.tvelem.show)
 			.then(res => {
@@ -143,6 +168,10 @@ class GetImgs extends events.EventEmitter {
 				}
 			});
 	}
+
+	/**
+	 * Get episodes from the series id gotten in {@link GetImgs#_getSeriesByName}
+	 */
 	_getEpisodes() {
 		tvdb.getEpisodesBySeriesId(this._series[0].id)
 			.then(res => {
@@ -157,6 +186,10 @@ class GetImgs extends events.EventEmitter {
 				}
 			});
 	}
+
+	/**
+	 * Get the right episode from {@link GetImgs#_getEpisodes}
+	 */
 	_findRightEp() {
 		this._episodes.forEach(elem => {
 			if (_.isMatch(elem, {airedEpisodeNumber: this.tvelem.episode}) === true && _.isMatch(elem, {airedSeason: this.tvelem.season}) === true) {

@@ -1,6 +1,8 @@
 # Media Mate
 > A full media server/player/downloader - in one program
 
+![logo](build/icon.png)
+
 <!-- MarkdownTOC -->
 
 - [What is it?](#what-is-it)

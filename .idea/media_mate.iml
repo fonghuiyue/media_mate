@@ -8,10 +8,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="electron-builder-DefinitelyTyped" level="application" />
     <orderEntry type="library" name="electron-notify-DefinitelyTyped" level="application" />
     <orderEntry type="library" name="electron-json-storage-DefinitelyTyped" level="application" />
     <orderEntry type="library" name="c7450b3c67" level="application" />
     <orderEntry type="library" name="electron-DefinitelyTyped" level="application" />
+    <orderEntry type="library" name="electron-builder-DefinitelyTyped" level="application" />
   </component>
 </module>

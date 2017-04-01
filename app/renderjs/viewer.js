@@ -251,6 +251,13 @@ function vidProgress(e) {
 		}
 	});
 }
+
+function handleEventHandlers() {
+	const videodiv = document.getElementById('video');
+	videodiv.removeChild(videodiv.firstElementChild);
+	document.getElementById('stopvid').removeEventListener('click', handleEventHandlers);
+}
+
 /**
  * Get files downloaded and process them to the DOM.
  */
@@ -279,6 +286,7 @@ async function findDL() {
 					video.addEventListener('loadedmetadata', handleVids, false);
 					video.addEventListener('ended', vidFinished, false);
 					video.addEventListener('timeupdate', vidProgressthrottled, false);
+					document.getElementById('stopvid').addEventListener('click', handleEventHandlers);
 					if (videodiv.childElementCount > 0) {
 						videodiv.replaceChild(video, videodiv.firstElementChild);
 					} else {
@@ -287,7 +295,6 @@ async function findDL() {
 				});
 				imgelem.src = `file:///${__dirname}/loading.png`;
 				figelem.style.display = 'inline-block';
-					// Imgelem.id = files[i].replace(/^.*[\\\/]/, '');
 				figelem.id = files[i].replace(/^.*[\\/]/, '');
 				figelem.setAttribute('data-file-name', files[i].replace(/^.*[\\/]/, ''));
 				imgelem.title = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;

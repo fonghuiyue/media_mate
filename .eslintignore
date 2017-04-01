@@ -1,5 +1,6 @@
-app/node_modules/**/*
-app/indexbuild*
-gulpfile.babel.js
-test.js
+./app/node_modules/**/*
+./app/indexbuild*
+./gulpfile.babel.js
+./test.js
 *.min*
+./node_modules/**/*

@@ -224,13 +224,6 @@ caseless@~0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
 
-cb2promise@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/cb2promise/-/cb2promise-1.0.2.tgz#6b2e7a29b29ab34df99a87e63b2077116488cc6f"
-  dependencies:
-    coffee-script "*"
-    pinkie-promise "*"
-
 chunk-store-stream@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/chunk-store-stream/-/chunk-store-stream-2.0.2.tgz#812c18e0cdbe33a2b19cf01083218baeb608d88d"
@@ -247,7 +240,7 @@ co@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/co/-/co-4.6.0.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"
 
-coffee-script@*, coffee-script@^1.12.4:
+coffee-script@^1.12.4:
   version "1.12.4"
   resolved "https://registry.yarnpkg.com/coffee-script/-/coffee-script-1.12.4.tgz#fe1bced97fe1fb3927b998f2b45616e0658be1ff"
 
@@ -370,12 +363,11 @@ electron-is-dev@^0.1.0, electron-is-dev@^0.1.1, electron-is-dev@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/electron-is-dev/-/electron-is-dev-0.1.2.tgz#8a1043e32b3a1da1c3f553dce28ce764246167e3"
 
-electron-json-storage@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/electron-json-storage/-/electron-json-storage-3.0.2.tgz#6778d43b170e519531d9501f31e2b0f7236172e3"
+electron-json-storage@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/electron-json-storage/-/electron-json-storage-3.0.4.tgz#3b4e3e95e979eb1743edf55174f8daf69416c6fd"
   dependencies:
     async "^2.0.0"
-    exists-file "^3.0.0"
     lodash "^4.0.1"
     mkdirp "^0.5.1"
     rimraf "^2.5.1"
@@ -433,12 +425,6 @@ es6-promise@3.2.1:
 esprima@^3.1.1:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/esprima/-/esprima-3.1.3.tgz#fdca51cee6133895e3c88d535ce49dbff62a4633"
-
-exists-file@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/exists-file/-/exists-file-3.0.0.tgz#2e886bf9c6b696a8425cff217a897060e22e7465"
-  dependencies:
-    cb2promise "^1.0.2"
 
 extend@~3.0.0:
   version "3.0.0"
@@ -972,16 +958,6 @@ piece-length@^1.0.0:
   dependencies:
     closest-to "~2.0.0"
 
-pinkie-promise@*:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/pinkie-promise/-/pinkie-promise-2.0.1.tgz#2135d6dfa7a358c069ac9b178776288228450ffa"
-  dependencies:
-    pinkie "^2.0.0"
-
-pinkie@^2.0.0:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/pinkie/-/pinkie-2.0.4.tgz#72556b80cfa0d48a974e80e77248e80ed4f7f870"
-
 process-nextick-args@~1.0.6:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-1.0.7.tgz#150e20b756590ad3f91093f25a4f2ad8bff30ba3"
@@ -1426,9 +1402,9 @@ videostream@^2.3.0:
     pump "^1.0.1"
     range-slice-stream "^1.2.0"
 
-webtorrent@^0.98.14:
-  version "0.98.14"
-  resolved "https://registry.yarnpkg.com/webtorrent/-/webtorrent-0.98.14.tgz#2cb22b4c4928875b624bb7c34b3b841a034326cd"
+webtorrent@^0.98.15:
+  version "0.98.15"
+  resolved "https://registry.yarnpkg.com/webtorrent/-/webtorrent-0.98.15.tgz#db07e6e82269935f5d3855ca71be00dff8b38efb"
   dependencies:
     addr-to-ip-port "^1.4.2"
     bitfield "^1.1.2"

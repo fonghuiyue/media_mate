@@ -14,13 +14,13 @@
 	"scripts": {
 		"test": "gulp test",
 		"prestart": "gulp && gulp index",
-		"start": "set NODE_ENV=development && electron app/indexbuild.js",
+		"start": "electron app/indexbuild.js",
 		"build": "electron-zip-packager . --out=dist --overwrite --platform=win32 --arch=x64 --prune --asar",
 		"pack": "gulp index && gulp build:pack",
 		"dist": "gulp index && gulp build:dist",
 		"release": "gulp index && gulp build:dist",
 		"tag": "release-it",
-		"lint": "eslint .",
+		"lint": "eslint . -c .eslintrc",
 		"docs": "jsdoc -c ./conf.json -t ./node_modules/ink-docstrap/template -R readme.md",
 		"postinstall": "(cd app && yarn install)",
 		"deps": "(ncu -au && cd app && ncu -au)"
@@ -39,6 +39,7 @@
 		"electron-builder": "^16.6.0",
 		"eslint": "^3.19.0",
 		"eslint-config-xo": "^0.18.1",
+		"eslint-plugin-google-camelcase": "^0.0.2",
 		"gulp": "^3.9.1",
 		"gulp-ava": "^0.16.0",
 		"gulp-babel": "^6.1.2",

@@ -1,17 +1,17 @@
 import test from 'ava';
 import {Application} from 'spectron';
-import fs from "fs";
+import fs from 'fs';
 
 test.beforeEach(async t => {
 	if (process.platform === 'linux') {
 		t.context.app = new Application({
-			path: './dist/linux-unpacked/elite-journal',
+			path: './dist/linux-unpacked/media-mate',
 			env: {NODE_ENV: 'test'},
 			startTimeout: 10000
 		});
 	} else if (process.platform === 'win32') {
 		t.context.app = new Application({
-			path: './dist/win-unpacked/Elite Journal.exe',
+			path: './dist/win-unpacked/Media Mate.exe',
 			env: {NODE_ENV: 'test'},
 			startTimeout: 10000
 		});
@@ -49,11 +49,11 @@ test.serial('Screenshot', async t => {
 	t.is(await app.client.getWindowCount(), 1);
 	await app.client.waitUntilWindowLoaded(10000);
 	await app.browserWindow.capturePage().then(imageBuffer => {
-		fs.writeFileSync('page.png', imageBuffer)
+		fs.writeFileSync('page.png', imageBuffer);
 	});
 });
 
-// test.serial('#main div test', async t => {
+// Test.serial('#main div test', async t => {
 // 	const app = t.context.app;
 // 	await app.client.waitUntilWindowLoaded();
 //
@@ -84,9 +84,9 @@ test.serial('Accessibility test', async t => {
 	const win = app.browserWindow;
 	await win.focus();
 
-	await app.client.auditAccessibility().then(audit =>{
+	await app.client.auditAccessibility().then(audit => {
 		if (audit.failed) {
 			console.error(audit.message);
 		}
-	})
+	});
 });

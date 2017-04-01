@@ -5,14 +5,11 @@ require('dotenv').config({path: `${__dirname}/.env`});
 
 import electron, {Menu, dialog, ipcMain as ipc, shell} from 'electron';
 import {autoUpdater} from 'electron-updater';
-import fs from 'fs-extra';
-import _ from 'underscore';
 import isDev from 'electron-is-dev';
 import bugsnag from 'bugsnag';
-import moment from 'moment';
 import MongoClient from 'mongodb';
 import {RSSParse} from './lib/rssparse';
-import {init, getMenuItem} from './menu.js';
+import {init} from './menu.js';
 require('electron-debug')();
 const f = require('util').format;
 const windowStateKeeper = require('electron-window-state');
@@ -117,10 +114,6 @@ function createMainWindow() {
 		show: false,
 		backgroundColor: '#eeeeee'
 	});
-	win.once('ready-to-show', () => {
-		win.show();
-		console.timeEnd('init');
-	});
 	mainWindowState.manage(win);
 	win.loadURL(`file://${__dirname}/index.html`);
 	win.on('closed', onClosed);
@@ -140,6 +133,10 @@ function createMainWindow() {
 		} else {
 			console.log(e);
 		}
+	});
+	win.once('ready-to-show', () => {
+		win.show();
+		console.timeEnd('init');
 	});
 	return win;
 }

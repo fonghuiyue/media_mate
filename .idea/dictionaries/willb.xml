@@ -5,13 +5,21 @@
       <w>autoupdater</w>
       <w>bugsnag</w>
       <w>elempath</w>
+      <w>enoent</w>
       <w>eslint</w>
+      <w>figcaption</w>
+      <w>github</w>
       <w>hotkeys</w>
       <w>indexbuild</w>
       <w>interv</w>
       <w>keypress</w>
+      <w>loadedmetadata</w>
       <w>matedl</w>
+      <w>mprogress</w>
+      <w>stopvid</w>
+      <w>timeupdate</w>
       <w>willb</w>
+      <w>willyb</w>
     </words>
   </dictionary>
 </component>

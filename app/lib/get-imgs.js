@@ -2,8 +2,6 @@
 /* eslint-disable max-nested-callbacks */
 require('dotenv').config({path: `${__dirname}/../.env`});
 const events = require('events');
-const FeedParser = require('feedparser');
-const request = require('request'); // For fetching the feed
 const bugsnag = require('bugsnag'); // Catch bugs / errors
 const isRenderer = require('is-electron-renderer');
 const TVDB = require('node-tvdb');
@@ -73,8 +71,6 @@ class GetImgs extends events.EventEmitter {
 		this._directory = directory;
 		this._files = [];
 		this._ops = [];
-		this._timer = null;
-		this._die = false;
 		this._operation = 0;
 		this.files()
 			.then(() => {
@@ -208,7 +204,6 @@ module.exports = {
 };
 if (!module.parent) {
 	let m8 = new GetImgs('/Users/willb/media_matedl');
-	// Console.log(m8);
 	m8.on('episode', data => {
 		console.log(data);
 	});

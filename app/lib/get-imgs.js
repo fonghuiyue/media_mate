@@ -95,7 +95,11 @@ class GetImgs extends events.EventEmitter {
 		return new Promise(resolve => {
 			dir.files(this._directory, (err, files) => {
 				if (err) {
-					bugsnag.notify(new Error(err));
+					bugsnag.notify(new Error(err), {
+						subsystem: {
+							name: 'Get Imgs Class'
+						}
+					});
 				}
 				files.sort();
 				this._files = files;
@@ -141,7 +145,11 @@ class GetImgs extends events.EventEmitter {
 				}
 			}
 		} catch (err) {
-			bugsnag.notify(new Error(err));
+			bugsnag.notify(new Error(err), {
+				subsystem: {
+					name: 'Get Imgs Class'
+				}
+			});
 			setImmediate(() => this._loop());
 		}
 	}
@@ -160,7 +168,11 @@ class GetImgs extends events.EventEmitter {
 				if (err.message === 'Resource not found') {
 					setImmediate(() => this._loop());
 				} else {
-					bugsnag.notify(new Error(err));
+					bugsnag.notify(new Error(err), {
+						subsystem: {
+							name: 'Get Imgs Class'
+						}
+					});
 				}
 			});
 	}
@@ -178,7 +190,11 @@ class GetImgs extends events.EventEmitter {
 				if (err.message === 'Resource not found') {
 					setImmediate(() => this._loop());
 				} else {
-					bugsnag.notify(new Error(err));
+					bugsnag.notify(new Error(err), {
+						subsystem: {
+							name: 'Get Imgs Class'
+						}
+					});
 				}
 			});
 	}

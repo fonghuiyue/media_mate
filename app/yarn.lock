@@ -558,6 +558,10 @@ hoek@2.x.x:
   version "2.16.3"
   resolved "https://registry.yarnpkg.com/hoek/-/hoek-2.16.3.tgz#20bb7403d3cea398e91dc4710a8ff1b8274a25ed"
 
+hover.css@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/hover.css/-/hover.css-2.2.0.tgz#3a457c4f6bf756dcebae0317f09a8088c7626a77"
+
 http-signature@~1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/http-signature/-/http-signature-1.1.1.tgz#df72e267066cd0ac67fb76adf8e134a8fbcf91bf"

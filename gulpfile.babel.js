@@ -10,14 +10,13 @@ import ava from 'gulp-ava';
 
 const builder = require('electron-builder');
 
-let injects = ['./app/renderjs/render-err.js',
+let injects = [
+	'./app/renderjs/render-err.js',
 	'./app/node_modules/jquery/dist/jquery.min.js',
-	'./app/node_modules/bulma/css/bulma.css',
-	'./app/*.css',
-	'./app/pace.css',
 	'./app/renderjs/pace.min.js',
-	'./app/node_modules/mprogress/mprogress.min.*',
-	'./app/node_modules/izitoast/dist/css/iziToast.min.css'];
+	'./app/index.css',
+	'./app/node_modules/mprogress/mprogress.min.js'
+];
 
 gulp.task('default', () => {
 	rimraf('app/indexbuild.js*', err => {
@@ -130,7 +129,6 @@ gulp.task('index', () => {
 		.pipe(inject(gulp.src(injects, {read: false}), {relative: true}))
 		.pipe(gulp.dest('./app'));
 	filename = './app/renderjs/viewer.js';
-	injects.pop();
 	injects.push(filename);
 	gulp.src(['./app/viewer.html', '!./app/node_modules/**'])
 		.pipe(inject(gulp.src(injects, {read: false}), {relative: true}))

@@ -3,7 +3,7 @@
  * @fileoverview The class that gets TVDB info from files
  */
 /**
- * @module Get Images
+ * @module Get-Images
  */
 /* eslint-disable no-unused-vars */
 /* eslint-disable max-nested-callbacks */

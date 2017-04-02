@@ -263,7 +263,9 @@ ipc.on('dldone', (event, data) => {
 app.on('ready', () => {
 	mainWindow = createMainWindow();
 	init();
+	console.time('mongo');
 	MongoClient = require('mongodb').MongoClient;
+	console.timeEnd('mongo');
 	eNotify = require('electron-notify');
 	watchRSS();
 	console.timeEnd('init');

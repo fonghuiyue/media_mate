@@ -64,6 +64,16 @@ window.onload = () => {
 function isPlayable(file) {
 	return isVideo(file);
 }
+/**
+ * Turn str into Title Case and return it.
+ * @param str - the string to transform
+ * @returns {string} - Title Cased string
+ */
+function titleCase(str) {
+	return str.split(' ')
+		.map(i => i[0].toUpperCase() + i.substr(1).toLowerCase())
+		.join(' ');
+}
 
 /**
  * Checks whether the file path is playable video
@@ -277,6 +287,7 @@ async function findDL() {
 				const figelem = document.createElement('figure');
 				const figcap = document.createElement('figcaption');
 				const imgelem = document.createElement('img');
+				parsedName.show = titleCase(parsedName.show);
 				figelem.addEventListener('click', () => {
 					const video = document.createElement('video');
 					video.src = files[i];

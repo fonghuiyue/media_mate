@@ -11,8 +11,6 @@ require('dotenv').config({path: `${__dirname}/.env`});
 require('events').EventEmitter.prototype._maxListeners = 1000;
 const Getimg = require(require('path').join(__dirname, 'lib', 'get-imgs.js')).GetImgs;
 const path = require('path');
-const {app, BrowserWindow} = require('electron');
-const f = require('util').format;
 const version = require('electron').remote.app.getVersion();
 const fs = require('fs-extra');
 const TVDB = require('node-tvdb');

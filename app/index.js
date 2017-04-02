@@ -1,4 +1,8 @@
 /**
+ * @author William Blythe
+ * @fileoverview The main file. Entry point.
+ */
+/**
  * @module Index
  */
 'use strict';
@@ -6,7 +10,7 @@
 console.time('init');
 require('dotenv').config({path: `${__dirname}/.env`});
 
-import electron, {Menu, dialog, ipcMain as ipc, shell} from 'electron';
+import electron, {dialog, ipcMain as ipc} from 'electron';
 import {autoUpdater} from 'electron-updater';
 import isDev from 'electron-is-dev';
 import bugsnag from 'bugsnag';
@@ -14,13 +18,12 @@ import MongoClient from 'mongodb';
 import {RSSParse} from './lib/rssparse';
 import {init} from './menu.js';
 require('electron-debug')();
-const f = require('util').format;
 const windowStateKeeper = require('electron-window-state');
 let eNotify;
 const user = process.env.DB_USER;
 const password = process.env.DB_PWD;
 const dburi = process.env.DB_URL;
-const url = f('mongodb://%s:%s@%s/media_mate?ssl=true&replicaSet=SDD-Major-shard-0&authSource=admin',
+const url = require('util').format.f('mongodb://%s:%s@%s/media_mate?ssl=true&replicaSet=SDD-Major-shard-0&authSource=admin',
 	user, password, dburi);
 const app = electron.app;
 bugsnag.register('03b389d77abc2d10136d8c859391f952', {appVersion: app.getVersion(), sendCode: true});

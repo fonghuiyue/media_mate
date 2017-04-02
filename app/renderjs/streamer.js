@@ -1,3 +1,10 @@
+/**
+ * @author William Blythe
+ * @fileoverview File that allows for streaming media
+ */
+/**
+ * @module Streamer
+ */
 /* eslint-disable no-unused-vars */
 const WebTorrent = require('webtorrent');
 require('dotenv').config();

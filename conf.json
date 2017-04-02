@@ -4,8 +4,8 @@
 		"dictionaries": ["jsdoc","closure"]
 	},
 	"source": {
-		"include": ["app/", "app/renderjs", "app/lib"],
-		"exclude": "app/node_modules/"
+		"include": ["app/"],
+		"exclude": ["app/node_modules/", "app/indexbuild.js"]
 	},
 	"plugins": [
 		"plugins/markdown",
@@ -13,10 +13,16 @@
 	],
 	"templates": {
 		"cleverLinks": true,
-		"monospaceLinks": false
+		"monospaceLinks": true,
+		"name": "Media Mate Docs",
+		"footerText": "Docs by JSDoc, hosting by Netlify",
+		"tabNames": {
+			"methods": "The good stuff"
+		}
 	},
 	"opts": {
-		"template": "templates/default",
+		"recurse": true,
+		"template": "node_modules/tui-jsdoc-template",
 		"encoding": "utf8",
 		"destination": "./docs/"
 	}

@@ -1,3 +1,11 @@
+/**
+ * @author William Blythe
+ * @fileoverview Parse ShowRSS feeds
+ */
+/**
+ * @module RSS Parse
+ */
+
 const events = require('events');
 const FeedParser = require('feedparser');
 const request = require('request'); // For fetching the feed

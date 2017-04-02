@@ -1,3 +1,10 @@
+/**
+ * @author William Blythe
+ * @fileoverview The file that allows viewing of downloaded media
+ */
+/**
+ * @module viewer
+ */
 /* eslint-disable no-unused-vars */
 /* eslint-disable max-nested-callbacks */
 require('dotenv').config({path: `${__dirname}/.env`});

@@ -1,3 +1,10 @@
+/**
+ * @author William Blythe
+ * @fileoverview File that handles downloading of shows
+ */
+/**
+ * @module Downloader
+ */
 /* eslint-disable no-unused-vars */
 /* eslint-disable max-nested-callbacks */
 require('dotenv').config({path: `${__dirname}/.env`});

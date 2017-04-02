@@ -10,6 +10,7 @@
       <w>figcap</w>
       <w>figcaption</w>
       <w>figelem</w>
+      <w>fileoverview</w>
       <w>github</w>
       <w>hotkeys</w>
       <w>imgelem</w>
@@ -18,7 +19,9 @@
       <w>keypress</w>
       <w>loadedmetadata</w>
       <w>matedl</w>
+      <w>monospace</w>
       <w>mprogress</w>
+      <w>netlify</w>
       <w>stopvid</w>
       <w>timeupdate</w>
       <w>willb</w>

@@ -21,7 +21,7 @@
 		"release": "gulp index && gulp build:dist",
 		"tag": "release-it",
 		"lint": "eslint . -c .eslintrc",
-		"docs": "jsdoc -c ./conf.json -t ./node_modules/ink-docstrap/template -R readme.md",
+		"docs": "jsdoc -c ./conf.json -R readme.md",
 		"postinstall": "(cd app && yarn install)",
 		"deps": "(ncu -au && cd app && ncu -au)"
 	},
@@ -54,7 +54,8 @@
 		"jsdoc-export-default-interop": "^0.3.1",
 		"release-it": "^2.6.0",
 		"rimraf": "^2.6.1",
-		"spectron": "^3.6.1"
+		"spectron": "^3.6.1",
+		"tui-jsdoc-template": "^1.1.0"
 	},
 	"ava": {},
 	"xo": {

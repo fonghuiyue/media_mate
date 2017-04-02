@@ -1,3 +1,10 @@
+/**
+ * @author William Blythe
+ * @fileoverview The class that gets TVDB info from files
+ */
+/**
+ * @module Get Images
+ */
 /* eslint-disable no-unused-vars */
 /* eslint-disable max-nested-callbacks */
 require('dotenv').config({path: `${__dirname}/../.env`});

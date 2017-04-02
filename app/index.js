@@ -1,3 +1,6 @@
+/**
+ * @module Index
+ */
 'use strict';
 /* eslint-disable no-unused-vars */
 console.time('init');

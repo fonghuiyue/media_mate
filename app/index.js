@@ -9,16 +9,16 @@
 /* eslint-disable no-unused-vars */
 console.time('init');
 require('dotenv').config({path: `${__dirname}/.env`});
-
+console.time('require');
 import electron, {dialog, ipcMain as ipc} from 'electron';
 import {autoUpdater} from 'electron-updater';
 import isDev from 'electron-is-dev';
 import bugsnag from 'bugsnag';
-import MongoClient from 'mongodb';
 import {RSSParse} from './lib/rssparse';
 import {init} from './menu.js';
 require('electron-debug')();
 const windowStateKeeper = require('electron-window-state');
+console.timeEnd('require');
 let eNotify;
 const user = process.env.DB_USER;
 const password = process.env.DB_PWD;
@@ -28,6 +28,7 @@ const url = require('util').format('mongodb://%s:%s@%s/media_mate?ssl=true&repli
 const app = electron.app;
 bugsnag.register('03b389d77abc2d10136d8c859391f952', {appVersion: app.getVersion(), sendCode: true});
 let win;
+let MongoClient;
 /**
  * Autoupdater on update available
  */
@@ -139,7 +140,6 @@ function createMainWindow() {
 	});
 	win.once('ready-to-show', () => {
 		win.show();
-		console.timeEnd('init');
 	});
 	return win;
 }
@@ -263,6 +263,8 @@ ipc.on('dldone', (event, data) => {
 app.on('ready', () => {
 	mainWindow = createMainWindow();
 	init();
+	MongoClient = require('mongodb').MongoClient;
 	eNotify = require('electron-notify');
 	watchRSS();
+	console.timeEnd('init');
 });

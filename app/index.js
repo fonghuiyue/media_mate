@@ -19,9 +19,6 @@ const password = process.env.DB_PWD;
 const dburi = process.env.DB_URL;
 const url = f('mongodb://%s:%s@%s/media_mate?ssl=true&replicaSet=SDD-Major-shard-0&authSource=admin',
 	user, password, dburi);
-/**
- * The electron app instance
- */
 const app = electron.app;
 bugsnag.register('03b389d77abc2d10136d8c859391f952', {appVersion: app.getVersion(), sendCode: true});
 let win;

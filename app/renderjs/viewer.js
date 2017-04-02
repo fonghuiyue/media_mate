@@ -146,7 +146,7 @@ async function getImgs() {
 						if (res.filename !== '') {
 							img.children[0].src = `http://thetvdb.com/banners/${res.filename}`;
 							img.children[0].parentNode.style.display = 'inline-block';
-						} else if (res.filename) {
+						} else if (res.filename === '') {
 							img.children[0].src = `file:///${__dirname}/404.png`;
 							img.children[0].parentNode.style.display = 'inline-block';
 						}

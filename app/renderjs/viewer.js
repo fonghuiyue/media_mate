@@ -218,7 +218,7 @@ function handleVids(e) {
  * @param params - the x / y of the image.
  */
 function resetTime(params) {
-	const filename = document.elementFromPoint(params.x, params.y).parentNode.getAttribute('data-file-name');
+	const filename = document.elementFromPoint(params.x, params.y).parentNode.getAttribute('data-store-name');
 	console.log(document.elementFromPoint(params.x, params.y).parentNode);
 	storage.remove(filename, err => {
 		if (err) {
@@ -297,6 +297,7 @@ async function findDL() {
 				figelem.style.display = 'inline-block';
 				figelem.id = files[i].replace(/^.*[\\/]/, '');
 				figelem.setAttribute('data-file-name', files[i].replace(/^.*[\\/]/, ''));
+				figelem.setAttribute('data-store-name', `${parsedName.show.replace(' ', '')}S${parsedName.season}E${parsedName.episode}`);
 				imgelem.title = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;
 				imgelem.style.width = '400px';
 				imgelem.style.height = '225px';

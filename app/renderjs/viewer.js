@@ -3,7 +3,7 @@
  * @fileoverview The file that allows viewing of downloaded media
  */
 /**
- * @module viewer
+ * @module Viewer
  */
 /* eslint-disable no-unused-vars */
 /* eslint-disable max-nested-callbacks */

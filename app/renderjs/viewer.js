@@ -8,9 +8,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable max-nested-callbacks */
 require('dotenv').config({path: `${__dirname}/.env`});
-const {dialog} = require('electron').remote;
 require('events').EventEmitter.prototype._maxListeners = 1000;
-const RSSParse = require(require('path').join(__dirname, 'lib', 'rssparse.js')).RSSParse;
 const Getimg = require(require('path').join(__dirname, 'lib', 'get-imgs.js')).GetImgs;
 const path = require('path');
 const {app, BrowserWindow} = require('electron');
@@ -21,19 +19,12 @@ const TVDB = require('node-tvdb');
 const storage = require('electron-json-storage');
 const bugsnag = require('bugsnag');
 const moment = require('moment');
-const MongoClient = require('mongodb').MongoClient;
 const _ = require('underscore');
 const parser = require('episode-parser');
 const dir = require('node-dir');
 
 const tvdb = new TVDB(process.env.TVDB_KEY);
-const user = process.env.DB_USER;
-const password = process.env.DB_PWD;
-const dburi = process.env.DB_URL;
-const authMechanism = 'DEFAULT';
 const vidProgressthrottled = _.throttle(vidProgress, 1000);
-const url = f('mongodb://%s:%s@%s/media_mate?ssl=true&replicaSet=SDD-Major-shard-0&authSource=admin',
-	user, password, dburi);
 
 bugsnag.register('03b389d77abc2d10136d8c859391f952', {appVersion: version, sendCode: true});
 /**

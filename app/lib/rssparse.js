@@ -3,7 +3,7 @@
  * @fileoverview Parse ShowRSS feeds
  */
 /**
- * @module RSS Parse
+ * @module RSS-Parse
  */
 
 const events = require('events');

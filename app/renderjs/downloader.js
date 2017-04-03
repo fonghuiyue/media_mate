@@ -123,7 +123,7 @@ function getRSSURI(callback) {
 }
 /**
  * Make sure that the torrents are downloaded and in the DB.
- * @param torrent - the torrent object to be checked
+ * @param torrent {string} - the torrent object to be checked
  * @param callback
  */
 function makeSureAllDL(torrent, callback) {
@@ -137,8 +137,8 @@ function makeSureAllDL(torrent, callback) {
 }
 /**
  * Make sure not to add torrents already downloaded.
- * @param torrent - the torrent object to be checked
- * @param db - the MongoDB instance to be checked
+ * @param torrent {object} - the torrent object to be checked
+ * @param db {object} - the MongoDB instance to be checked
  * @param callback - You know what it is.
  */
 function ignoreDupeTorrents(torrent, db, callback) {
@@ -190,7 +190,7 @@ function ignoreDupeTorrents(torrent, db, callback) {
 }
 /**
  * Get the index of the torrent being checked by the magnet URI
- * @param magnet - the magnet URI for checking.
+ * @param magnet {string} - the magnet URI for checking.
  * @param callback - Do I really need to say what this is :)
  */
 function getTorIndex(magnet, callback) {
@@ -226,9 +226,9 @@ function dropTorrents(callback) {
 	});
 }
 /**
- * Make sure that the ShowRSS URI is update.
- * @param uri - the ShowRSS URI
- * @param db - the MongoDB instance
+ * Make sure that the ShowRSS URI is updated.
+ * @param uri {string} - the ShowRSS URI
+ * @param db {object} - the MongoDB instance
  * @param callback
  */
 function updateURI(uri, db, callback) {
@@ -249,8 +249,8 @@ function updateURI(uri, db, callback) {
 }
 /**
  * Initial load, get the torrents in the db.
- * @param db - MongoDB instance
- * @param col - MongoDB Collection
+ * @param db {object} - MongoDB instance
+ * @param col {object} - MongoDB Collection
  * @param callback
  */
 function findDocuments(db, col, callback) {
@@ -341,8 +341,8 @@ function insertDlPath(callback) {
 }
 /**
  * Add a torrent to WebTorrent and the DB.
- * @param magnet - the magnet URI for WebTorrent
- * @param index - the index of the torrent.
+ * @param magnet {string} - the magnet URI for WebTorrent
+ * @param index {number} - the index of the torrent.
  */
 function addTor(magnet, index) {
 	document.getElementById('Progress').style.display = '';
@@ -387,7 +387,7 @@ function addTor(magnet, index) {
 }
 /**
  * Called on hitting enter in the Magnet URI box.
- * @param e - the keypress event.
+ * @param e {object} - the keypress event.
  * @returns {boolean} - whether the key was enter or not.
  */
 function runScript(e) {

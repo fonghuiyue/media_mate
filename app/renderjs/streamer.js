@@ -13,8 +13,8 @@ require('events').EventEmitter.prototype._maxListeners = 1000;
 const client = new WebTorrent();
 let filesAll = '';
 /**
- * On keypress on the <input>
- * @param e - the event
+ * On keypress on the input
+ * @param e {object} - the event
  * @returns {boolean} - whether enter was pressed or not.
  */
 function runScript(e) {
@@ -26,7 +26,7 @@ function runScript(e) {
 }
 /**
  * Allow the user to choose what file to stream.
- * @param files - files in the torrent
+ * @param files {array} - files in the torrent
  */
 function chooseFile(files) {
 	const select = document.getElementById('selectNumber');
@@ -42,7 +42,7 @@ function chooseFile(files) {
 }
 /**
  * Start playing the file
- * @param file - the file
+ * @param file {object} - the file
  */
 function startPlaying(file) {
 	file.renderTo('#playerm8', (err, elem) => {
@@ -76,7 +76,7 @@ function getFile() {
 }
 /**
  * Add magnet to WebTorrent
- * @param magnet - the magnet URI
+ * @param magnet {string} - the magnet URI
  */
 function submitmagnet(magnet) {
 	client.add(magnet, torrent => {

@@ -54,7 +54,7 @@ window.onload = () => {
 };
 /**
  * Return true if file is playable
- * @param file - the filename with extension
+ * @param file {string} - the filename with extension
  * @returns {boolean} - if its playable or not.
  */
 function isPlayable(file) {
@@ -62,7 +62,7 @@ function isPlayable(file) {
 }
 /**
  * Turn str into Title Case and return it.
- * @param str - the string to transform
+ * @param str {string} - the string to transform
  * @returns {string} - Title Cased string
  */
 function titleCase(str) {
@@ -73,7 +73,7 @@ function titleCase(str) {
 
 /**
  * Checks whether the file path is playable video
- * @param file - the path to the file
+ * @param file {string} - the path to the file
  * @returns {boolean}
  */
 function isVideo(file) {
@@ -91,7 +91,7 @@ function isVideo(file) {
 }
 /**
  * Get the extension of {file}
- * @param file - the file name / path
+ * @param file  {string} - the file name / path
  * @returns {string} - extension of the file.
  */
 function getFileExtension(file) {
@@ -100,7 +100,7 @@ function getFileExtension(file) {
 }
 /**
  * Get the path for downloads.
- * @returns {Promise}
+ * @returns {Promise.<string>}
  */
 function getPath() {
 	return new Promise(resolve => {
@@ -171,7 +171,7 @@ async function getImgs() {
 }
 /**
  * Called when a video is finished.
- * @param e - the event.
+ * @param e {object} - the event.
  */
 function vidFinished(e) {
 	const filename = this.getAttribute('data-file-name');
@@ -196,7 +196,7 @@ function vidFinished(e) {
 }
 /**
  * On video metadata loaded, add it to the JSON.
- * @param e - event.
+ * @param e {object} - event.
  */
 function handleVids(e) {
 	const filename = this.getAttribute('data-file-name');
@@ -221,7 +221,7 @@ function handleVids(e) {
 }
 /**
  * Reset the time watched.
- * @param params - the x / y of the image.
+ * @param params {object} - the x / y of the image.
  */
 function resetTime(params) {
 	const filename = document.elementFromPoint(params.x, params.y).parentNode.getAttribute('data-store-name');
@@ -234,7 +234,7 @@ function resetTime(params) {
 }
 /**
  * On time update in the video, throttled for every few seconds.
- * @param e - video event.
+ * @param e {object} - video event.
  */
 function vidProgress(e) {
 	const filename = this.getAttribute('data-file-name');
@@ -257,7 +257,9 @@ function vidProgress(e) {
 		}
 	});
 }
-
+/**
+ * Add and remove event handlers for the stop video button
+ */
 function handleEventHandlers() {
 	const videodiv = document.getElementById('video');
 	videodiv.removeChild(videodiv.firstElementChild);

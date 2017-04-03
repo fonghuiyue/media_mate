@@ -79,7 +79,7 @@ require('electron-debug')();
 let mainWindow;
 /**
  * Catch any uncaught errors and report them.
- * @param err - The error to be handled.
+ * @param err {object} - The error to be handled.
  */
 process.on('uncaughtError', err => {
 	bugsnag.notify(err);
@@ -161,7 +161,7 @@ app.on('activate', () => {
 });
 /**
  * @description Make sure to not add torrents that are already in the database / downloaded
- * @param torrent - the torrent object to be checked
+ * @param torrent {object} - the torrent object to be checked
  * @param callback - The callback.
  */
 function ignoreDupeTorrents(torrent, callback) {

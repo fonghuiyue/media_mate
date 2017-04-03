@@ -31,7 +31,7 @@ if (isRenderer) {
 bugsnag.register('03b389d77abc2d10136d8c859391f952', {sendCode: true});
 /**
  * Return true if file is playable
- * @param file - the filename with extension
+ * @param file {string} - the filename with extension
  * @returns {boolean} - if its playable or not.
  */
 function isPlayable(file) {
@@ -40,7 +40,7 @@ function isPlayable(file) {
 
 /**
  * Checks whether the file path is playable video
- * @param file - the path to the file
+ * @param file {string} - the path to the file
  * @returns {boolean}
  */
 function isVideo(file) {
@@ -58,7 +58,7 @@ function isVideo(file) {
 }
 /**
  * Get the extension of {file}
- * @param file - the file name / path
+ * @param file {string} - the file name / path
  * @returns {string} - extension of the file.
  */
 function getFileExtension(file) {
@@ -71,7 +71,7 @@ function getFileExtension(file) {
 class GetImgs extends events.EventEmitter {
 	/**
 	 * The constructor for {@link GetImgs}
-	 * @param {string} directory - a string with path to downloaded files
+	 * @param directory {string} - a string with path to downloaded files
 	 */
 	constructor(directory) {
 		super();
@@ -87,7 +87,7 @@ class GetImgs extends events.EventEmitter {
 
 	/**
 	 * Promise for getting a list of files in {@link GetImgs}
-	 * @returns {Promise.<void>}
+	 * @returns {array}
 	 */
 	async files() {
 		const ret = await this.findFiles();
@@ -119,7 +119,6 @@ class GetImgs extends events.EventEmitter {
 
 	/**
 	 * Loop through each file in {@link GetImgs#findFiles}
-	 * @returns {Promise.<void>}
 	 */
 	async _loop() {
 		if (this._ops.length === 0) {

@@ -27,7 +27,7 @@ bugsnag.register('03b389d77abc2d10136d8c859391f952', {appVersion: version, sendC
 class RSSParse extends events.EventEmitter {
 	/**
 	 * The constructor for RSSParse
-	 * @param {string} rssFeed - string with url to a showRSS feed.
+	 * @param rssFeed {string} - string with url to a showRSS feed.
 	 */
 	constructor(rssFeed) {
 		super(rssFeed);

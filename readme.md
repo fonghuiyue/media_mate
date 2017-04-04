@@ -18,9 +18,9 @@ Media Mate is a media centre, along the lines of [Plex](https://plex.tv), with t
 
 ## Whats it look like then?
 <img align="center" style="width: 100%; height:100%;" src="https://raw.githubusercontent.com/willyb321/media_mate/develop/img/homepage.png" alt="Media Mate UI">
-<img align="center" style="width: 100%; height:100%;" src="https://raw.githubusercontent.com/willyb321/media_mate/develop/downloader.png" alt="Media Mate UI">
-<img align="center" style="width: 100%; height:100%;" src="https://raw.githubusercontent.com/willyb321/media_mate/develop/viewer.jpg" alt="Media Mate UI">
-<img align="center" style="width: 100%; height:100%;" src="https://raw.githubusercontent.com/willyb321/media_mate/develop/streamer.png" alt="Media Mate UI">
+<img align="center" style="width: 100%; height:100%;" src="https://raw.githubusercontent.com/willyb321/media_mate/develop/img/downloader.png" alt="Media Mate UI">
+<img align="center" style="width: 100%; height:100%;" src="https://raw.githubusercontent.com/willyb321/media_mate/develop/img/viewer.jpg" alt="Media Mate UI">
+<img align="center" style="width: 100%; height:100%;" src="https://raw.githubusercontent.com/willyb321/media_mate/develop/img/streamer.png" alt="Media Mate UI">
 
 
 ## License

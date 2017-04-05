@@ -23,7 +23,7 @@ const _ = require('underscore');
 const storage = require('electron-json-storage');
 const WebTorrent = require('webtorrent');
 
-let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
+let db;
 PouchDB.plugin(require('pouchdb-find'));
 const user = process.env.DB_USER;
 const password = process.env.DB_PWD;
@@ -101,9 +101,11 @@ client.on('error', err => {
  * @param callback - return it.
  */
 function getRSSURI(callback) {
+	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
 	db.get('showRSS')
 		.then(doc => {
 			callback(doc.showRSSURI);
+			db.close();
 		})
 		.catch(err => {
 			console.log(err);
@@ -134,15 +136,21 @@ function makeSureAllDL(torrent, callback) {
  * @param callback - You know what it is.
  */
 function ignoreDupeTorrents(torrent, callback) {
+	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
 	db.find({
-		selector: {magnet: torrent.link},
+		selector: {
+			magnet: torrent.link,
+			downloaded: {$ne: true}
+		},
 		fields: ['_id', 'magnet', 'downloaded']
 	}).then(res => {
 		console.log(res);
 		if (res.docs.length > 0) {
 			if (res.docs[0].downloaded === true) {
+				db.close();
 				callback('dupe');
 			} else if (res.docs[0].downloaded === false) {
+				db.close();
 				callback();
 			}
 		} else {
@@ -154,6 +162,8 @@ function ignoreDupeTorrents(torrent, callback) {
 				airdate: torrent.pubDate,
 				downloaded: false
 			}).then(res => {
+				console.log(res);
+				db.close();
 				callback();
 			}).catch(err => {
 				throw err;
@@ -204,7 +214,8 @@ function dropTorrents(callback) {
  * @param callback
  */
 function updateURI(uri, callback) {
-	db.get('showRSS').then(function (doc) {
+	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
+	db.get('showRSS').then(doc => {
 		return db.put({
 			_id: 'showRSS',
 			_rev: doc._rev,
@@ -212,8 +223,10 @@ function updateURI(uri, callback) {
 		});
 	}).then(function (response) {
 		callback(response);
+		db.close();
 	}).catch(function (err) {
 		console.log(err);
+		let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
 		if (err.status === 404) {
 			db.put({
 				_id: 'showRSS',
@@ -227,11 +240,13 @@ function updateURI(uri, callback) {
  * @param callback
  */
 function findDocuments() {
+	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
 	db.allDocs({
 		include_docs: true
 	}).then(function (result) {
 		console.log(result);
 		_.each(result.rows, elem => allTorrents.push(elem.doc.magnet));
+		db.close();
 	}).catch(function (err) {
 		console.log(err);
 	});
@@ -241,6 +256,7 @@ findDocuments();
  * Download all of the torrents, after they are added to the DOM.
  */
 function dlAll() {
+	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
 	db.find({
 		selector: {downloaded: false},
 		fields: ['_id', 'magnet', 'title', 'airdate', 'downloaded']
@@ -248,6 +264,7 @@ function dlAll() {
 		_.each(result.docs, (elem, index, list) => {
 			addTor(elem.magnet, index);
 		});
+		db.close();
 	}).catch(function (err) {
 		throw new Error(err);
 	});
@@ -300,6 +317,7 @@ function addTor(magnet, index) {
 		}, torrent => {
 			torrent.index = index;
 			console.log(magnet);
+			console.log(document.getElementsByName(magnet));
 			document.getElementsByName(magnet)[0].checked = true;
 			document.getElementsByName(magnet)[0].disabled = true;
 			torrent.on('download', bytes => {
@@ -308,19 +326,23 @@ function addTor(magnet, index) {
 				document.getElementsByName(magnet)[0].parentNode.childNodes[1].nodeValue = '- ' + percent.toString() + '% downloaded, ' + moment.duration(torrent.timeRemaining / 1000, 'seconds').humanize() + ' remaining.';
 			});
 			torrent.on('done', () => {
-				db.put({
-					_id: document.getElementsByName(magnet)[0].name,
-					magnet: document.getElementsByName(magnet)[0].name,
-					downloaded: true
-				}).then(res => {
-					document.getElementsByName(magnet)[0].parentNode.style.display = 'none';
-				}).catch(err => {
-					throw err;
+				db.get(document.getElementsByName(magnet)[0].name).then(doc => {
+					db.put({
+						_id: document.getElementsByName(magnet)[0].name,
+						_rev: doc._rev,
+						magnet: document.getElementsByName(magnet)[0].name,
+						downloaded: true
+					}).then(res => {
+						console.log(res);
+						document.getElementsByName(magnet)[0].parentNode.style.display = 'none';
+						console.log('done');
+						ipc.send('dldone', torrent.name);
+						torrent.destroy();
+					}).catch(err => {
+						throw err;
+					});
 				});
 			});
-			console.log('done');
-			ipc.send('dldone', torrent.name);
-			torrent.destroy();
 		});
 	});
 }
@@ -333,13 +355,7 @@ function runScript(e) {
 	if (e.keyCode === 13) {
 		const tb = document.getElementById('rss');
 		// Use connect method to connect to the Server
-		MongoClient.connect(url, (err, db) => {
-			if (err) {
-				throw err;
-			}
-			console.log('Connected correctly to server');
-			updateURI(tb.value, () => {
-			});
+		updateURI(tb.value, () => {
 		});
 		const dlbox = document.getElementById('dlbox');
 		document.getElementById('dls').style.display = 'inline';
@@ -348,37 +364,31 @@ function runScript(e) {
 			console.log(err);
 		});
 		RSS.on('data', data => {
-			MongoClient.connect(url, (err, db) => {
-				if (err) {
-					throw err;
-				}
-				console.log('Connected correctly to server');
-				document.getElementById('dlAll').style.display = 'block';
-				data = _.omit(data, '_id');
-				ignoreDupeTorrents(data, dupe => {
+			document.getElementById('dlAll').style.display = 'block';
+			data = _.omit(data, '_id');
+			ignoreDupeTorrents(data, dupe => {
 					// MakeSureAllDL(data.link, toadd => {
-					if (!dupe) {
-						const br = document.createElement('br');
-						const label = document.createElement('label');
-						label.innerText = data.title;
-						const input = document.createElement('input');
-						const dlprogTitle = document.createTextNode(' ');
-						label.appendChild(dlprogTitle);
-						label.id = i;
-						input.type = 'checkbox';
-						input.className = 'checkbox';
-						input.name = data.link;
-						input.addEventListener('click', () => {
-							addTor(input.name, input.id);
-						});
-						label.appendChild(input);
-						dlbox.appendChild(document.createElement('br'));
-						document.getElementById('dlbox').appendChild(label);
-						i++;
-					} else if (dupe) {
-						console.log('dupe');
-					}
-				});
+				if (!dupe) {
+					const br = document.createElement('br');
+					const label = document.createElement('label');
+					label.innerText = data.title;
+					const input = document.createElement('input');
+					const dlprogTitle = document.createTextNode(' ');
+					label.appendChild(dlprogTitle);
+					label.id = i;
+					input.type = 'checkbox';
+					input.className = 'checkbox';
+					input.name = data.link;
+					input.addEventListener('click', () => {
+						addTor(input.name, parseInt(input.id, 0));
+					});
+					label.appendChild(input);
+					dlbox.appendChild(document.createElement('br'));
+					document.getElementById('dlbox').appendChild(label);
+					i++;
+				} else if (dupe) {
+					console.log('dupe');
+				}
 			});
 		});
 		// });

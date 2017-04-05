@@ -169,6 +169,7 @@ app.on('activate', () => {
  * @param callback - The callback.
  */
 function ignoreDupeTorrents(torrent, callback) {
+	db = new PouchDB(require('path').join(app.getPath('userData'), 'db').toString());
 	db.get(torrent.link)
 				.then(doc => {
 					console.log(doc);
@@ -180,20 +181,20 @@ function ignoreDupeTorrents(torrent, callback) {
 							tvdbID: torrent['tv:show_name']['#'],
 							airdate: torrent.pubDate,
 							downloaded: false
-						})
-							.then(err => {
-								if (err) {
-									throw err;
-								}
-								db.close();
-								callback();
-							});
+						}).then(() => {
+							callback();
+							db.close();
+						}).catch(err => {
+							if (err) {
+								throw err;
+							}
+						});
 					} else if (doc.downloaded === true) {
-						db.close();
 						callback('dupe');
-					} else if (doc.downloaded === false) {
 						db.close();
+					} else if (doc.downloaded === false) {
 						callback();
+						db.close();
 					}
 				})
 				.catch(err => {
@@ -207,6 +208,7 @@ function ignoreDupeTorrents(torrent, callback) {
  * @param callback - Callbacks
  */
 function getRSSURI(callback) {
+	db = new PouchDB(require('path').join(app.getPath('userData'), 'db').toString());
 	db.get('showRSS')
 		.then(doc => {
 			callback(doc.showRSSURI);
@@ -216,7 +218,6 @@ function getRSSURI(callback) {
 			console.log(err);
 			if (err.status === 404) {
 				callback('');
-				db.close();
 			} else {
 				throw err;
 			}

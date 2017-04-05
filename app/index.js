@@ -16,19 +16,23 @@ import isDev from 'electron-is-dev';
 import bugsnag from 'bugsnag';
 import {RSSParse} from './lib/rssparse';
 import {init} from './menu.js';
+import PouchDB from 'pouchdb';
 require('electron-debug')();
+PouchDB.plugin(require('pouchdb-find'));
 const windowStateKeeper = require('electron-window-state');
 console.timeEnd('require');
 let eNotify;
-const user = process.env.DB_USER;
-const password = process.env.DB_PWD;
-const dburi = process.env.DB_URL;
-const url = require('util').format('mongodb://%s:%s@%s/media_mate?ssl=true&replicaSet=SDD-Major-shard-0&authSource=admin',
-	user, password, dburi);
+
+// Const user = process.env.DB_USER;
+// const password = process.env.DB_PWD;
+// const dburi = process.env.DB_URL;
+// const url = require('util').format('mongodb://%s:%s@%s/media_mate?ssl=true&replicaSet=SDD-Major-shard-0&authSource=admin',
+// 	user, password, dburi);
 const app = electron.app;
+let db;
 bugsnag.register('03b389d77abc2d10136d8c859391f952', {appVersion: app.getVersion(), sendCode: true});
 let win;
-let MongoClient;
+// Let MongoClient;
 /**
  * Autoupdater on update available
  */
@@ -165,69 +169,58 @@ app.on('activate', () => {
  * @param callback - The callback.
  */
 function ignoreDupeTorrents(torrent, callback) {
-	MongoClient.connect(url, (err, db) => {
-		if (err) {
-			throw err;
-		}
-		const collection = db.collection('torrents');
-		if (collection.find() !== null) {
-			collection.findOne({magnet: torrent.link}, (err, docs) => {
-				if (err) {
-					throw err;
-				}
-				if (docs === null) {
-					collection.insertOne({
-						magnet: torrent.link,
-						title: torrent.title,
-						tvdbID: torrent['tv:show_name']['#'],
-						airdate: torrent.pubDate,
-						downloaded: false
-					})
-						.then(err => {
-							if (err) {
-								throw err;
-							}
-							db.close();
-							callback();
-						});
-				} else if (docs.downloaded === true) {
-					db.close();
-					callback('dupe');
-				} else if (docs.downloaded === false) {
-					db.close();
-					callback();
-				}
-			});
-		}
-	});
+	db.get(torrent.link)
+				.then(doc => {
+					console.log(doc);
+					if (doc === null) {
+						db.put({
+							_id: torrent.link,
+							magnet: torrent.link,
+							title: torrent.title,
+							tvdbID: torrent['tv:show_name']['#'],
+							airdate: torrent.pubDate,
+							downloaded: false
+						})
+							.then(err => {
+								if (err) {
+									throw err;
+								}
+								db.close();
+								callback();
+							});
+					} else if (doc.downloaded === true) {
+						db.close();
+						callback('dupe');
+					} else if (doc.downloaded === false) {
+						db.close();
+						callback();
+					}
+				})
+				.catch(err => {
+					if (err) {
+						throw err;
+					}
+				});
 }
 /**
  * @description Get the ShowRSS URI from the DB.
  * @param callback - Callbacks
  */
 function getRSSURI(callback) {
-	MongoClient.connect(url, (err, db) => {
-		if (err) {
-			throw err;
-		}
-		const collection = db.collection('uri');
-		if (collection.find() !== undefined || collection.find() !== null) {
-			collection.find().toArray((err, docs) => {
-				if (err) {
-					throw err;
-				}
-				if (docs.length > 0) {
-					callback(docs[0].showRSSURI);
-					db.close();
-				} else {
-					callback('');
-					db.close();
-				}
-			});
-		} else {
-			callback('');
-		}
-	});
+	db.get('showRSS')
+		.then(doc => {
+			callback(doc.showRSSURI);
+			db.close();
+		})
+		.catch(err => {
+			console.log(err);
+			if (err.status === 404) {
+				callback('');
+				db.close();
+			} else {
+				throw err;
+			}
+		});
 }
 /**
  * @description Watch the ShowRSS feed for new releases, and notify user when there is one.
@@ -263,8 +256,9 @@ ipc.on('dldone', (event, data) => {
 app.on('ready', () => {
 	mainWindow = createMainWindow();
 	init();
+	db = new PouchDB(require('path').join(app.getPath('userData'), 'db').toString());
 	console.time('mongo');
-	MongoClient = require('mongodb').MongoClient;
+	// MongoClient = require('mongodb').MongoClient;
 	console.timeEnd('mongo');
 	eNotify = require('electron-notify');
 	watchRSS();

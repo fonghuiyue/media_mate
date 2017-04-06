@@ -41,6 +41,7 @@ const prog = _.throttle(dlProgress, 10000);
  * Make sure that everything is loaded before doing the good stuff.
  */
 window.onload = () => {
+	findDocuments();
 	getRSSURI(callback => {
 		document.getElementById('rss').value = callback;
 	});
@@ -140,17 +141,15 @@ function ignoreDupeTorrents(torrent, callback) {
 	db.find({
 		selector: {
 			magnet: torrent.link,
-			downloaded: {$ne: true}
+			downloaded: false
 		},
 		fields: ['_id', 'magnet', 'downloaded']
 	}).then(res => {
 		console.log(res);
 		if (res.docs.length > 0) {
 			if (res.docs[0].downloaded === true) {
-				db.close();
 				callback('dupe');
 			} else if (res.docs[0].downloaded === false) {
-				db.close();
 				callback();
 			}
 		} else {
@@ -163,13 +162,13 @@ function ignoreDupeTorrents(torrent, callback) {
 				downloaded: false
 			}).then(res => {
 				console.log(res);
-				db.close();
 				callback();
 			}).catch(err => {
 				throw err;
 			});
 		}
 	}).catch(err => {
+		console.log(err);
 		throw err;
 	});
 }
@@ -237,12 +236,11 @@ function updateURI(uri, callback) {
 }
 /**
  * Initial load, get the torrents in the db.
- * @param callback
  */
 function findDocuments() {
 	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
 	db.allDocs({
-		include_docs: true
+		include_docs: true // eslint-disable-line camelcase
 	}).then(function (result) {
 		console.log(result);
 		_.each(result.rows, elem => allTorrents.push(elem.doc.magnet));
@@ -251,7 +249,7 @@ function findDocuments() {
 		console.log(err);
 	});
 }
-findDocuments();
+
 /**
  * Download all of the torrents, after they are added to the DOM.
  */
@@ -326,6 +324,7 @@ function addTor(magnet, index) {
 				document.getElementsByName(magnet)[0].parentNode.childNodes[1].nodeValue = '- ' + percent.toString() + '% downloaded, ' + moment.duration(torrent.timeRemaining / 1000, 'seconds').humanize() + ' remaining.';
 			});
 			torrent.on('done', () => {
+				let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
 				db.get(document.getElementsByName(magnet)[0].name).then(doc => {
 					db.put({
 						_id: document.getElementsByName(magnet)[0].name,

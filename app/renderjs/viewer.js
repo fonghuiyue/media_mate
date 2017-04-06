@@ -287,6 +287,7 @@ async function findDL() {
 				const imgelem = document.createElement('img');
 				parsedName.show = titleCase(parsedName.show);
 				figelem.addEventListener('click', () => {
+					window.scrollTo(0, 0);
 					const video = document.createElement('video');
 					video.src = files[i];
 					video.setAttribute('data-file-name', `${parsedName.show.replace(' ', '')}S${parsedName.season}E${parsedName.episode}`);

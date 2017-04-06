@@ -109,7 +109,6 @@ function getRSSURI(callback) {
 			callback(doc.showRSSURI);
 		})
 		.catch(err => {
-			console.log(err);
 			if (err.status === 404) {
 				callback('');
 			} else {
@@ -140,12 +139,10 @@ function ignoreDupeTorrents(torrent, callback) {
 	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
 	db.find({
 		selector: {
-			_id: torrent.link,
-			downloaded: true
+			_id: torrent.link
 		},
 		fields: ['_id', 'magnet', 'downloaded']
 	}).then(res => {
-		console.log(res);
 		if (res.docs.length > 0) {
 			if (res.docs[0].downloaded === true) {
 				callback('dupe');
@@ -161,14 +158,12 @@ function ignoreDupeTorrents(torrent, callback) {
 				airdate: torrent.pubDate,
 				downloaded: false
 			}).then(res => {
-				console.log(res);
 				callback();
 			}).catch(err => {
 				throw err;
 			});
 		}
 	}).catch(err => {
-		console.log(err);
 		throw err;
 	});
 }
@@ -204,11 +199,9 @@ function dropTorrents(callback) {
 		include_docs: true, // eslint-disable-line camelcase
 		attachments: true
 	}).then(function (res) {
-		console.log(res.rows);
 		_.each(res.rows, elem => {
 			if (elem.doc._id !== 'showRSS') {
 				db.remove(elem.doc);
-				console.log('ayy');
 			}
 		});
 	}).catch(function (err) {
@@ -250,7 +243,6 @@ function findDocuments() {
 	db.allDocs({
 		include_docs: true // eslint-disable-line camelcase
 	}).then(function (result) {
-		console.log(result);
 		_.each(result.rows, elem => allTorrents.push(elem.doc.magnet));
 		db.close();
 	}).catch(function (err) {
@@ -284,7 +276,7 @@ function dlAll() {
 		selector: {downloaded: false},
 		fields: ['_id', 'magnet', 'title', 'airdate', 'downloaded']
 	}).then(function (result) {
-		_.each(result.docs, (elem, index, list) => {
+		_.each(result.docs, (elem, index) => {
 			addTor(elem.magnet, index);
 		});
 		db.close();
@@ -339,11 +331,9 @@ function addTor(magnet, index) {
 			path: callback
 		}, torrent => {
 			torrent.index = index;
-			console.log(magnet);
-			console.log(document.getElementsByName(magnet));
 			document.getElementsByName(magnet)[0].checked = true;
 			document.getElementsByName(magnet)[0].disabled = true;
-			torrent.on('download', bytes => {
+			torrent.on('download', () => {
 				prog(torrent, magnet);
 				const percent = Math.round(torrent.progress * 100 * 100) / 100;
 				document.getElementsByName(magnet)[0].parentNode.childNodes[1].nodeValue = '- ' + percent.toString() + '% downloaded, ' + moment.duration(torrent.timeRemaining / 1000, 'seconds').humanize() + ' remaining.';
@@ -357,7 +347,6 @@ function addTor(magnet, index) {
 						magnet: document.getElementsByName(magnet)[0].name,
 						downloaded: true
 					}).then(res => {
-						console.log(res);
 						document.getElementsByName(magnet)[0].parentNode.style.display = 'none';
 						console.log('done');
 						ipc.send('dldone', torrent.name);

@@ -22,7 +22,7 @@ PouchDB.plugin(require('pouchdb-find'));
 const windowStateKeeper = require('electron-window-state');
 console.timeEnd('require');
 let eNotify;
-
+let RSS;
 // Const user = process.env.DB_USER;
 // const password = process.env.DB_PWD;
 // const dburi = process.env.DB_URL;
@@ -154,6 +154,7 @@ app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') {
 		app.quit();
 	}
+	RSS = null;
 });
 /**
  * If mainwindow doesn't exist, make it.
@@ -181,6 +182,7 @@ function ignoreDupeTorrents(torrent, callback) {
 							airdate: torrent.pubDate,
 							downloaded: false
 						}).then(() => {
+							db.close();
 							callback();
 						}).catch(err => {
 							if (err) {
@@ -189,8 +191,10 @@ function ignoreDupeTorrents(torrent, callback) {
 						});
 					} else if (doc.downloaded === true) {
 						callback('dupe');
+						db.close();
 					} else if (doc.downloaded === false) {
 						callback();
+						db.close();
 					}
 				})
 				.catch(err => {
@@ -207,14 +211,16 @@ function getRSSURI(callback) {
 	db = new PouchDB(require('path').join(app.getPath('userData'), 'db').toString());
 	db.get('showRSS')
 		.then(doc => {
-			callback(doc.showRSSURI);
 			db.close();
+			callback(doc.showRSSURI);
 		})
 		.catch(err => {
 			console.log(err);
 			if (err.status === 404) {
+				db.close();
 				callback('');
 			} else {
+				db.close();
 				throw err;
 			}
 		});
@@ -229,7 +235,7 @@ function watchRSS() {
 		if (cb === '') {
 			eNotify.notify({title: 'Put your ShowRSS URL into the downloader!', description: 'showrss.info'});
 		} else {
-			const RSS = new RSSParse(uri);
+			RSS = new RSSParse(uri);
 			RSS.on('data', data => {
 				ignoreDupeTorrents(data, dupe => {
 					if (dupe) {

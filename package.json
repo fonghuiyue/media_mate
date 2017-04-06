@@ -75,7 +75,7 @@
 		]
 	},
 	"build": {
-		"nodeGypRebuild": true,
+		"nodeGypRebuild": false,
 		"appId": "com.willyb321.media_mate",
 		"nsis": {
 			"oneClick": false,

@@ -89,6 +89,10 @@ process.on('uncaughtError', err => {
 	bugsnag.notify(err);
 	console.log('ERROR! The error is: ' + err || err.stack);
 });
+process.on('unhandledRejection', function (err, promise) {
+	console.error('Unhandled rejection: ' + (err && err.stack || err)); // eslint-disable-line
+	bugsnag.notify(err);
+});
 /**
  * Called from renderer process when an error occurs
  */

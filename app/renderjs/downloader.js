@@ -106,7 +106,6 @@ function getRSSURI(callback) {
 	db.get('showRSS')
 		.then(doc => {
 			callback(doc.showRSSURI);
-			db.close();
 		})
 		.catch(err => {
 			console.log(err);
@@ -140,8 +139,7 @@ function ignoreDupeTorrents(torrent, callback) {
 	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
 	db.find({
 		selector: {
-			magnet: torrent.link,
-			downloaded: false
+			magnet: torrent.link
 		},
 		fields: ['_id', 'magnet', 'downloaded']
 	}).then(res => {

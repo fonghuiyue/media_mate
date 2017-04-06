@@ -42,6 +42,7 @@ const prog = _.throttle(dlProgress, 10000);
  */
 window.onload = () => {
 	findDocuments();
+	indexDB();
 	getRSSURI(callback => {
 		document.getElementById('rss').value = callback;
 	});
@@ -245,6 +246,23 @@ function findDocuments() {
 		db.close();
 	}).catch(function (err) {
 		console.log(err);
+	});
+}
+
+function indexDB() {
+	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
+	db.createIndex({
+		index: {
+			fields: ['_id', 'magnet', 'downloaded']
+		}
+	}).then(function (result) {
+		if (result.result === 'created') {
+			console.log('index made');
+		} else {
+			console.log('already exists');
+		}
+	}).catch(err => {
+		throw err;
 	});
 }
 

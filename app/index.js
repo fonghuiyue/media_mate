@@ -198,7 +198,9 @@ function ignoreDupeTorrents(torrent, callback) {
 					}
 				})
 				.catch(err => {
-					if (err) {
+					if (err.status === 404) {
+						callback();
+					} else if (err.status !== 404) {
 						throw err;
 					}
 				});

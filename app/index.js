@@ -172,7 +172,6 @@ function ignoreDupeTorrents(torrent, callback) {
 	db = new PouchDB(require('path').join(app.getPath('userData'), 'db').toString());
 	db.get(torrent.link)
 				.then(doc => {
-					console.log(doc);
 					if (doc === null) {
 						db.put({
 							_id: torrent.link,
@@ -183,7 +182,6 @@ function ignoreDupeTorrents(torrent, callback) {
 							downloaded: false
 						}).then(() => {
 							callback();
-							db.close();
 						}).catch(err => {
 							if (err) {
 								throw err;
@@ -191,10 +189,8 @@ function ignoreDupeTorrents(torrent, callback) {
 						});
 					} else if (doc.downloaded === true) {
 						callback('dupe');
-						db.close();
 					} else if (doc.downloaded === false) {
 						callback();
-						db.close();
 					}
 				})
 				.catch(err => {
@@ -258,9 +254,6 @@ app.on('ready', () => {
 	mainWindow = createMainWindow();
 	init();
 	db = new PouchDB(require('path').join(app.getPath('userData'), 'db').toString());
-	console.time('mongo');
-	// MongoClient = require('mongodb').MongoClient;
-	console.timeEnd('mongo');
 	eNotify = require('electron-notify');
 	watchRSS();
 	console.timeEnd('init');

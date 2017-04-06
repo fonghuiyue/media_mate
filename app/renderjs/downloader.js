@@ -10,6 +10,7 @@
 require('dotenv').config({path: `${__dirname}/.env`});
 const {dialog} = require('electron').remote;
 const path = require('path');
+const bugsnag = require('bugsnag');
 const f = require('util').format;
 const ipc = require('electron').ipcRenderer;
 const PouchDB = require('pouchdb');
@@ -18,25 +19,31 @@ const moment = require('moment');
 
 const RSSParse = require(`${__dirname}/lib/rssparse.js`).RSSParse;
 const ProgressBar = require('progressbar.js');
-const MongoClient = require('mongodb').MongoClient;
 const _ = require('underscore');
 const storage = require('electron-json-storage');
 const WebTorrent = require('webtorrent');
 
 let db;
 PouchDB.plugin(require('pouchdb-find'));
-const user = process.env.DB_USER;
-const password = process.env.DB_PWD;
-const dburi = process.env.DB_URL;
-const authMechanism = 'DEFAULT';
+const version = require('electron').remote.app.getVersion();
+bugsnag.register('03b389d77abc2d10136d8c859391f952', {appVersion: version, sendCode: true});
 const client = new WebTorrent();
-const url = f('mongodb://%s:%s@%s/media_mate?ssl=true&replicaSet=SDD-Major-shard-0&authSource=admin',
-	user, password, dburi);
 let i = 0;
 let bar;
 const dbindex = 0;
 const allTorrents = [];
 const prog = _.throttle(dlProgress, 10000);
+
+process.on('unhandledRejection', function (err, promise) {
+	console.error('Unhandled rejection: ' + (err && err.stack || err)); // eslint-disable-line
+	bugsnag.notify(new Error(err));
+});
+
+function handleErrs(err) {
+	console.error('Unhandled rejection: ' + (err && err.stack || err)); // eslint-disable-line
+	bugsnag.notify(new Error(err));
+}
+
 /**
  * Make sure that everything is loaded before doing the good stuff.
  */
@@ -96,7 +103,7 @@ function dlProgress() {
  * WebTorrent on error, handle it.
  */
 client.on('error', err => {
-	console.error('ERROR: ' + err.message);
+	handleErrs(err);
 });
 /**
  * Get the ShowRSS URI from the db
@@ -112,23 +119,9 @@ function getRSSURI(callback) {
 			if (err.status === 404) {
 				callback('');
 			} else {
-				throw err;
+				handleErrs(err);
 			}
 		});
-}
-/**
- * Make sure that the torrents are downloaded and in the DB.
- * @param torrent {string} - the torrent object to be checked
- * @param callback
- */
-function makeSureAllDL(torrent, callback) {
-	if (_.contains(allTorrents, torrent) === true) {
-		console.log('got it');
-		callback();
-	} else {
-		console.log('dont got it');
-		callback('add it');
-	}
 }
 /**
  * Make sure not to add torrents already downloaded.
@@ -160,33 +153,11 @@ function ignoreDupeTorrents(torrent, callback) {
 			}).then(res => {
 				callback();
 			}).catch(err => {
-				throw err;
+				handleErrs(err);
 			});
 		}
 	}).catch(err => {
-		throw err;
-	});
-}
-/**
- * Get the index of the torrent being checked by the magnet URI
- * @param magnet {string} - the magnet URI for checking.
- * @param callback - Do I really need to say what this is :)
- */
-function getTorIndex(magnet, callback) {
-	MongoClient.connect(url, (err, db) => {
-		if (err) {
-			throw err;
-		}
-		const collection = db.collection('torrents');
-		collection.findOne({magnet}, (err, docs) => {
-			if (err) {
-				throw err;
-			}
-			if (docs !== null) {
-				const index = docs.index;
-				callback(index);
-			}
-		});
+		handleErrs(err);
 	});
 }
 /**
@@ -211,9 +182,8 @@ function dropTorrents(callback) {
 /**
  * Make sure that the ShowRSS URI is updated.
  * @param uri {string} - the ShowRSS URI
- * @param callback
  */
-function updateURI(uri, callback) {
+function updateURI(uri) {
 	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
 	db.get('showRSS').then(doc => {
 		return db.put({
@@ -221,8 +191,7 @@ function updateURI(uri, callback) {
 			_rev: doc._rev,
 			showRSSURI: uri
 		});
-	}).then(function (response) {
-		callback(response);
+	}).then(() => {
 		db.close();
 	}).catch(function (err) {
 		console.log(err);
@@ -263,7 +232,7 @@ function indexDB() {
 			console.log('already exists');
 		}
 	}).catch(err => {
-		throw err;
+		handleErrs(err);
 	});
 }
 
@@ -281,7 +250,7 @@ function dlAll() {
 		});
 		db.close();
 	}).catch(function (err) {
-		throw new Error(err);
+		handleErrs(err);
 	});
 }
 /**
@@ -291,7 +260,7 @@ function dlAll() {
 function getDlPath(callback) {
 	storage.get('path', (err, data) => {
 		if (err) {
-			throw err;
+			handleErrs(err);
 		}
 		if (_.isEmpty(data) === false) {
 			callback(data.path);
@@ -314,7 +283,7 @@ function insertDlPath(callback) {
 			path: dlpath[0]
 		}, error => {
 			if (error) {
-				throw error;
+				handleErrs(error);
 			}
 		});
 	}
@@ -352,11 +321,39 @@ function addTor(magnet, index) {
 						ipc.send('dldone', torrent.name);
 						torrent.destroy();
 					}).catch(err => {
-						throw err;
+						handleErrs(err);
 					});
 				});
 			});
 		});
+	});
+}
+
+function processTorrents(data) {
+	const dlbox = document.getElementById('dlbox');
+	ignoreDupeTorrents(data, dupe => {
+		if (!dupe) {
+			const br = document.createElement('br');
+			const label = document.createElement('label');
+			label.innerText = data.title;
+			const input = document.createElement('input');
+			const dlprogTitle = document.createTextNode(' ');
+			label.appendChild(dlprogTitle);
+			label.id = i;
+			input.type = 'checkbox';
+			input.className = 'checkbox';
+			input.name = data.link;
+			input.addEventListener('click', () => {
+				addTor(input.name, parseInt(input.id, 0));
+			});
+			label.appendChild(input);
+			dlbox.appendChild(document.createElement('br'));
+			document.getElementById('dlbox').appendChild(label);
+			document.getElementById('dlAll').style.display = 'block';
+			i++;
+		} else if (dupe) {
+			console.log('dupe');
+		}
 	});
 }
 /**
@@ -368,9 +365,7 @@ function runScript(e) {
 	if (e.keyCode === 13) {
 		const tb = document.getElementById('rss');
 		// Use connect method to connect to the Server
-		updateURI(tb.value, () => {
-		});
-		const dlbox = document.getElementById('dlbox');
+		updateURI(tb.value);
 		document.getElementById('dls').style.display = 'inline';
 		const RSS = new RSSParse(tb.value);
 		RSS.on('error', err => {
@@ -378,33 +373,8 @@ function runScript(e) {
 		});
 		RSS.on('data', data => {
 			data = _.omit(data, '_id');
-			ignoreDupeTorrents(data, dupe => {
-					// MakeSureAllDL(data.link, toadd => {
-				if (!dupe) {
-					const br = document.createElement('br');
-					const label = document.createElement('label');
-					label.innerText = data.title;
-					const input = document.createElement('input');
-					const dlprogTitle = document.createTextNode(' ');
-					label.appendChild(dlprogTitle);
-					label.id = i;
-					input.type = 'checkbox';
-					input.className = 'checkbox';
-					input.name = data.link;
-					input.addEventListener('click', () => {
-						addTor(input.name, parseInt(input.id, 0));
-					});
-					label.appendChild(input);
-					dlbox.appendChild(document.createElement('br'));
-					document.getElementById('dlbox').appendChild(label);
-					document.getElementById('dlAll').style.display = 'block';
-					i++;
-				} else if (dupe) {
-					console.log('dupe');
-				}
-			});
+			processTorrents(data);
 		});
-		// });
 		return false;
 	}
 }

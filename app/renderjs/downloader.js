@@ -140,7 +140,8 @@ function ignoreDupeTorrents(torrent, callback) {
 	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
 	db.find({
 		selector: {
-			magnet: torrent.link
+			_id: torrent.link,
+			downloaded: true
 		},
 		fields: ['_id', 'magnet', 'downloaded']
 	}).then(res => {
@@ -198,12 +199,20 @@ function getTorIndex(magnet, callback) {
  * @param callback - let em know.
  */
 function dropTorrents(callback) {
-	MongoClient.connect(url, (err, db) => {
-		if (err) {
-			throw err;
-		}
-		const collection = db.collection('torrents');
-		collection.drop();
+	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
+	db.allDocs({
+		include_docs: true, // eslint-disable-line camelcase
+		attachments: true
+	}).then(function (res) {
+		console.log(res.rows);
+		_.each(res.rows, elem => {
+			if (elem.doc._id !== 'showRSS') {
+				db.remove(elem.doc);
+				console.log('ayy');
+			}
+		});
+	}).catch(function (err) {
+		console.log(err);
 	});
 }
 /**
@@ -379,7 +388,6 @@ function runScript(e) {
 			console.log(err);
 		});
 		RSS.on('data', data => {
-			document.getElementById('dlAll').style.display = 'block';
 			data = _.omit(data, '_id');
 			ignoreDupeTorrents(data, dupe => {
 					// MakeSureAllDL(data.link, toadd => {

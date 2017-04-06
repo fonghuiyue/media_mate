@@ -382,6 +382,7 @@ function runScript(e) {
 					label.appendChild(input);
 					dlbox.appendChild(document.createElement('br'));
 					document.getElementById('dlbox').appendChild(label);
+					document.getElementById('dlAll').style.display = 'block';
 					i++;
 				} else if (dupe) {
 					console.log('dupe');

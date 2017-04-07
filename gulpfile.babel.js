@@ -11,7 +11,7 @@ import ava from 'gulp-ava';
 const builder = require('electron-builder');
 
 let injects = [
-	'./app/renderjs/render-err.js',
+	'./app/renderjs/notify.js',
 	'./app/node_modules/jquery/dist/jquery.min.js',
 	'./app/renderjs/pace.min.js',
 	'./app/index.css',

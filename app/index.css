@@ -3,6 +3,7 @@
 @import "node_modules/mprogress/mprogress.min.css";
 @import "node_modules/izitoast/dist/css/iziToast.min.css";
 @import "node_modules/bulma/css/bulma.css";
+@import "node_modules/sweetalert2/dist/sweetalert2.min.css";
 
 body {
 	min-height: 100%;

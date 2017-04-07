@@ -4,3 +4,4 @@
 ./test.js
 *.min*
 ./node_modules/**/*
+./app/renderjs/notify.js

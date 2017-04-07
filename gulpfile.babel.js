@@ -14,7 +14,7 @@ let injects = [
 	'./app/renderjs/notify.js',
 	'./app/node_modules/jquery/dist/jquery.min.js',
 	'./app/renderjs/pace.min.js',
-	'./app/index.css',
+	'./app/css/index.css',
 	'./app/node_modules/mprogress/mprogress.min.js'
 ];
 

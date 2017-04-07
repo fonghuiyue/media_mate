@@ -266,7 +266,7 @@ function handleEventHandlers() {
 	document.getElementById('stopvid').removeEventListener('click', handleEventHandlers);
 }
 
-async function watchedTime(vid, elem) {
+async function watchedTime(vid, elem, figcap) {
 	return new Promise((resolve, reject) => {
 		storage.get(vid.getAttribute('data-store-name'), (err, data) => {
 			if (err) {
@@ -289,6 +289,7 @@ async function watchedTime(vid, elem) {
 				elem.style.marginBottom = '0px';
 				elem.style.setProperty('margin', '0px 0px', 'important');
 				elem.style.backgroundColor = 'red';
+				figcap.innerText = `${figcap.innerText} (${Math.round((time / duration) * 100)}% watched)`;
 				resolve(elem);
 			} else if (data.watched === true) {
 				elem.style.zIndex = 9999;
@@ -353,7 +354,7 @@ async function findDL() {
 			figcap.innerText = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;
 			let watchedhr = document.createElement('hr');
 			figelem.appendChild(imgelem);
-			watchedhr = await watchedTime(figelem, watchedhr);
+			watchedhr = await watchedTime(figelem, watchedhr, figcap);
 			figelem.appendChild(watchedhr);
 			figelem.appendChild(figcap);
 			mediadiv.appendChild(figelem);

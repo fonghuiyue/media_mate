@@ -19,7 +19,7 @@ const bugsnag = require('bugsnag');
 const moment = require('moment');
 const _ = require('underscore');
 const parser = require('episode-parser');
-const dir = require('node-dir');
+const klawSync = require('klaw-sync');
 
 const tvdb = new TVDB(process.env.TVDB_KEY);
 const vidProgressthrottled = _.throttle(vidProgress, 1000);
@@ -183,7 +183,7 @@ function vidFinished(e) {
 				}
 			});
 		}
-		storage.set(filename, {file: filename, watched: true, time: this.currentTime}, err => {
+		storage.set(filename, {file: filename, watched: true, time: this.currentTime, duration: this.duration}, err => {
 			if (err) {
 				bugsnag.notify(new Error(err), {
 					subsystem: {
@@ -209,7 +209,7 @@ function handleVids(e) {
 			});
 		}
 		if (_.isEmpty(data) === true) {
-			storage.set(filename, {file: filename, watched: false, time: this.currentTime}, err => {
+			storage.set(filename, {file: filename, watched: false, time: this.currentTime, duration: this.duration}, err => {
 				if (err) {
 					throw err;
 				}
@@ -247,7 +247,7 @@ function vidProgress(e) {
 			});
 		}
 		if (_.isEmpty(data) === false) {
-			storage.set(filename, {file: filename, watched: false, time: this.currentTime}, err => {
+			storage.set(filename, {file: filename, watched: false, time: this.currentTime, duration: this.duration}, err => {
 				if (err) {
 					throw err;
 				}
@@ -266,57 +266,98 @@ function handleEventHandlers() {
 	document.getElementById('stopvid').removeEventListener('click', handleEventHandlers);
 }
 
+async function watchedTime(vid, elem) {
+	return new Promise((resolve, reject) => {
+		storage.get(vid.getAttribute('data-store-name'), (err, data) => {
+			if (err) {
+				throw err;
+			}
+			if (_.isEmpty(data)) {
+				elem.style.zIndex = 9999;
+				elem.style.position = 'relative';
+				elem.style.width = '0px';
+				elem.style.backgroundColor = 'red';
+				resolve(elem);
+			} else if (data.watched === false) {
+				let time = data.time;
+				let duration = data.duration;
+				elem.style.width = (time / duration) * 100 + '%';
+				elem.style.zIndex = 9999;
+				elem.style.position = 'relative';
+				elem.style.top = '0';
+				elem.style.marginTop = '0px';
+				elem.style.marginBottom = '0px';
+				elem.style.setProperty('margin', '0px 0px', 'important');
+				elem.style.backgroundColor = 'red';
+				resolve(elem);
+			} else if (data.watched === true) {
+				elem.style.zIndex = 9999;
+				elem.style.position = 'relative';
+				elem.style.width = '100%';
+				elem.style.backgroundColor = 'red';
+				resolve(elem);
+			}
+		});
+	});
+}
+
 /**
  * Get files downloaded and process them to the DOM.
  */
 async function findDL() {
 	const path = await getPath();
-	dir.files(path.path, (err, files) => {
-		if (err) {
-			throw err;
-		}
-		const mediadiv = document.getElementById('media');
-		const videodiv = document.getElementById('video');
-		files = _.filter(files, isPlayable);
-		files.sort();
-		for (let i = 0; i < files.length; i++) {
-			const parsedName = parser(files[i].replace(/^.*[\\/]/, ''));
-			if (parsedName !== null) {
-				const figelem = document.createElement('figure');
-				const figcap = document.createElement('figcaption');
-				const imgelem = document.createElement('img');
-				parsedName.show = titleCase(parsedName.show);
-				figelem.addEventListener('click', () => {
-					window.scrollTo(0, 0);
-					const video = document.createElement('video');
-					video.src = files[i];
-					video.setAttribute('data-file-name', `${parsedName.show.replace(' ', '')}S${parsedName.season}E${parsedName.episode}`);
-					video.autoplay = true;
-					video.controls = true;
-					video.addEventListener('loadedmetadata', handleVids, false);
-					video.addEventListener('ended', vidFinished, false);
-					video.addEventListener('timeupdate', vidProgressthrottled, false);
-					document.getElementById('stopvid').addEventListener('click', handleEventHandlers);
-					if (videodiv.childElementCount > 0) {
-						videodiv.replaceChild(video, videodiv.firstElementChild);
-					} else {
-						videodiv.appendChild(video);
-					}
-				});
-				imgelem.src = `file:///${__dirname}/loading.png`;
-				figelem.style.display = 'inline-block';
-				figelem.id = files[i].replace(/^.*[\\/]/, '');
-				figelem.setAttribute('data-file-name', files[i].replace(/^.*[\\/]/, ''));
-				figelem.setAttribute('data-store-name', `${parsedName.show.replace(' ', '')}S${parsedName.season}E${parsedName.episode}`);
-				imgelem.title = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;
-				imgelem.style.width = '400px';
-				imgelem.style.height = '225px';
-				figcap.innerText = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;
-				figelem.appendChild(imgelem);
-				figelem.appendChild(figcap);
-				mediadiv.appendChild(figelem);
-			}
-		}
-		getImgs();
+	let files = klawSync(path.path, {nodir: true});
+	_.each(files, (elem, index) => {
+		files[index] = elem.path;
 	});
+	const mediadiv = document.getElementById('media');
+	const videodiv = document.getElementById('video');
+	files = _.filter(files, isPlayable);
+	files.sort();
+	for (let i = 0; i < files.length; i++) {
+		const parsedName = parser(files[i].replace(/^.*[\\/]/, ''));
+		if (parsedName !== null) {
+			const figelem = document.createElement('figure');
+			const figcap = document.createElement('figcaption');
+			const imgelem = document.createElement('img');
+			parsedName.show = titleCase(parsedName.show);
+			figelem.addEventListener('click', () => {
+				window.scrollTo(0, 0);
+				const video = document.createElement('video');
+				video.src = files[i];
+				video.setAttribute('data-file-name', `${parsedName.show.replace(' ', '')}S${parsedName.season}E${parsedName.episode}`);
+				video.autoplay = true;
+				video.controls = true;
+				video.addEventListener('loadedmetadata', handleVids, false);
+				video.addEventListener('ended', vidFinished, false);
+				video.addEventListener('timeupdate', vidProgressthrottled, false);
+				document.getElementById('stopvid').addEventListener('click', handleEventHandlers);
+				if (videodiv.childElementCount > 0) {
+					videodiv.replaceChild(video, videodiv.firstElementChild);
+				} else {
+					videodiv.appendChild(video);
+				}
+			});
+			imgelem.src = `file:///${__dirname}/loading.png`;
+			figelem.style.display = 'inline-block';
+			figelem.id = files[i].replace(/^.*[\\/]/, '');
+			figelem.setAttribute('data-file-name', files[i].replace(/^.*[\\/]/, ''));
+			figelem.setAttribute('data-store-name', `${parsedName.show.replace(' ', '')}S${parsedName.season}E${parsedName.episode}`);
+			imgelem.title = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;
+			imgelem.style.width = '400px';
+			imgelem.style.height = '225px';
+			figelem.style.width = '400px';
+			figelem.style.height = '225px';
+			imgelem.style.display = 'inline-block';
+			imgelem.style.zIndex = 1;
+			figcap.innerText = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;
+			let watchedhr = document.createElement('hr');
+			figelem.appendChild(imgelem);
+			watchedhr = await watchedTime(figelem, watchedhr);
+			figelem.appendChild(watchedhr);
+			figelem.appendChild(figcap);
+			mediadiv.appendChild(figelem);
+		}
+	}
+	getImgs();
 }

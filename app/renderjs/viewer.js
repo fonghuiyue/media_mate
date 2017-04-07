@@ -238,6 +238,19 @@ function resetTime(params) {
  */
 function vidProgress(e) {
 	const filename = this.getAttribute('data-file-name');
+	const img = document.getElementById(this.getAttribute('data-img-id'));
+	let time = this.currentTime;
+	let duration = this.duration;
+	let figcap = img.childNodes;
+	figcap[1].style.width = (time / duration) * 100 + '%';
+	figcap[1].style.zIndex = 9999;
+	figcap[1].style.position = 'relative';
+	figcap[1].style.top = '0';
+	figcap[1].style.marginTop = '0px';
+	figcap[1].style.marginBottom = '0px';
+	figcap[1].style.setProperty('margin', '0px 0px', 'important');
+	figcap[1].style.backgroundColor = 'red';
+	figcap[2].innerText = `${figcap[0].title} (${Math.round((time / duration) * 100)}% watched)`;
 	storage.get(filename, (err, data) => {
 		if (err) {
 			bugsnag.notify(new Error(err), {
@@ -329,6 +342,7 @@ async function findDL() {
 				video.setAttribute('data-file-name', `${parsedName.show.replace(' ', '')}S${parsedName.season}E${parsedName.episode}`);
 				video.autoplay = true;
 				video.controls = true;
+				video.setAttribute('data-img-id', files[i].replace(/^.*[\\/]/, ''));
 				video.addEventListener('loadedmetadata', handleVids, false);
 				video.addEventListener('ended', vidFinished, false);
 				video.addEventListener('timeupdate', vidProgressthrottled, false);

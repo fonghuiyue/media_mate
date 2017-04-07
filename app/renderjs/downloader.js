@@ -336,7 +336,7 @@ function processTorrents(data) {
 		if (!dupe) {
 			const br = document.createElement('br');
 			const label = document.createElement('label');
-			label.innerText = data.title;
+			label.innerText = `${data.title} - (${moment(data.pubdate).fromNow()}) `;
 			const input = document.createElement('input');
 			const dlprogTitle = document.createTextNode(' ');
 			label.appendChild(dlprogTitle);

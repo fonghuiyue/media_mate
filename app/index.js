@@ -239,7 +239,7 @@ function watchRSS() {
 	getRSSURI(cb => {
 		uri = cb;
 		if (cb === '') {
-			eNotify.notify({title: 'Put your ShowRSS URL into the downloader!', description: 'showrss.info'});
+			mainWindow.webContents.executeJavaScript(`notify('Put your ShowRSS URL into the downloader!', 'showrss.info')`);
 		} else {
 			RSS = new RSSParse(uri);
 			RSS.on('data', data => {
@@ -247,7 +247,7 @@ function watchRSS() {
 					if (dupe) {
 						console.log('already DL');
 					} else {
-						eNotify.notify({title: 'New Download Available', text: data.title});
+						mainWindow.webContents.executeJavaScript(`notify('New Download Available', '${data.title.toString()}')`);
 					}
 				});
 			});
@@ -256,7 +256,8 @@ function watchRSS() {
 }
 
 ipc.on('dldone', (event, data) => {
-	eNotify.notify({title: 'Download Finished', text: data});
+	console.log(data);
+	mainWindow.webContents.executeJavaScript(`notify('Download Finished', '${data}' )`);
 });
 
 /**

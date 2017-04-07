@@ -16,6 +16,7 @@ const ipc = require('electron').ipcRenderer;
 const PouchDB = require('pouchdb');
 require('events').EventEmitter.prototype._maxListeners = 1000;
 const moment = require('moment');
+const swal = require('sweetalert2');
 
 const RSSParse = require(`${__dirname}/lib/rssparse.js`).RSSParse;
 const ProgressBar = require('progressbar.js');
@@ -364,6 +365,11 @@ function processTorrents(data) {
 function runScript(e) {
 	if (e.keyCode === 13) {
 		const tb = document.getElementById('rss');
+		swal(
+			'Getting your downloads',
+			'Welcome to Media Mate',
+			'success'
+		);
 		// Use connect method to connect to the Server
 		updateURI(tb.value);
 		document.getElementById('dls').style.display = 'inline';

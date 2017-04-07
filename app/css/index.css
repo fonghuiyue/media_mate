@@ -8,7 +8,9 @@
 body {
 	min-height: 100%;
 }
-
+figure > hr {
+	margin: 0 0 !important;
+}
 .footers {
 	position: absolute;
 	width: 100%;

@@ -14,6 +14,7 @@
       <w>figelem</w>
       <w>fileoverview</w>
       <w>getimg</w>
+      <w>getimgs</w>
       <w>github</w>
       <w>hotkeys</w>
       <w>imgelem</w>
@@ -27,11 +28,13 @@
       <w>monospace</w>
       <w>mprogress</w>
       <w>netlify</w>
+      <w>nodir</w>
       <w>notif</w>
       <w>stopvid</w>
       <w>swal</w>
       <w>timeupdate</w>
       <w>tippy</w>
+      <w>watchedhr</w>
       <w>willb</w>
       <w>willyb</w>
     </words>

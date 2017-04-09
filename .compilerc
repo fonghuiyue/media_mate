@@ -1,0 +1,14 @@
+{
+	"application/javascript": {
+		"presets": [
+			"env"
+		],
+		"ignore": [
+			"app/renderjs/*.js"
+		],
+		"only": [
+			"app/css/*.*",
+			"app/*.js"
+		]
+	}
+}

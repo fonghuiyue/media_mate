@@ -242,7 +242,8 @@ function vidProgress(e) {
 	let time = this.currentTime;
 	let duration = this.duration;
 	let figcap = img.childNodes;
-	figcap[1].style.width = (time / duration) * 100 + '%';
+	let percent = (time / duration) * 100;
+	figcap[1].style.width = percent + '%';
 	figcap[1].style.zIndex = 9999;
 	figcap[1].style.position = 'relative';
 	figcap[1].style.top = '0';
@@ -250,7 +251,7 @@ function vidProgress(e) {
 	figcap[1].style.marginBottom = '0px';
 	figcap[1].style.setProperty('margin', '0px 0px', 'important');
 	figcap[1].style.backgroundColor = 'red';
-	figcap[2].innerText = `${figcap[0].title} (${Math.round((time / duration) * 100)}% watched)`;
+	figcap[2].innerText = `${figcap[0].title} (${Math.round(percent)}% watched)`;
 	storage.get(filename, (err, data) => {
 		if (err) {
 			bugsnag.notify(new Error(err), {
@@ -294,7 +295,8 @@ async function watchedTime(vid, elem, figcap) {
 			} else if (data.watched === false) {
 				let time = data.time;
 				let duration = data.duration;
-				elem.style.width = (time / duration) * 100 + '%';
+				let percent = (time / duration) * 100;
+				elem.style.width = percent + '%';
 				elem.style.zIndex = 9999;
 				elem.style.position = 'relative';
 				elem.style.top = '0';
@@ -302,7 +304,7 @@ async function watchedTime(vid, elem, figcap) {
 				elem.style.marginBottom = '0px';
 				elem.style.setProperty('margin', '0px 0px', 'important');
 				elem.style.backgroundColor = 'red';
-				figcap.innerText = `${figcap.innerText} (${Math.round((time / duration) * 100)}% watched)`;
+				figcap.innerText = `${figcap.innerText} (${Math.round(percent)}% watched)`;
 				resolve(elem);
 			} else if (data.watched === true) {
 				elem.style.zIndex = 9999;

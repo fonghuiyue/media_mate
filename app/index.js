@@ -124,7 +124,7 @@ function createMainWindow() {
 		width: mainWindowState.width,
 		height: mainWindowState.height,
 		show: false,
-		backgroundColor: '#eeeeee'
+		backgroundColor: '#f8f9fa'
 	});
 	mainWindowState.manage(win);
 	win.loadURL(`file://${__dirname}/index.html`);
@@ -186,7 +186,6 @@ function ignoreDupeTorrents(torrent, callback) {
 							airdate: torrent.pubDate,
 							downloaded: false
 						}).then(() => {
-							db.close();
 							callback();
 						}).catch(err => {
 							if (err) {

@@ -1,3 +1,4 @@
 {
-  "presets": ["latest"]
+  "presets": ["env"],
+	"ignore": ["app/renderjs/*.js"]
 }

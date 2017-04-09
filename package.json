@@ -14,7 +14,7 @@
 	"scripts": {
 		"test": "gulp test",
 		"prestart": "gulp && gulp index",
-		"start": "electron app/indexbuild.js",
+		"start": "electron app/",
 		"build": "electron-zip-packager . --out=dist --overwrite --platform=win32 --arch=x64 --prune --asar",
 		"pack": "gulp index && gulp build:pack",
 		"dist": "gulp index && gulp build:dist",
@@ -31,12 +31,14 @@
 	],
 	"devDependencies": {
 		"ava": "^0.19.0",
-		"babel-core": "^6.24.0",
-		"babel-preset-latest": "^6.24.0",
+		"babel-core": "^6.24.1",
+		"babel-preset-env": "^1.3.3",
+		"babel-preset-latest": "^6.24.1",
 		"del": "^2.2.2",
 		"devtron": "^1.4.0",
 		"electron": "^1.6.2",
-		"electron-builder": "^16.7.0",
+		"electron-builder": "^16.7.1",
+		"electron-compilers": "^5.7.0",
 		"electron-rebuild": "^1.5.7",
 		"eslint": "^3.19.0",
 		"eslint-config-xo": "^0.18.1",
@@ -56,7 +58,8 @@
 		"release-it": "^2.7.1",
 		"rimraf": "^2.6.1",
 		"spectron": "^3.6.1",
-		"tui-jsdoc-template": "^1.1.0"
+		"tui-jsdoc-template": "^1.1.0",
+		"jsdoc-strip-async-await": "^0.1.0"
 	},
 	"ava": {},
 	"xo": {
@@ -92,8 +95,5 @@
 				"github"
 			]
 		}
-	},
-	"dependencies": {
-		"jsdoc-strip-async-await": "^0.1.0"
 	}
 }

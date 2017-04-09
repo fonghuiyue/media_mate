@@ -174,7 +174,7 @@ app.on('activate', () => {
  * @param callback - The callback.
  */
 function ignoreDupeTorrents(torrent, callback) {
-	db = new PouchDB(require('path').join(app.getPath('userData'), 'db').toString());
+	let db = new PouchDB(require('path').join(app.getPath('userData'), 'db').toString());
 	db.get(torrent.link)
 				.then(doc => {
 					if (doc === null) {
@@ -213,7 +213,7 @@ function ignoreDupeTorrents(torrent, callback) {
  * @param callback - Callbacks
  */
 function getRSSURI(callback) {
-	db = new PouchDB(require('path').join(app.getPath('userData'), 'db').toString());
+	let db = new PouchDB(require('path').join(app.getPath('userData'), 'db').toString());
 	db.get('showRSS')
 		.then(doc => {
 			db.close();
@@ -265,7 +265,7 @@ ipc.on('dldone', (event, data) => {
 app.on('ready', () => {
 	mainWindow = createMainWindow();
 	init();
-	db = new PouchDB(require('path').join(app.getPath('userData'), 'db').toString());
+	let db = new PouchDB(require('path').join(app.getPath('userData'), 'db').toString());
 	eNotify = require('electron-notify');
 	watchRSS();
 	console.timeEnd('init');

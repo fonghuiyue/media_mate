@@ -366,7 +366,7 @@ bufferutil@^3.0.0:
     nan "~2.5.0"
     prebuild-install "~2.1.0"
 
-bugsnag@^1.9.1:
+bugsnag@^1.10.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/bugsnag/-/bugsnag-1.10.0.tgz#5ead96ec112644f075bdb07a8bec9ffdb18b5744"
   dependencies:
@@ -748,10 +748,6 @@ es6-iterator@2:
 es6-promise@3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/es6-promise/-/es6-promise-3.2.1.tgz#ec56233868032909207170c39448e24449dd1fc4"
-
-es6-promise@^4.0.5:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/es6-promise/-/es6-promise-4.1.0.tgz#dda03ca8f9f89bc597e689842929de7ba8cebdf0"
 
 es6-symbol@^3.0.2, es6-symbol@^3.1, es6-symbol@~3.1:
   version "3.1.1"
@@ -2511,6 +2507,16 @@ simple-peer@^7.0.0:
     randombytes "^2.0.3"
     readable-stream "^2.0.5"
 
+simple-peer@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/simple-peer/-/simple-peer-8.0.0.tgz#e3de4c74d8945b8f0eeb3e3c8c964bc8ae5140c6"
+  dependencies:
+    debug "^2.1.0"
+    get-browser-rtc "^1.0.0"
+    inherits "^2.0.1"
+    randombytes "^2.0.3"
+    readable-stream "^2.0.5"
+
 simple-sha1@^2.0.0, simple-sha1@^2.0.8:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/simple-sha1/-/simple-sha1-2.1.0.tgz#9427bb96ff1263cc10a8414cedd51a18b919e8b3"
@@ -2674,11 +2680,9 @@ supports-color@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-2.0.0.tgz#535d045ce6b6363fa40117084629995e9df324c7"
 
-sweetalert2@^6.5.6:
-  version "6.5.6"
-  resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-6.5.6.tgz#5305ee871bc3a9c84e37fbc0fe15b856c9551b9c"
-  dependencies:
-    es6-promise "^4.0.5"
+sweetalert2@^6.6.0:
+  version "6.6.0"
+  resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-6.6.0.tgz#dd6c3d7dc42c94b352671ac4bb9e06785aba6b50"
 
 symbol-observable@^1.0.1:
   version "1.0.4"
@@ -2907,9 +2911,9 @@ vuvuzela@1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/vuvuzela/-/vuvuzela-1.0.3.tgz#3be145e58271c73ca55279dd851f12a682114b0b"
 
-webtorrent@^0.98.15:
-  version "0.98.15"
-  resolved "https://registry.yarnpkg.com/webtorrent/-/webtorrent-0.98.15.tgz#db07e6e82269935f5d3855ca71be00dff8b38efb"
+webtorrent@^0.98.16:
+  version "0.98.16"
+  resolved "https://registry.yarnpkg.com/webtorrent/-/webtorrent-0.98.16.tgz#8594b4f760df322423369f9cc6c8e05d14cf31d5"
   dependencies:
     addr-to-ip-port "^1.4.2"
     bitfield "^1.1.2"
@@ -2939,7 +2943,7 @@ webtorrent@^0.98.15:
     safe-buffer "^5.0.1"
     simple-concat "^1.0.0"
     simple-get "^2.2.1"
-    simple-peer "^7.0.0"
+    simple-peer "^8.0.0"
     simple-sha1 "^2.0.8"
     speedometer "^1.0.0"
     stream-to-blob "^1.0.0"

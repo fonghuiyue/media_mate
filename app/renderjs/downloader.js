@@ -107,22 +107,20 @@ client.on('error', err => {
 	handleErrs(err);
 });
 /**
- * Get the ShowRSS URI from the db
+ * Get the ShowRSS URI from JSON storage
  * @param callback - return it.
  */
 function getRSSURI(callback) {
-	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
-	db.get('showRSS')
-		.then(doc => {
-			callback(doc.showRSSURI);
-		})
-		.catch(err => {
-			if (err.status === 404) {
-				callback('');
-			} else {
-				handleErrs(err);
-			}
-		});
+	storage.get('showRSS', (err, data) => {
+		if (err) {
+			handleErrs(err);
+		}
+		if (_.isEmpty(data) === false) {
+			callback(data.showRSSURI);
+		} else {
+			callback('');
+		}
+	});
 }
 /**
  * Make sure not to add torrents already downloaded.
@@ -185,23 +183,9 @@ function dropTorrents(callback) {
  * @param uri {string} - the ShowRSS URI
  */
 function updateURI(uri) {
-	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
-	db.get('showRSS').then(doc => {
-		return db.put({
-			_id: 'showRSS',
-			_rev: doc._rev,
-			showRSSURI: uri
-		});
-	}).then(() => {
-		db.close();
-	}).catch(function (err) {
-		console.log(err);
-		let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
-		if (err.status === 404) {
-			db.put({
-				_id: 'showRSS',
-				showRSSURI: uri
-			});
+	storage.set('showRSS', {showRSSURI: uri}, err => {
+		if (err) {
+			throw err;
 		}
 	});
 }

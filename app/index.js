@@ -17,6 +17,8 @@ import bugsnag from 'bugsnag';
 import {RSSParse} from './lib/rssparse';
 import {init} from './menu.js';
 import PouchDB from 'pouchdb';
+import _ from 'underscore';
+import storage from 'electron-json-storage';
 require('electron-debug')();
 PouchDB.plugin(require('pouchdb-find'));
 const windowStateKeeper = require('electron-window-state');
@@ -174,7 +176,7 @@ app.on('activate', () => {
  * @param callback - The callback.
  */
 function ignoreDupeTorrents(torrent, callback) {
-	let db = new PouchDB(require('path').join(app.getPath('userData'), 'db').toString());
+	let db = new PouchDB(require('path').join(app.getPath('userData'), 'dbTor').toString());
 	db.get(torrent.link)
 				.then(doc => {
 					if (doc === null) {
@@ -186,21 +188,24 @@ function ignoreDupeTorrents(torrent, callback) {
 							airdate: torrent.pubDate,
 							downloaded: false
 						}).then(() => {
+							db.close();
 							callback();
 						}).catch(err => {
+							db.close();
 							if (err) {
 								throw err;
 							}
 						});
 					} else if (doc.downloaded === true) {
+						db.close();
 						callback('dupe');
-						db.close();
 					} else if (doc.downloaded === false) {
-						callback();
 						db.close();
+						callback();
 					}
 				})
 				.catch(err => {
+					db.close();
 					if (err.status === 404) {
 						callback();
 					} else if (err.status !== 404) {
@@ -213,22 +218,16 @@ function ignoreDupeTorrents(torrent, callback) {
  * @param callback - Callbacks
  */
 function getRSSURI(callback) {
-	let db = new PouchDB(require('path').join(app.getPath('userData'), 'db').toString());
-	db.get('showRSS')
-		.then(doc => {
-			db.close();
-			callback(doc.showRSSURI);
-		})
-		.catch(err => {
-			console.log(err);
-			if (err.status === 404) {
-				db.close();
-				callback('');
-			} else {
-				db.close();
-				throw err;
-			}
-		});
+	storage.get('showRSS', (err, data) => {
+		if (err) {
+			throw err;
+		}
+		if (_.isEmpty(data) === false) {
+			callback(data.showRSSURI);
+		} else {
+			callback('');
+		}
+	});
 }
 /**
  * @description Watch the ShowRSS feed for new releases, and notify user when there is one.
@@ -265,7 +264,6 @@ ipc.on('dldone', (event, data) => {
 app.on('ready', () => {
 	mainWindow = createMainWindow();
 	init();
-	let db = new PouchDB(require('path').join(app.getPath('userData'), 'db').toString());
 	eNotify = require('electron-notify');
 	watchRSS();
 	console.timeEnd('init');

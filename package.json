@@ -37,7 +37,7 @@
 		"del": "^2.2.2",
 		"devtron": "^1.4.0",
 		"electron": "^1.6.2",
-		"electron-builder": "^16.7.1",
+		"electron-builder": "^16.8.2",
 		"electron-compilers": "^5.7.0",
 		"electron-rebuild": "^1.5.7",
 		"eslint": "^3.19.0",

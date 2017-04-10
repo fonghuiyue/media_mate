@@ -309,6 +309,7 @@ function addTor(magnet, index) {
 				document.getElementsByName(magnet)[0].parentNode.childNodes[1].nodeValue = '- ' + percent.toString() + '% downloaded, ' + moment.duration(torrent.timeRemaining / 1000, 'seconds').humanize() + ' remaining.';
 			});
 			torrent.on('done', () => {
+				dlProgress();
 				let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
 				db.get(document.getElementsByName(magnet)[0].name).then(doc => {
 					db.put({

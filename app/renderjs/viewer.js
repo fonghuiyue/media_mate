@@ -20,7 +20,10 @@ const moment = require('moment');
 const _ = require('underscore');
 const parser = require('episode-parser');
 const klawSync = require('klaw-sync');
+const PouchDB = require('pouchdb');
+const blobUtil = require('blob-util');
 
+PouchDB.plugin(require('pouchdb-find'));
 const tvdb = new TVDB(process.env.TVDB_KEY);
 const vidProgressthrottled = _.throttle(vidProgress, 1000);
 
@@ -60,6 +63,29 @@ window.onload = () => {
 function isPlayable(file) {
 	return isVideo(file);
 }
+/**
+ * Helper function to store images as blobs.
+ * @param img - image tag to convert to blob.
+ * @param callback - Returns blob of img.
+ */
+function convertImgToBlob(img, callback) {
+	// Warning: toBlob() isn't supported by every browser.
+	// You may want to use blob-util.
+	blobUtil.imgSrcToBlob(img.src).then(blob => {
+		blobUtil.blobToBase64String(blob).then(base64String => {
+			callback(base64String);
+		}).catch(err => {
+			throw err;
+		});
+	}).catch(err => {
+		throw err;
+	});
+}
+
+function getImgDB(img, callback) {
+	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbImg').toString());
+}
+
 /**
  * Turn str into Title Case and return it.
  * @param str {string} - the string to transform
@@ -137,34 +163,60 @@ async function getImgs() {
 	dlpath = dlpath.path.toString();
 	const getimgs = new Getimg(dlpath);
 	getimgs.on('episode', data => {
+		let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbImg').toString());
 		console.log('ep');
 		let elempath = data[2];
 		let elem = data[0];
 		let tvelem = data[1];
 		medianodes.forEach((img, ind) => {
 			if (img.id === elempath) {
-				tvdb.getEpisodeById(elem.id)
-					.then(res => {
-						if (ind === medianodes.length - 1) {
-							indeterminateProgress.end();
-							document.getElementById('Loading').style.display = 'none';
-						}
-						if (res.filename !== '') {
-							img.children[0].src = `http://thetvdb.com/banners/${res.filename}`;
-							img.children[0].parentNode.style.display = 'inline-block';
-						} else if (res.filename === '') {
-							img.children[0].src = `file:///${__dirname}/404.png`;
-							img.children[0].parentNode.style.display = 'inline-block';
-						}
-					})
-					.catch(err => {
-						console.log(err);
-						bugsnag.notify(new Error(err), {
-							subsystem: {
-								name: 'Viewer'
-							}
-						});
-					});
+				img.children[0].parentNode.style.display = 'inline-block';
+				db.find({selector: {_id: `img${tvelem.show.replace(' ', '')}S${tvelem.season}E${tvelem.episode}`}, fields: ['_id', '_rev']}).then(doc => {
+					if (doc.docs.length === 0) {
+						console.log(doc);
+						tvdb.getEpisodeById(elem.id)
+							.then(res => {
+								if (ind === medianodes.length - 1) {
+									indeterminateProgress.end();
+									document.getElementById('Loading').style.display = 'none';
+								}
+								if (res.filename !== '') {
+									img.children[0].src = `http://thetvdb.com/banners/${res.filename}`;
+									convertImgToBlob(img.children[0], blob => {
+										db.put({
+											_id: `img${tvelem.show.replace(' ', '')}S${tvelem.season}E${tvelem.episode}`,
+											_attachments: {
+												img: {
+													content_type: 'image/jpeg',
+													data: new Buffer(blob, 'base64')
+												}
+											}
+										});
+									});
+								} else if (res.filename === '') {
+									img.children[0].src = `file:///${__dirname}/404.png`;
+									img.children[0].parentNode.style.display = 'inline-block';
+								}
+							})
+							.catch(err => {
+								console.log(err);
+								bugsnag.notify(new Error(err), {
+									subsystem: {
+										name: 'Viewer'
+									}
+								});
+							});
+					} else if (doc.docs.length > 0) {
+						db.get(`img${tvelem.show.replace(' ', '')}S${tvelem.season}E${tvelem.episode}`, {attachments: true})
+							.then(doc => {
+								blobUtil.base64StringToBlob(doc._attachments.img.data).then(blob => {
+									img.children[0].src = URL.createObjectURL(blob); // eslint-disable-line
+								}).catch(err => {
+									throw err;
+								});
+							});
+					}
+				});
 			}
 		});
 	});

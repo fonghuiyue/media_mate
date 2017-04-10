@@ -1,4 +1,8 @@
 {
-  "presets": ["env"],
-	"ignore": ["app/renderjs/*.js"]
+	"presets": [
+		"env"
+	],
+	"ignore": [
+		"app/renderjs/*.js"
+	]
 }

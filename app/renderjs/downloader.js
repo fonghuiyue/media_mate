@@ -128,7 +128,7 @@ function getRSSURI(callback) {
  * @param callback - You know what it is.
  */
 function ignoreDupeTorrents(torrent, callback) {
-	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
+	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbTor').toString());
 	db.find({
 		selector: {
 			_id: torrent.link
@@ -164,7 +164,7 @@ function ignoreDupeTorrents(torrent, callback) {
  * @param callback - let em know.
  */
 function dropTorrents(callback) {
-	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
+	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbTor').toString());
 	db.allDocs({
 		include_docs: true, // eslint-disable-line camelcase
 		attachments: true
@@ -193,7 +193,7 @@ function updateURI(uri) {
  * Initial load, get the torrents in the db.
  */
 function findDocuments() {
-	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
+	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbTor').toString());
 	db.allDocs({
 		include_docs: true // eslint-disable-line camelcase
 	}).then(function (result) {
@@ -205,7 +205,7 @@ function findDocuments() {
 }
 
 function indexDB() {
-	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
+	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbTor').toString());
 	db.createIndex({
 		index: {
 			fields: ['_id', 'magnet', 'downloaded']
@@ -225,7 +225,7 @@ function indexDB() {
  * Download all of the torrents, after they are added to the DOM.
  */
 function dlAll() {
-	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
+	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbTor').toString());
 	db.find({
 		selector: {downloaded: false},
 		fields: ['_id', 'magnet', 'title', 'airdate', 'downloaded']
@@ -294,7 +294,7 @@ function addTor(magnet, index) {
 			});
 			torrent.on('done', () => {
 				dlProgress();
-				let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'db').toString());
+				let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbTor').toString());
 				db.get(document.getElementsByName(magnet)[0].name).then(doc => {
 					db.put({
 						_id: document.getElementsByName(magnet)[0].name,

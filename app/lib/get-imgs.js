@@ -130,7 +130,6 @@ class GetImgs extends events.EventEmitter {
 				selector: {_id: `img${this.tvelem.show.replace(' ', '')}S${this.tvelem.season}E${this.tvelem.episode}`},
 				fields: ['_id', '_rev', 'tvelem']
 			}).then(doc => {
-				console.log(doc);
 				if (doc.docs.length === 0) {
 					resolve('need image');
 				} else if (doc.docs[0].tvelem) {
@@ -162,10 +161,8 @@ class GetImgs extends events.EventEmitter {
 					this.tvelem = parser(elem);
 					if (_.has(this.tvelem, 'show') === true) {
 						let already = await this.inDB();
-						console.log(already);
 						if (already === 'got image') {
 							this.emit('tvelem', [this.tvelem, this.elempath]);
-							console.log('ayy');
 							this._operation++;
 							setImmediate(() => this._loop());
 						} else if (already === 'need image') {

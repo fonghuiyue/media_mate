@@ -105,7 +105,6 @@ function getImgDB(data) {
 						db.get(`img${tvelem.show.replace(' ', '')}S${tvelem.season}E${tvelem.episode}`, {attachments: true}).then(doc => {
 							blobUtil.base64StringToBlob(doc._attachments.img.data).then(blob => {
 								img.children[0].src = URL.createObjectURL(blob); // eslint-disable-line
-								console.log('lol');
 								resolve(['got from db']);
 							}).catch(err => {
 								throw err;
@@ -195,7 +194,6 @@ async function getImgs() {
 	dlpath = dlpath.path.toString();
 	const getimgs = new Getimg(dlpath);
 	getimgs.on('tvelem', data => {
-		console.log('boi');
 		getImgDB(data).then(res => {
 
 		});

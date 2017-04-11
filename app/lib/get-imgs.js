@@ -17,7 +17,9 @@ const parser = require('episode-parser');
 const dir = require('node-dir');
 const _ = require('underscore');
 const path = require('path');
+const PouchDB = require('pouchdb');
 
+PouchDB.plugin(require('pouchdb-find'));
 const tvdb = new TVDB(process.env.TVDB_KEY);
 const POLL_INTERVAL = 100;
 let version;
@@ -116,7 +118,22 @@ class GetImgs extends events.EventEmitter {
 			});
 		});
 	}
-
+	async inDB() {
+		return new Promise(resolve => {
+			let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbImg').toString());
+			db.find({
+				selector: {_id: `img${this.tvelem.show.replace(' ', '')}S${this.tvelem.season}E${this.tvelem.episode}`},
+				fields: ['_id', '_rev', 'tvelem']
+			}).then(doc => {
+				console.log(doc);
+				if (doc.docs.length === 0) {
+					resolve('need image');
+				} else if (doc.docs[0].tvelem) {
+					resolve('got image');
+				}
+			});
+		});
+	}
 	/**
 	 * Loop through each file in {@link GetImgs#findFiles}
 	 */
@@ -139,8 +156,17 @@ class GetImgs extends events.EventEmitter {
 					this.elempath = elem;
 					this.tvelem = parser(elem);
 					if (_.has(this.tvelem, 'show') === true) {
-						this._getSeriesByName();
-						this._operation++;
+						let already = await this.inDB();
+						console.log(already);
+						if (already === 'got image') {
+							this.emit('tvelem', [this.tvelem, this.elempath]);
+							console.log('ayy');
+							this._operation++;
+							setImmediate(() => this._loop());
+						} else if (already === 'need image') {
+							this._getSeriesByName();
+							this._operation++;
+						}
 					} else if (this.tvelem === null) {
 						this._operation++;
 						setImmediate(() => this._loop());

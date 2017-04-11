@@ -103,7 +103,7 @@ function getImgDB(data) {
 				db.find({selector: {_id: `img${tvelem.show.replace(' ', '')}S${tvelem.season}E${tvelem.episode}`}, fields: ['_id', '_rev']}).then(docs => {
 					if (docs.docs.length > 0) {
 						db.get(`img${tvelem.show.replace(' ', '')}S${tvelem.season}E${tvelem.episode}`, {attachments: true}).then(doc => {
-							blobUtil.base64StringToBlob(doc._attachments.img.data).then(blob => {
+							blobUtil.base64StringToBlob(doc._attachments.img.data, 'image/jpeg').then(blob => {
 								img.children[0].src = URL.createObjectURL(blob); // eslint-disable-line
 								resolve(['got from db']);
 							}).catch(err => {

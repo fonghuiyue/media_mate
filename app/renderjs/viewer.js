@@ -82,8 +82,36 @@ function convertImgToBlob(img, callback) {
 	});
 }
 
-function getImgDB(img, callback) {
-	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbImg').toString());
+function getImgDB(data) {
+	return new Promise(resolve => {
+		const mediadiv = document.getElementById('media');
+		const medianodes = mediadiv.childNodes;
+		let tvelem = data[0];
+		let elempath = data[1];
+		let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbImg').toString());
+		medianodes.forEach((img, ind) => {
+			if (ind === medianodes.length - 1) {
+				indeterminateProgress.end();
+				document.getElementById('Loading').style.display = 'none';
+			}
+			if (img.id === elempath) {
+				img.children[0].parentNode.style.display = 'inline-block';
+				db.find({selector: {_id: `img${tvelem.show.replace(' ', '')}S${tvelem.season}E${tvelem.episode}`}, fields: ['_id', '_rev']}).then(docs => {
+					if (docs.docs.length > 0) {
+						db.get(`img${tvelem.show.replace(' ', '')}S${tvelem.season}E${tvelem.episode}`, {attachments: true}).then(doc => {
+							blobUtil.base64StringToBlob(doc._attachments.img.data).then(blob => {
+								img.children[0].src = URL.createObjectURL(blob); // eslint-disable-line
+								console.log('lol');
+								resolve(['got from db']);
+							}).catch(err => {
+								throw err;
+							});
+						});
+					}
+				});
+			}
+		});
+	});
 }
 
 /**
@@ -162,61 +190,55 @@ async function getImgs() {
 	console.log(dlpath);
 	dlpath = dlpath.path.toString();
 	const getimgs = new Getimg(dlpath);
+	getimgs.on('tvelem', data => {
+		console.log('boi');
+		getImgDB(data).then(res => {
+
+		});
+	});
 	getimgs.on('episode', data => {
 		let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbImg').toString());
 		console.log('ep');
-		let elempath = data[2];
 		let elem = data[0];
 		let tvelem = data[1];
+		let elempath = data[2];
 		medianodes.forEach((img, ind) => {
 			if (img.id === elempath) {
-				img.children[0].parentNode.style.display = 'inline-block';
-				db.find({selector: {_id: `img${tvelem.show.replace(' ', '')}S${tvelem.season}E${tvelem.episode}`}, fields: ['_id', '_rev']}).then(doc => {
-					if (doc.docs.length === 0) {
-						console.log(doc);
-						tvdb.getEpisodeById(elem.id)
-							.then(res => {
-								if (ind === medianodes.length - 1) {
-									indeterminateProgress.end();
-									document.getElementById('Loading').style.display = 'none';
-								}
-								if (res.filename !== '') {
-									img.children[0].src = `http://thetvdb.com/banners/${res.filename}`;
-									convertImgToBlob(img.children[0], blob => {
-										db.put({
-											_id: `img${tvelem.show.replace(' ', '')}S${tvelem.season}E${tvelem.episode}`,
-											_attachments: {
-												img: {
-													content_type: 'image/jpeg',
-													data: new Buffer(blob, 'base64')
-												}
-											}
-										});
-									});
-								} else if (res.filename === '') {
-									img.children[0].src = `file:///${__dirname}/404.png`;
-									img.children[0].parentNode.style.display = 'inline-block';
-								}
-							})
-							.catch(err => {
-								console.log(err);
-								bugsnag.notify(new Error(err), {
-									subsystem: {
-										name: 'Viewer'
+				tvdb.getEpisodeById(elem.id)
+					.then(res => {
+						if (ind === medianodes.length - 1) {
+							indeterminateProgress.end();
+							document.getElementById('Loading').style.display = 'none';
+						}
+						if (res.filename !== '') {
+							img.children[0].src = `http://thetvdb.com/banners/${res.filename}`;
+							convertImgToBlob(img.children[0], blob => {
+								db.put({
+									_id: `img${tvelem.show.replace(' ', '')}S${tvelem.season}E${tvelem.episode}`,
+									elempath: data[2],
+									elem: data[0],
+									tvelem: data[1],
+									_attachments: {
+										img: {
+											content_type: 'image/jpeg', // eslint-disable-line
+											data: new Buffer(blob, 'base64')
+										}
 									}
 								});
 							});
-					} else if (doc.docs.length > 0) {
-						db.get(`img${tvelem.show.replace(' ', '')}S${tvelem.season}E${tvelem.episode}`, {attachments: true})
-							.then(doc => {
-								blobUtil.base64StringToBlob(doc._attachments.img.data).then(blob => {
-									img.children[0].src = URL.createObjectURL(blob); // eslint-disable-line
-								}).catch(err => {
-									throw err;
-								});
-							});
-					}
-				});
+						} else if (res.filename === '') {
+							img.children[0].src = `file:///${__dirname}/404.png`;
+							img.children[0].parentNode.style.display = 'inline-block';
+						}
+					})
+					.catch(err => {
+						console.log(err);
+						bugsnag.notify(new Error(err), {
+							subsystem: {
+								name: 'Viewer'
+							}
+						});
+					});
 			}
 		});
 	});
@@ -422,7 +444,7 @@ async function findDL() {
 			figcap.innerText = `${parsedName.show}: S${parsedName.season}E${parsedName.episode}`;
 			let watchedhr = document.createElement('hr');
 			figelem.appendChild(imgelem);
-			watchedhr = await watchedTime(figelem, watchedhr, figcap);
+			watchedhr = await watchedTime(figelem, watchedhr, figcap); // eslint-disable-line
 			figelem.appendChild(watchedhr);
 			figelem.appendChild(figcap);
 			mediadiv.appendChild(figelem);

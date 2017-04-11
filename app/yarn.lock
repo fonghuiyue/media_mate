@@ -451,9 +451,9 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
-coffee-script@^1.12.4:
-  version "1.12.4"
-  resolved "https://registry.yarnpkg.com/coffee-script/-/coffee-script-1.12.4.tgz#fe1bced97fe1fb3927b998f2b45616e0658be1ff"
+coffee-script@^1.12.5:
+  version "1.12.5"
+  resolved "https://registry.yarnpkg.com/coffee-script/-/coffee-script-1.12.5.tgz#809f4585419112bbfe46a073ad7543af18c27346"
 
 combined-stream@^1.0.5, combined-stream@~1.0.5:
   version "1.0.5"
@@ -620,9 +620,9 @@ electron-builder-http@~16.6.0:
     debug "2.6.3"
     fs-extra-p "^4.1.0"
 
-electron-compile@^6.2.0:
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/electron-compile/-/electron-compile-6.2.0.tgz#41d24a9229334dfd71e07e251d3f28a8487460da"
+electron-compile@^6.3.0:
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/electron-compile/-/electron-compile-6.3.0.tgz#3ad1fd86878b83db37cd1d68a4c995799dacfa75"
   dependencies:
     "@paulcbetts/mime-types" "^2.1.10"
     btoa "^1.1.2"

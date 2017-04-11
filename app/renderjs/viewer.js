@@ -81,7 +81,11 @@ function convertImgToBlob(img, callback) {
 		throw err;
 	});
 }
-
+/**
+ * Get images from the DB, if they exist in the DB.
+ * @param data {Array} - Data needed to identify the image in the DB.
+ * @returns {Promise}
+ */
 function getImgDB(data) {
 	return new Promise(resolve => {
 		const mediadiv = document.getElementById('media');

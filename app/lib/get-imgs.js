@@ -118,6 +118,11 @@ class GetImgs extends events.EventEmitter {
 			});
 		});
 	}
+
+	/**
+	 * Check if the current file is already in the database - saves everyone time and bandwidth.
+	 * @returns {Promise} - Returns 'need image' if not in db, returns 'got image' if in db.
+	 */
 	async inDB() {
 		return new Promise(resolve => {
 			let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbImg').toString());

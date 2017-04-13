@@ -8,14 +8,14 @@
 'use strict';
 /* eslint-disable no-unused-vars */
 console.time('init');
-require('dotenv').config({path: `${__dirname}/.env`});
+require('dotenv').config({path: `${__dirname}/../.env`});
 console.time('require');
 import electron, {dialog, ipcMain as ipc} from 'electron';
 import {autoUpdater} from 'electron-updater';
 import isDev from 'electron-is-dev';
 import bugsnag from 'bugsnag';
-import {RSSParse} from './lib/rssparse';
-import {init} from './menu.js';
+import {RSSParse} from '../lib/rssparse';
+import {init} from '../menu.js';
 import PouchDB from 'pouchdb';
 import _ from 'underscore';
 import storage from 'electron-json-storage';
@@ -45,7 +45,7 @@ autoUpdater.on('update-available', info => { // eslint-disable-line no-unused-va
 		title: 'New update available.',
 		message: 'Press OK to download the update, and the application will download the update and then tell you when its done.'
 	});
-	win.loadURL(`file:///${__dirname}/index.html`);
+	win.loadURL(`file:///${__dirname}/../index.html`);
 });
 /**
  * Autoupdater on downloaded
@@ -129,7 +129,7 @@ function createMainWindow() {
 		backgroundColor: '#f8f9fa'
 	});
 	mainWindowState.manage(win);
-	win.loadURL(`file://${__dirname}/index.html`);
+	win.loadURL(`file://${__dirname}/../index.html`);
 	win.on('closed', onClosed);
 	win.on('unresponsive', () => {
 		console.log('I\'ve frozen. Sorry about that.');

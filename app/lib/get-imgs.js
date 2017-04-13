@@ -138,6 +138,30 @@ class GetImgs extends events.EventEmitter {
 			});
 		});
 	}
+
+	/**
+	 * Reduce nesting in this._loop()
+	 */
+	async hasShow() {
+		if (_.has(this.tvelem, 'show') === true) {
+			let already = await this.inDB();
+			if (already === 'got image') {
+				this.emit('tvelem', [this.tvelem, this.elempath]);
+				this._operation++;
+				setImmediate(() => this._loop());
+			} else if (already === 'need image') {
+				this._getSeriesByName();
+				this._operation++;
+			}
+		} else if (this.tvelem === null) {
+			this._operation++;
+			setImmediate(() => this._loop());
+		} else {
+			this._operation++;
+			setImmediate(() => this._loop());
+		}
+	}
+
 	/**
 	 * Loop through each file in {@link GetImgs#findFiles}
 	 */
@@ -159,23 +183,7 @@ class GetImgs extends events.EventEmitter {
 					elem = elem.replace(/^.*[\\/]/, '');
 					this.elempath = elem;
 					this.tvelem = parser(elem);
-					if (_.has(this.tvelem, 'show') === true) {
-						let already = await this.inDB();
-						if (already === 'got image') {
-							this.emit('tvelem', [this.tvelem, this.elempath]);
-							this._operation++;
-							setImmediate(() => this._loop());
-						} else if (already === 'need image') {
-							this._getSeriesByName();
-							this._operation++;
-						}
-					} else if (this.tvelem === null) {
-						this._operation++;
-						setImmediate(() => this._loop());
-					} else {
-						this._operation++;
-						setImmediate(() => this._loop());
-					}
+					this.hasShow();
 				}
 			}
 		} catch (err) {

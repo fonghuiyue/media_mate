@@ -191,7 +191,6 @@ function ignoreDupeTorrents(torrent, callback) {
 							db.close();
 							callback();
 						}).catch(err => {
-							db.close();
 							if (err) {
 								throw err;
 							}
@@ -205,7 +204,6 @@ function ignoreDupeTorrents(torrent, callback) {
 					}
 				})
 				.catch(err => {
-					db.close();
 					if (err.status === 404) {
 						callback();
 					} else if (err.status !== 404) {

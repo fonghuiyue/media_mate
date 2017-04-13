@@ -300,8 +300,27 @@ function handleVids(e) {
  * @param params {object} - the x / y of the image.
  */
 function resetTime(params) {
-	const filename = document.elementFromPoint(params.x, params.y).parentNode.getAttribute('data-store-name');
-	console.log(document.elementFromPoint(params.x, params.y).parentNode);
+	const elem = document.elementFromPoint(params.x, params.y).parentNode;
+	const filename = elem.getAttribute('data-store-name');
+	const figcap = elem.childNodes;
+	storage.get(filename, (err, data) => {
+		if (err) {
+			throw err;
+		}
+		let time = 0;
+		let duration = data.duration;
+		let percent = (time / duration) * 100;
+		figcap[1].style.width = percent + '%';
+		figcap[1].style.zIndex = 9999;
+		figcap[1].style.position = 'relative';
+		figcap[1].style.top = '0';
+		figcap[1].style.marginTop = '0px';
+		figcap[1].style.marginBottom = '0px';
+		figcap[1].style.setProperty('margin', '0px 0px', 'important');
+		figcap[1].style.backgroundColor = 'red';
+		figcap[2].innerText = `${figcap[0].title}`;
+		console.log(elem);
+	});
 	storage.remove(filename, err => {
 		if (err) {
 			throw err;

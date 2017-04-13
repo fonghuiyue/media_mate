@@ -8,7 +8,8 @@
 		],
 		"only": [
 			"app/css/*.*",
-			"app/*.js"
+			"app/*.js",
+			"app/main/*.js"
 		]
 	}
 }

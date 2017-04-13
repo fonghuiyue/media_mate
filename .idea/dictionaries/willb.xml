@@ -30,6 +30,8 @@
       <w>netlify</w>
       <w>nodir</w>
       <w>notif</w>
+      <w>rimraf</w>
+      <w>sourcemaps</w>
       <w>stopvid</w>
       <w>swal</w>
       <w>timeupdate</w>

@@ -21,7 +21,6 @@
     "devtron": "^1.4.0",
     "dotenv": "^4.0.0",
     "electron-compile": "^6.3.0",
-	"electron-compilers": "^5.7.0",
     "electron-context-menu": "^0.8.0",
     "electron-debug": "^1.1.0",
     "electron-is-dev": "^0.1.2",

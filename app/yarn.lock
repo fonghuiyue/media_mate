@@ -664,9 +664,9 @@ electron-is-dev@^0.1.0, electron-is-dev@^0.1.1, electron-is-dev@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/electron-is-dev/-/electron-is-dev-0.1.2.tgz#8a1043e32b3a1da1c3f553dce28ce764246167e3"
 
-electron-json-storage@^3.0.4:
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/electron-json-storage/-/electron-json-storage-3.0.4.tgz#3b4e3e95e979eb1743edf55174f8daf69416c6fd"
+electron-json-storage@^3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/electron-json-storage/-/electron-json-storage-3.0.5.tgz#51702d2c25dc5c752c8d4ca50412ee80a57683a4"
   dependencies:
     async "^2.0.0"
     lodash "^4.0.1"
@@ -2931,9 +2931,9 @@ vuvuzela@1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/vuvuzela/-/vuvuzela-1.0.3.tgz#3be145e58271c73ca55279dd851f12a682114b0b"
 
-webtorrent@^0.98.16:
-  version "0.98.17"
-  resolved "https://registry.yarnpkg.com/webtorrent/-/webtorrent-0.98.17.tgz#c219161f2f0e9ee21aa6021b0a4600d4296e08fa"
+webtorrent@^0.98.18:
+  version "0.98.18"
+  resolved "https://registry.yarnpkg.com/webtorrent/-/webtorrent-0.98.18.tgz#d8e0e04a52af884e9cffa361cbe8c159a4cb6f98"
   dependencies:
     addr-to-ip-port "^1.4.2"
     bitfield "^1.1.2"

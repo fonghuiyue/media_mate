@@ -24,7 +24,7 @@
     "electron-context-menu": "^0.8.0",
     "electron-debug": "^1.1.0",
     "electron-is-dev": "^0.1.2",
-    "electron-json-storage": "^3.0.4",
+    "electron-json-storage": "^3.0.5",
     "electron-notify": "^0.1.0",
     "electron-updater": "^1.12.0",
     "electron-window-state": "^4.1.0",
@@ -51,7 +51,7 @@
     "sweetalert2": "^6.6.0",
     "tableify": "^1.0.0",
     "underscore": "^1.8.3",
-    "webtorrent": "^0.98.16"
+    "webtorrent": "^0.98.18"
   },
   "xo": false
 }

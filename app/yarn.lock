@@ -12,6 +12,10 @@
   dependencies:
     "@paulcbetts/mime-db" "~1.22.0"
 
+"@types/node@^7.0.12":
+  version "7.0.12"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.12.tgz#ae5f67a19c15f752148004db07cbbb372e69efc9"
+
 abbrev@1:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.0.tgz#d0554c2256636e2f56e7c2e5ad183f859428d81f"
@@ -624,11 +628,12 @@ electron-builder-http@~16.6.0:
     debug "2.6.3"
     fs-extra-p "^4.1.0"
 
-electron-compile@^6.3.0:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/electron-compile/-/electron-compile-6.3.0.tgz#3ad1fd86878b83db37cd1d68a4c995799dacfa75"
+electron-compile@^6.3.1:
+  version "6.3.1"
+  resolved "https://registry.yarnpkg.com/electron-compile/-/electron-compile-6.3.1.tgz#a38a77baefeb3b1acce67ea17494a8345e2ad75f"
   dependencies:
     "@paulcbetts/mime-types" "^2.1.10"
+    "@types/node" "^7.0.12"
     btoa "^1.1.2"
     debug "^2.5.1"
     lru-cache "^4.0.1"
@@ -696,7 +701,7 @@ electron-updater@^1.12.0:
     semver "^5.3.0"
     source-map-support "^0.4.14"
 
-electron-window-state@^4.1.0:
+electron-window-state@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/electron-window-state/-/electron-window-state-4.1.1.tgz#6b34fdc31b38514dfec8b7c8f7b5d4addb67632d"
   dependencies:

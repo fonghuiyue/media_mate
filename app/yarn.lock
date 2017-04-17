@@ -621,16 +621,16 @@ ecc-jsbn@~0.1.1:
   dependencies:
     jsbn "~0.1.0"
 
-electron-builder-http@~16.6.0:
-  version "16.6.0"
-  resolved "https://registry.yarnpkg.com/electron-builder-http/-/electron-builder-http-16.6.0.tgz#60676caf0f1d9daf385ce070b07eec49efb29f0f"
+electron-builder-http@~17.0.1:
+  version "17.0.2"
+  resolved "https://registry.yarnpkg.com/electron-builder-http/-/electron-builder-http-17.0.2.tgz#e2c8874d6e63dcf94b0bea403e21a843b4b55071"
   dependencies:
     debug "2.6.3"
     fs-extra-p "^4.1.0"
 
-electron-compile@^6.3.1:
-  version "6.3.1"
-  resolved "https://registry.yarnpkg.com/electron-compile/-/electron-compile-6.3.1.tgz#a38a77baefeb3b1acce67ea17494a8345e2ad75f"
+electron-compile@^6.4.0:
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/electron-compile/-/electron-compile-6.4.0.tgz#c2670d8b512f41613ed37dea7a8b22548ca754ae"
   dependencies:
     "@paulcbetts/mime-types" "^2.1.10"
     "@types/node" "^7.0.12"
@@ -689,17 +689,18 @@ electron-notify@^0.1.0:
     async "^0.9.0"
     lodash "^2.4.1"
 
-electron-updater@^1.12.0:
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/electron-updater/-/electron-updater-1.12.0.tgz#774a7b3b5758eb9459542743ce636d223624cc15"
+electron-updater@^1.14.0:
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/electron-updater/-/electron-updater-1.14.0.tgz#033b18847de12680467405ec0d64ec66c2553f7a"
   dependencies:
     bluebird-lst "^1.0.2"
-    electron-builder-http "~16.6.0"
+    electron-builder-http "~17.0.1"
     electron-is-dev "^0.1.2"
     fs-extra-p "^4.1.0"
     js-yaml "^3.8.3"
     semver "^5.3.0"
     source-map-support "^0.4.14"
+    xelement "^1.0.13"
 
 electron-window-state@^4.1.1:
   version "4.1.1"
@@ -2482,11 +2483,11 @@ scope-eval@0.0.3:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/scope-eval/-/scope-eval-0.0.3.tgz#166f2ccd1f3754429dec511805501f9d6923b5ec"
 
-"semver@2 || 3 || 4 || 5", "semver@2.x || 3.x || 4 || 5", semver@^5.1.0, semver@^5.3.0, semver@~5.3.0:
+"semver@2 || 3 || 4 || 5", "semver@2.x || 3.x || 4 || 5", semver@^5.3.0, semver@~5.3.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.3.0.tgz#9b2ce5d3de02d17c6012ad326aa6b4d0cf54f94f"
 
-semver@~5.1.0:
+semver@^5.1.0, semver@~5.1.0:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.1.1.tgz#a3292a373e6f3e0798da0b20641b9a9c5bc47e19"
 
@@ -3030,6 +3031,12 @@ ws@^2.0.0, ws@^2.2.0:
   dependencies:
     safe-buffer "~5.0.1"
     ultron "~1.1.0"
+
+xelement@^1.0.13:
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/xelement/-/xelement-1.0.13.tgz#36b724d1e6489d6aae285b06995ae5e33cec10b7"
+  dependencies:
+    sax "^1.2.1"
 
 xtend@4.0.1, "xtend@>=4.0.0 <4.1.0-0", xtend@^4.0.0, xtend@^4.0.1, xtend@~4.0.0, xtend@~4.0.1:
   version "4.0.1"

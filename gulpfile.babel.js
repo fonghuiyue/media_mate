@@ -29,7 +29,7 @@ gulp.task('default', () => {
 			'!app/menu.js',
 			'!dist',
 			'!app/renderjs',
-			'app/index.js',
+			'app/main/index.js',
 			'!app/lib',
 			'!app/indexbuild.js',
 			'!dist/**'])
@@ -40,7 +40,7 @@ gulp.task('default', () => {
 				}))
 				.pipe(concat('indexbuild.js'))
 				.pipe(sourcemaps.write('.'))
-				.pipe(gulp.dest('app'));
+				.pipe(gulp.dest('app/main'));
 	});
 });
 

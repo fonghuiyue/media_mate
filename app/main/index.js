@@ -7,16 +7,34 @@
  */
 'use strict';
 /* eslint-disable no-unused-vars */
+console.time('full');
 console.time('init');
-require('dotenv').config({path: `${__dirname}/../.env`});
 console.time('require');
+require('dotenv').config({path: `${__dirname}/../.env`});
+
+const PouchDB = require('pouchdb');
+
+const lru = require('lru-cache')({max: 256, maxAge: 250});
+const fs = require('fs');
+const origLstat = fs.lstatSync.bind(fs);
+
+require('fs').lstatSync = function (p) {
+	let r = lru.get(p);
+	if (r) {
+		return r;
+	}
+	r = origLstat(p);
+
+	lru.set(p, r);
+	return r;
+};
+
 import electron, {dialog, ipcMain as ipc} from 'electron';
 import {autoUpdater} from 'electron-updater';
 import isDev from 'electron-is-dev';
 import bugsnag from 'bugsnag';
 import {RSSParse} from '../lib/rssparse';
 import {init} from '../menu.js';
-import PouchDB from 'pouchdb';
 import _ from 'underscore';
 import storage from 'electron-json-storage';
 require('electron-debug')();
@@ -136,6 +154,9 @@ function createMainWindow() {
 	});
 	win.on('responsive', () => {
 		console.log('I\'ve unfrozen. Sorry.');
+	});
+	win.webContents.once('dom-ready', () => {
+		console.timeEnd('full');
 	});
 	win.webContents.on('crashed', (e, killed) => {
 		if (killed === true) {

@@ -37,6 +37,7 @@
     "jquery": "^3.2.1",
     "json-stringify-safe": "^5.0.1",
     "klaw-sync": "^1.1.2",
+    "lru-cache": "^4.0.2",
     "moment": "^2.18.1",
     "mongodb": "^2.2.25",
     "mprogress": "^0.1.1",

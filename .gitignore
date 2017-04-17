@@ -121,3 +121,7 @@ docs/
 app/\.cache/
 
 \.vscode/
+
+app/main/indexbuild\.js
+
+app/main/indexbuild\.js\.map

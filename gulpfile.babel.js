@@ -48,6 +48,9 @@ gulp.task('build:pack', ['default'], cb => {
 	builder.build({
 		platform: process.platform,
 		arch: 'x64',
+		extraMetadata: {
+			main: 'main/indexbuild.js'
+		},
 		config: {
 			appId: 'com.willyb321.media_mate',
 			nsis: {
@@ -60,7 +63,7 @@ gulp.task('build:pack', ['default'], cb => {
 			},
 			win: {
 				target: [
-					'nsis'
+					'dir'
 				],
 				publish: [
 					'github'
@@ -80,6 +83,9 @@ gulp.task('build:dist', ['default'], cb => {
 	builder.build({
 		platform: process.platform,
 		arch: 'x64',
+		extraMetadata: {
+			main: 'main/indexbuild.js'
+		},
 		config: {
 			appId: 'com.willyb321.media_mate',
 			nsis: {

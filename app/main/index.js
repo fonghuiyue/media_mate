@@ -43,13 +43,7 @@ const windowStateKeeper = require('electron-window-state');
 console.timeEnd('require');
 let eNotify;
 let RSS;
-// Const user = process.env.DB_USER;
-// const password = process.env.DB_PWD;
-// const dburi = process.env.DB_URL;
-// const url = require('util').format('mongodb://%s:%s@%s/media_mate?ssl=true&replicaSet=SDD-Major-shard-0&authSource=admin',
-// 	user, password, dburi);
 const app = electron.app;
-let db;
 bugsnag.register('03b389d77abc2d10136d8c859391f952', {appVersion: app.getVersion(), sendCode: true});
 let win;
 // Let MongoClient;
@@ -109,7 +103,7 @@ process.on('uncaughtError', err => {
 	bugsnag.notify(err);
 	console.log('ERROR! The error is: ' + err || err.stack);
 });
-process.on('unhandledRejection', function (err, promise) {
+process.on('unhandledRejection', function (err) {
 	console.error('Unhandled rejection: ' + (err && err.stack || err)); // eslint-disable-line
 	bugsnag.notify(err);
 });

@@ -45,7 +45,7 @@
 		"eslint-formatter-pretty": "^1.1.0",
 		"eslint-plugin-google-camelcase": "^0.0.2",
 		"gulp": "^3.9.1",
-		"gulp-ava": "^0.17.0",
+		"gulp-ava": "^0.17.1",
 		"gulp-babel": "^6.1.2",
 		"gulp-concat": "^2.6.1",
 		"gulp-if": "^2.0.2",
@@ -59,7 +59,7 @@
 		"jsdoc-strip-async-await": "^0.1.0",
 		"release-it": "^2.7.1",
 		"rimraf": "^2.6.1",
-		"spectron": "^3.6.1",
+		"spectron": "^3.6.2",
 		"tui-jsdoc-template": "^1.1.0"
 	},
 	"ava": {},

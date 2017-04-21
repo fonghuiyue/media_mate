@@ -2239,14 +2239,6 @@ electron-to-chromium@^1.2.7:
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.3.tgz#651eb63fe89f39db70ffc8dbd5d9b66958bc6a0e"
 
-electron-version@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/electron-version/-/electron-version-1.1.0.tgz#14899e16c4ff49a13720ae151a6469cb159f2e22"
-  dependencies:
-    bl "^1.0.0"
-    once "^1.3.2"
-    semver "^5.0.3"
-
 electron@^1.6.5:
   version "1.6.7"
   resolved "https://registry.yarnpkg.com/electron/-/electron-1.6.7.tgz#08b90812912a66f80cfb47bdaef6edfd6b78aa81"
@@ -3238,9 +3230,9 @@ group-array@^0.3.0:
     split-string "^1.0.1"
     union-value "^0.2.3"
 
-gulp-ava@^0.17.0:
-  version "0.17.0"
-  resolved "https://registry.yarnpkg.com/gulp-ava/-/gulp-ava-0.17.0.tgz#937a36f703b6f7f7bcf5f4c2120034ebe0a129a5"
+gulp-ava@^0.17.1:
+  version "0.17.1"
+  resolved "https://registry.yarnpkg.com/gulp-ava/-/gulp-ava-0.17.1.tgz#71602be90ab2774fa05cd853182aead4be405de3"
   dependencies:
     ava "^0.19.1"
     dargs "^5.1.0"
@@ -4998,7 +4990,7 @@ observable-to-promise@^0.5.0:
     is-observable "^0.2.0"
     symbol-observable "^1.0.4"
 
-once@1.x, once@^1.3.0, once@^1.3.2, once@^1.3.3:
+once@1.x, once@^1.3.0, once@^1.3.3:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/once/-/once-1.4.0.tgz#583b1aa775961d4b113ac17d9c50baef9dd76bd1"
   dependencies:
@@ -6297,15 +6289,13 @@ spdx-license-ids@^1.0.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/spdx-license-ids/-/spdx-license-ids-1.2.2.tgz#c9df7a3424594ade6bd11900d596696dc06bac57"
 
-spectron@^3.6.1:
-  version "3.6.1"
-  resolved "https://registry.yarnpkg.com/spectron/-/spectron-3.6.1.tgz#42edfcc74eab15176b5a3fb6ac1e1f705dc98ac9"
+spectron@^3.6.2:
+  version "3.6.2"
+  resolved "https://registry.yarnpkg.com/spectron/-/spectron-3.6.2.tgz#e7583cee7e78d72ded0195943ff2834e23cd9e0a"
   dependencies:
     dev-null "^0.1.1"
     electron-chromedriver "~1.6.0"
-    electron-version "^1.1.0"
     request "^2.65.0"
-    semver "^5.3.0"
     split "^1.0.0"
     webdriverio "^4.0.4"
 

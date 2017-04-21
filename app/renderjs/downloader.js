@@ -147,7 +147,7 @@ function ignoreDupeTorrents(torrent, callback) {
 				magnet: torrent.link,
 				title: torrent.title,
 				tvdbID: torrent['tv:show_name']['#'],
-				airdate: torrent.pubDate,
+				airdate: torrent['rss:pubdate']['#'],
 				downloaded: false
 			}).then(res => {
 				callback();
@@ -300,7 +300,10 @@ function addTor(magnet, index) {
 						_id: document.getElementsByName(magnet)[0].name,
 						_rev: doc._rev,
 						magnet: document.getElementsByName(magnet)[0].name,
-						downloaded: true
+						downloaded: true,
+						title: doc.doc.title,
+						tvdbID: doc.doc.tvdbID,
+						airdate: doc.doc.airdate
 					}).then(res => {
 						document.getElementsByName(magnet)[0].parentNode.style.display = 'none';
 						console.log('done');

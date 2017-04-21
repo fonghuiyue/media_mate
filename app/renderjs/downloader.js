@@ -301,9 +301,9 @@ function addTor(magnet, index) {
 						_rev: doc._rev,
 						magnet: document.getElementsByName(magnet)[0].name,
 						downloaded: true,
-						title: doc.doc.title,
-						tvdbID: doc.doc.tvdbID,
-						airdate: doc.doc.airdate
+						title: doc.title,
+						tvdbID: doc.tvdbID,
+						airdate: doc.airdate
 					}).then(res => {
 						document.getElementsByName(magnet)[0].parentNode.style.display = 'none';
 						console.log('done');

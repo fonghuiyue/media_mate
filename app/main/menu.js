@@ -118,7 +118,7 @@ function getMenuTemplate() {
 					click: () => openAboutWindow({
 						icon_path: path.join(__dirname, '..', 'icon.png'), // eslint-disable-line camelcase
 						bug_report_url: 'https://github.com/willyb321/media_mate/issues', // eslint-disable-line camelcase
-						homepage: 'https://github.com/willyb321/media-mate'
+						homepage: 'https://github.com/willyb321/media_mate'
 					})
 				}
 			]

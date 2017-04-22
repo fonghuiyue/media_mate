@@ -1,8 +1,5 @@
 {
 	"presets": [
-		"env"
-	],
-	"ignore": [
-		"app/renderjs/*.js"
+		"es2015"
 	]
 }

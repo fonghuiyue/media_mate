@@ -35,7 +35,7 @@ gulp.task('default', () => {
 			'!dist/**'])
 				.pipe(sourcemaps.init())
 				.pipe(babel({
-					presets: ['latest'],
+					presets: ['es2015'],
 					ignore: 'node_modules/**/*'
 				}))
 				.pipe(concat('indexbuild.js'))
@@ -48,9 +48,6 @@ gulp.task('build:pack', ['default'], cb => {
 	builder.build({
 		platform: process.platform,
 		arch: 'x64',
-		extraMetadata: {
-			main: 'main/indexbuild.js'
-		},
 		config: {
 			appId: 'com.willyb321.media_mate',
 			nsis: {

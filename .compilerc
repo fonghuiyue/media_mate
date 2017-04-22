@@ -1,10 +1,7 @@
 {
 	"application/javascript": {
 		"presets": [
-			"env"
-		],
-		"ignore": [
-			"app/renderjs/*.js"
+			"es2015"
 		],
 		"only": [
 			"app/css/*.*",

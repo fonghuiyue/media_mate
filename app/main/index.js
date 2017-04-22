@@ -34,7 +34,7 @@ import {autoUpdater} from 'electron-updater';
 import isDev from 'electron-is-dev';
 import bugsnag from 'bugsnag';
 import {RSSParse} from '../lib/rssparse';
-import {init} from '../menu.js';
+import {init} from './menu.js';
 import _ from 'underscore';
 import storage from 'electron-json-storage';
 require('electron-debug')();

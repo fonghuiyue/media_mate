@@ -1,0 +1,15 @@
+environment:
+  nodejs_version: "6"
+install:
+  # Get the latest stable version of Node.js or io.js
+  - ps: Install-Product node $env:nodejs_version
+  # install modules
+  - yarn install
+version: 1.0.{build}
+skip_non_tags: true
+build_script:
+- cmd: npm run release
+environment:
+  GH_TOKEN:
+    secure: t6uZErvIJpHpEg0SKVMDa6W8sFBn7NNfb7iRwzWWRG8MKmXlnHCiG+FVS5Umf63S
+test: off

@@ -19,7 +19,7 @@ let injects = [
 ];
 
 gulp.task('default', () => {
-	rimraf('app/indexbuild.js*', err => {
+	rimraf('app/main/indexbuild.js*', err => {
 		if (err && err.code !== 'ENOENT') {
 			console.log(err.codeFrame);
 			return err;

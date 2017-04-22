@@ -37,25 +37,25 @@ function getMenuTemplate() {
 				{
 					label: 'Homepage',
 					click: () => {
-						win.loadURL(`file://${__dirname}/index.html`);
+						win.loadURL(`file://${__dirname}/../index.html`);
 					}
 				},
 				{
 					label: 'Downloader',
 					click: () => {
-						win.loadURL(`file://${__dirname}/downloader.html`);
+						win.loadURL(`file://${__dirname}/../downloader.html`);
 					}
 				},
 				{
 					label: 'Viewer',
 					click: () => {
-						win.loadURL(`file://${__dirname}/viewer.html`);
+						win.loadURL(`file://${__dirname}/../viewer.html`);
 					}
 				},
 				{
 					label: 'Streamer',
 					click: () => {
-						win.loadURL(`file://${__dirname}/streamer.html`);
+						win.loadURL(`file://${__dirname}/../streamer.html`);
 					}
 				}
 			]

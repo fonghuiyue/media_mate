@@ -9,7 +9,4 @@ version: 1.0.{build}
 skip_non_tags: true
 build_script:
 - cmd: npm run release
-environment:
-  GH_TOKEN:
-    secure: t6uZErvIJpHpEg0SKVMDa6W8sFBn7NNfb7iRwzWWRG8MKmXlnHCiG+FVS5Umf63S
 test: off

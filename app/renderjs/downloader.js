@@ -333,6 +333,8 @@ function processTorrents(data) {
 			input.className = 'checkbox';
 			input.name = data.link;
 			input.addEventListener('click', () => {
+				input.disabled = true;
+				input.className = 'is-disabled';
 				addTor(input.name, parseInt(input.id, 0));
 			});
 			label.appendChild(input);

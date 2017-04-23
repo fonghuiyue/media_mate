@@ -46,6 +46,9 @@ gulp.task('default', () => {
 
 gulp.task('build:pack', ['default'], cb => {
 	builder.build({
+		extraMetadata: {
+			main: 'main/indexbuild.js'
+		},
 		platform: process.platform,
 		arch: 'x64',
 		config: {
@@ -78,6 +81,9 @@ gulp.task('build:pack', ['default'], cb => {
 });
 gulp.task('build:dist', ['default'], cb => {
 	builder.build({
+		extraMetadata: {
+			main: 'main/indexbuild.js'
+		},
 		platform: process.platform,
 		arch: 'x64',
 		config: {

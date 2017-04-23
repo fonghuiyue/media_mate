@@ -134,6 +134,12 @@ gulp.task('index', () => {
 	gulp.src(['./app/index.html', '!./app/node_modules/**'])
 		.pipe(inject(gulp.src(injects, {read: false}), {relative: true}))
 		.pipe(gulp.dest('./app'));
+	gulp.src(['./app/onboard.html', '!./app/node_modules/**'])
+		.pipe(inject(gulp.src(injects, {read: false}), {relative: true}))
+		.pipe(gulp.dest('./app'));
+	gulp.src(['./app/tutorials/*.html', '!./app/node_modules/**'])
+		.pipe(inject(gulp.src(injects, {read: false}), {relative: true}))
+		.pipe(gulp.dest('./app/tutorials'));
 	filename = './app/renderjs/viewer.js';
 	injects.push(filename);
 	gulp.src(['./app/viewer.html', '!./app/node_modules/**'])

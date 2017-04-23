@@ -9,9 +9,48 @@
 const WebTorrent = require('webtorrent');
 require('dotenv').config();
 require('events').EventEmitter.prototype._maxListeners = 1000;
+const swal = require('sweetalert2');
+const path = require('path');
+const _ = require('underscore');
 
 const client = new WebTorrent();
 let filesAll = '';
+/**
+ * Return true if file is playable
+ * @param file {string} - the filename with extension
+ * @returns {boolean} - if its playable or not.
+ */
+function isPlayable(file) {
+	return isVideo(file);
+}
+/**
+ * Checks whether the file path is playable video
+ * @param file {string} - the path to the file
+ * @returns {boolean}
+ */
+function isVideo(file) {
+	return [
+		'.avi',
+		'.m4v',
+		'.mkv',
+		'.mov',
+		'.mp4',
+		'.mpg',
+		'.ogv',
+		'.webm',
+		'.wmv'
+	].includes(getFileExtension(file));
+}
+/**
+ * Get the extension of {file}
+ * @param file  {string} - the file name / path
+ * @returns {string} - extension of the file.
+ */
+function getFileExtension(file) {
+	const name = typeof file === 'string' ? file : file.name;
+	return path.extname(name).toLowerCase();
+}
+
 /**
  * On keypress on the input
  * @param e {object} - the event
@@ -19,6 +58,11 @@ let filesAll = '';
  */
 function runScript(e) {
 	if (e.keyCode === 13) {
+		swal(
+			'Getting your stream ready.',
+			'Welcome to Media Mate',
+			'success'
+		);
 		const tb = document.getElementById('magnet');
 		submitmagnet(tb.value);
 		return false;
@@ -31,6 +75,7 @@ function runScript(e) {
 function chooseFile(files) {
 	const select = document.getElementById('selectNumber');
 	console.log(files);
+	files = _.filter(files, isPlayable);
 	filesAll = files;
 	for (let i = 0; i < files.length; i++) {
 		const opt = files[i];
@@ -45,7 +90,7 @@ function chooseFile(files) {
  * @param file {object} - the file
  */
 function startPlaying(file) {
-	file.renderTo('#playerm8', (err, elem) => {
+	file.appendTo('#player', (err, elem) => {
 		if (err) {
 			throw err;
 		} // File failed to download or display in the DOM
@@ -90,7 +135,7 @@ function submitmagnet(magnet) {
  */
 function stop() {
 	process.torrent.destroy(tor => {
-		document.getElementById('playerm8').style.display = 'none';
+		document.getElementById('player').removeChild(document.getElementById('player').firstChild);
 		document.getElementById('destroy').style.display = 'none';
 		document.getElementById('selectNumber').style.display = 'none';
 	});

@@ -1,4 +1,3 @@
-const swal = require('sweetalert2');
 function notify(title, body) {
 	let notif = new Notification(title, {
 		body: body.toString()
@@ -8,7 +7,7 @@ function notify(title, body) {
 	};
 }
 function firstrun() {
-	swal({
+	require('sweetalert2').swal({
 		title: 'Want to check out the tutorial?',
 		text: 'I noticed this is your first run.',
 		type: 'question',

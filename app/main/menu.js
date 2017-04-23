@@ -109,10 +109,18 @@ function getMenuTemplate() {
 			role: 'help',
 			submenu: [
 				{
+					label: 'Tutorial',
+					click() {
+						win.loadURL(`file://${__dirname}/../onboard.html`);
+					}
+
+				},
+				{
 					label: 'Learn More about Electron',
 					click() {
 						shell.openExternal('http://electron.atom.io');
 					}
+
 				}, {
 					label: 'About',
 					click: () => openAboutWindow({

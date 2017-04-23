@@ -169,6 +169,25 @@ function createMainWindow() {
 	return win;
 }
 /**
+ * Ask the user if they want to view the tutorial on first run
+ */
+function onBoard() {
+	storage.get('firstrun', (err, data) => {
+		if (err) {
+			throw err;
+		}
+		if (_.isEmpty(data)) {
+			mainWindow.webContents.executeJavaScript('firstrun()');
+			storage.set('firstrun', {first: false}, err => {
+				if (err) {
+					throw err;
+				}
+			});
+		}
+	});
+}
+
+/**
  * When all windows are closed, quit the app.
  */
 app.on('window-all-closed', () => {
@@ -279,5 +298,6 @@ app.on('ready', () => {
 	init();
 	eNotify = require('electron-notify');
 	watchRSS();
+	onBoard();
 	console.timeEnd('init');
 });

@@ -6,6 +6,9 @@
       <w>bugsnag</w>
       <w>dlprog</w>
       <w>dont</w>
+      <w>downloaderdl</w>
+      <w>downloaderfeed</w>
+      <w>downloaderhelp</w>
       <w>elempath</w>
       <w>enoent</w>
       <w>eslint</w>
@@ -13,6 +16,7 @@
       <w>figcaption</w>
       <w>figelem</w>
       <w>fileoverview</w>
+      <w>firstrun</w>
       <w>getimg</w>
       <w>getimgs</w>
       <w>github</w>
@@ -31,14 +35,21 @@
       <w>netlify</w>
       <w>nodir</w>
       <w>notif</w>
+      <w>onboard</w>
       <w>pubdate</w>
       <w>rimraf</w>
+      <w>showrssadd</w>
+      <w>showrssfeed</w>
+      <w>showrssregister</w>
       <w>sourcemaps</w>
       <w>stopvid</w>
+      <w>streamerhelp</w>
       <w>swal</w>
+      <w>timeline</w>
       <w>timeupdate</w>
       <w>tippy</w>
       <w>tvlem</w>
+      <w>viewerhelp</w>
       <w>watchedhr</w>
       <w>willb</w>
       <w>willyb</w>

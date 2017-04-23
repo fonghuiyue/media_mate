@@ -36,12 +36,12 @@
 	<div class="column">
 
 		<div class="box">
-			<p class="subtitle"><input id="magnet" placeholder="Paste magnet URI here." type="text" onkeypress="return runScript(event)" title="magnet"></p>
+			<p class="subtitle"><input id="magnet" class="input" style="width: 25%" placeholder="Paste magnet URI here." type="text" onkeypress="return runScript(event)" title="magnet"></p>
 			<div id="dl" class="column">
 			<button class="button is-primary"  id="destroy" style="display: none;" onclick="stop()">Stop torrent</button>
 			</div>
 			<form id="myForm" style="display: none;">
-				<select id="selectNumber" onchange="getFile()" title="Choose file">
+				<select class="select" id="selectNumber" onchange="getFile()" title="Choose file">
 					<option>Select an option</option>
 				</select>
 			</form>
@@ -49,6 +49,6 @@
 	</div>
 </div>
 <div id="player" class="container is-fluid"></div>
-<video id="playerm8" controls style="display: none;"></video>
+
 </body>
 </html>

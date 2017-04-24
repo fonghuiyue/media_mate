@@ -7,7 +7,7 @@ function notify(title, body) {
 	};
 }
 function firstrun() {
-	require('sweetalert2').swal({
+	require('sweetalert2')({
 		title: 'Want to check out the tutorial?',
 		text: 'I noticed this is your first run.',
 		type: 'question',

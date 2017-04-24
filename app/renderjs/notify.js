@@ -17,6 +17,10 @@ function firstrun() {
 		confirmButtonText: 'Yes!'
 	}).then(function () {
 		require('electron').remote.getCurrentWindow().loadURL(`file://${__dirname}/onboard.html`)
-	})
+	}).catch(err => {
+		if (err !== 'cancel') {
+			throw err;
+		}
+	});
 
 }

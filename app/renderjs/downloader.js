@@ -11,7 +11,6 @@ require('dotenv').config({path: `${__dirname}/.env`});
 const {dialog} = require('electron').remote;
 const path = require('path');
 const bugsnag = require('bugsnag');
-const f = require('util').format;
 const ipc = require('electron').ipcRenderer;
 const PouchDB = require('pouchdb');
 require('events').EventEmitter.prototype._maxListeners = 1000;

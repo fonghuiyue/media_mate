@@ -11,37 +11,37 @@ console.time('full');
 console.time('init');
 console.time('require');
 require('dotenv').config({path: `${__dirname}/../.env`});
-
-const PouchDB = require('pouchdb');
-
-const lru = require('lru-cache')({max: 256, maxAge: 250});
-const fs = require('fs');
-const origLstat = fs.lstatSync.bind(fs);
-
-require('fs').lstatSync = function (p) {
-	let r = lru.get(p);
-	if (r) {
-		return r;
-	}
-	r = origLstat(p);
-
-	lru.set(p, r);
-	return r;
-};
-
+console.time('electron');
 import electron, {dialog, ipcMain as ipc} from 'electron';
+console.timeEnd('electron');
+console.time('updater');
 import {autoUpdater} from 'electron-updater';
+console.timeEnd('updater');
+console.time('is-dev');
 import isDev from 'electron-is-dev';
+console.timeEnd('is-dev');
+console.time('bugsnag');
 import bugsnag from 'bugsnag';
+console.timeEnd('bugsnag');
+console.time('rssparse');
 import {RSSParse} from '../lib/rssparse';
+console.timeEnd('rssparse');
+console.time('menu');
 import {init} from './menu.js';
+console.timeEnd('menu');
+console.time('pouch');
+import PouchDB from 'pouchdb';
+console.timeEnd('pouch');
+console.time('underscore');
 import _ from 'underscore';
+console.timeEnd('underscore');
+console.time('jsonstorage');
 import storage from 'electron-json-storage';
+console.timeEnd('jsonstorage');
 require('electron-debug')();
 PouchDB.plugin(require('pouchdb-find'));
 const windowStateKeeper = require('electron-window-state');
 console.timeEnd('require');
-let eNotify;
 let RSS;
 const app = electron.app;
 bugsnag.register('03b389d77abc2d10136d8c859391f952', {appVersion: app.getVersion(), sendCode: true});
@@ -296,7 +296,6 @@ ipc.on('dldone', (event, data) => {
 app.on('ready', () => {
 	mainWindow = createMainWindow();
 	init();
-	eNotify = require('electron-notify');
 	watchRSS();
 	onBoard();
 	console.timeEnd('init');

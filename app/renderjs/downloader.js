@@ -23,6 +23,7 @@ const _ = require('underscore');
 const storage = require('electron-json-storage');
 const WebTorrent = require('webtorrent');
 
+let dupeCount = 0;
 let db;
 PouchDB.plugin(require('pouchdb-find'));
 const version = require('electron').remote.app.getVersion();
@@ -343,6 +344,10 @@ function processTorrents(data) {
 			i++;
 		} else if (dupe) {
 			console.log('dupe');
+			dupeCount++;
+			console.log(dupeCount);
+			document.getElementById('dupecount').style.display = '';
+			document.getElementById('dupecount').textContent = `${dupeCount} dupes`;
 		}
 	});
 }

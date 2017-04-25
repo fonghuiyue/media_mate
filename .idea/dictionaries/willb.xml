@@ -26,6 +26,7 @@
       <w>indexbuild</w>
       <w>interv</w>
       <w>janky</w>
+      <w>jsonstorage</w>
       <w>keypress</w>
       <w>loadedmetadata</w>
       <w>lstat</w>
@@ -54,6 +55,7 @@
       <w>watchedhr</w>
       <w>willb</w>
       <w>willyb</w>
+      <w>windowstate</w>
     </words>
   </dictionary>
 </component>

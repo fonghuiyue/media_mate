@@ -129,8 +129,8 @@ function onClosed() {
  */
 function createMainWindow() {
 	const mainWindowState = windowStateKeeper({
-		defaultWidth: 600,
-		defaultHeight: 400
+		defaultWidth: 1280,
+		defaultHeight: 720
 	});
 	win = new electron.BrowserWindow({
 		x: mainWindowState.x,

@@ -253,6 +253,7 @@ function vidFinished(e) {
 	const filename = this.getAttribute('data-file-name');
 	storage.get(filename, (err, data) => {
 		if (err) {
+			console.log(err);
 			bugsnag.notify(new Error(err), {
 				subsystem: {
 					name: 'Viewer'
@@ -338,33 +339,39 @@ function vidProgress(e) {
 	let duration = this.duration;
 	let figcap = img.childNodes;
 	let percent = (time / duration) * 100;
-	figcap[1].style.width = percent + '%';
-	figcap[1].style.zIndex = 9999;
-	figcap[1].style.position = 'relative';
-	figcap[1].style.top = '0';
-	figcap[1].style.marginTop = '0px';
-	figcap[1].style.marginBottom = '0px';
-	figcap[1].style.setProperty('margin', '0px 0px', 'important');
-	figcap[1].style.backgroundColor = 'red';
-	figcap[2].innerText = `${figcap[0].title} (${Math.round(percent)}% watched)`;
-	storage.get(filename, (err, data) => {
-		if (err) {
-			bugsnag.notify(new Error(err), {
-				subsystem: {
-					name: 'Viewer'
-				}
-			});
-		}
-		if (_.isEmpty(data) === false) {
-			storage.set(filename, {file: filename, watched: false, time: this.currentTime, duration: this.duration}, err => {
-				if (err) {
-					throw err;
-				}
-			});
-		} else {
-			console.log('dunno');
-		}
-	});
+	if (time !== duration) {
+		figcap[1].style.width = percent + '%';
+		figcap[1].style.zIndex = 9999;
+		figcap[1].style.position = 'relative';
+		figcap[1].style.top = '0';
+		figcap[1].style.marginTop = '0px';
+		figcap[1].style.marginBottom = '0px';
+		figcap[1].style.setProperty('margin', '0px 0px', 'important');
+		figcap[1].style.backgroundColor = 'red';
+		figcap[2].innerText = `${figcap[0].title} (${Math.round(percent)}% watched)`;
+		storage.get(filename, (err, data) => {
+			if (err) {
+				bugsnag.notify(new Error(err), {
+					subsystem: {
+						name: 'Viewer'
+					}
+				});
+			}
+			if (_.isEmpty(data) === false) {
+				storage.set(filename, {file: filename, watched: false, time: this.currentTime, duration: this.duration}, err => {
+					if (err) {
+						throw err;
+					}
+				});
+			} else {
+				storage.set(filename, {file: filename, watched: false, time: this.currentTime, duration: this.duration}, err => {
+					if (err) {
+						throw err;
+					}
+				});
+			}
+		});
+	}
 }
 /**
  * Add and remove event handlers for the stop video button
@@ -379,7 +386,7 @@ async function watchedTime(vid, elem, figcap) {
 	return new Promise((resolve, reject) => {
 		storage.get(vid.getAttribute('data-store-name'), (err, data) => {
 			if (err) {
-				throw err;
+				console.log(err);
 			}
 			if (_.isEmpty(data)) {
 				elem.style.zIndex = 9999;

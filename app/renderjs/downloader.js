@@ -290,7 +290,7 @@ function addTor(magnet, index) {
 			torrent.on('download', () => {
 				prog(torrent, magnet);
 				const percent = Math.round(torrent.progress * 100 * 100) / 100;
-				document.getElementsByName(magnet)[0].parentNode.childNodes[1].nodeValue = '- ' + percent.toString() + '% downloaded, ' + moment.duration(torrent.timeRemaining / 1000, 'seconds').humanize() + ' remaining.';
+				document.getElementsByName(magnet)[0].parentNode.childNodes[1].nodeValue = `- ${percent.toString()}% downloaded, ${moment.duration(torrent.timeRemaining / 1000, 'seconds').humanize()} remaining.`;
 			});
 			torrent.on('done', () => {
 				dlProgress();

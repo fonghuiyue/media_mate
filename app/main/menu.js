@@ -87,9 +87,6 @@ function getMenuTemplate() {
 					type: 'separator'
 				},
 				{
-					type: 'separator'
-				},
-				{
 					role: 'togglefullscreen'
 				}
 			]

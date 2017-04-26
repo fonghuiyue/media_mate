@@ -457,6 +457,7 @@ async function findDL() {
 					videodiv.appendChild(video);
 				}
 			});
+			imgelem.className = 'hvr-shrink';
 			imgelem.src = `file:///${__dirname}/loading.png`;
 			figelem.style.display = 'inline-block';
 			figelem.id = files[i].replace(/^.*[\\/]/, '');

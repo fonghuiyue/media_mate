@@ -16,5 +16,6 @@
     <orderEntry type="library" name="pouchdb-DefinitelyTyped" level="application" />
     <orderEntry type="library" name="electron-debug-DefinitelyTyped" level="application" />
     <orderEntry type="library" name="underscore-DefinitelyTyped" level="application" />
+    <orderEntry type="library" name="webdriverio-DefinitelyTyped" level="application" />
   </component>
 </module>

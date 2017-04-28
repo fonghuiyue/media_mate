@@ -26,7 +26,7 @@ const {titleCase, isPlayable} = require(require('path').join(__dirname, 'lib', '
 
 PouchDB.plugin(require('pouchdb-find'));
 const tvdb = new TVDB(process.env.TVDB_KEY);
-const vidProgressthrottled = _.throttle(vidProgress, 1000);
+const vidProgressthrottled = _.throttle(vidProgress, 500);
 
 bugsnag.register('03b389d77abc2d10136d8c859391f952', {appVersion: version, sendCode: true});
 /**
@@ -82,9 +82,9 @@ function getImgDB(data) {
 	return new Promise(resolve => {
 		const mediadiv = document.getElementById('media');
 		const medianodes = mediadiv.childNodes;
-		let tvelem = data[0];
-		let elempath = data[1];
-		let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbImg').toString());
+		const tvelem = data[0];
+		const elempath = data[1];
+		const db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbImg').toString());
 		medianodes.forEach((img, ind) => {
 			if (ind === medianodes.length - 1) {
 				indeterminateProgress.end();
@@ -153,11 +153,11 @@ async function getImgs() {
 		});
 	});
 	getimgs.on('episode', data => {
-		let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbImg').toString());
+		const db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbImg').toString());
 		console.log('ep');
-		let elem = data[0];
-		let tvelem = data[1];
-		let elempath = data[2];
+		const elem = data[0];
+		const tvelem = data[1];
+		const elempath = data[2];
 		medianodes.forEach((img, ind) => {
 			if (img.id === elempath) {
 				tvdb.getEpisodeById(elem.id)
@@ -177,7 +177,7 @@ async function getImgs() {
 									_attachments: {
 										img: {
 											content_type: 'image/jpeg', // eslint-disable-line
-											data: new Buffer(blob, 'base64')
+											data: Buffer.from(blob, 'base64')
 										}
 									}
 								});
@@ -204,8 +204,30 @@ async function getImgs() {
  * @param e {object} - the event.
  */
 function vidFinished(e) {
-	const filename = this.getAttribute('data-file-name');
+	let filename;
+	let elem;
+	if (process.env.SPECTRON) {
+		filename = 'TopGearS24E7';
+		elem = document.getElementById('top.gear.s24e07.hdtv.x264-mtb.mp4');
+	} else {
+		filename = this.getAttribute('data-file-name');
+		elem = document.getElementById(this.getAttribute('data-img-id'));
+	}
+
+	const figcap = elem.childNodes;
 	storage.get(filename, (err, data) => {
+		const time = data.time;
+		const duration = data.duration;
+		const percent = (time / duration) * 100;
+		figcap[1].style.width = percent + '%';
+		figcap[1].style.zIndex = 9999;
+		figcap[1].style.position = 'relative';
+		figcap[1].style.top = '0';
+		figcap[1].style.marginTop = '0px';
+		figcap[1].style.marginBottom = '0px';
+		figcap[1].style.setProperty('margin', '0px 0px', 'important');
+		figcap[1].style.backgroundColor = 'red';
+		figcap[2].innerText = `${figcap[0].title} (${Math.round(percent)}% watched)`;
 		if (err) {
 			console.log(err);
 			bugsnag.notify(new Error(err), {
@@ -214,7 +236,7 @@ function vidFinished(e) {
 				}
 			});
 		}
-		storage.set(filename, {file: filename, watched: true, time: this.currentTime, duration: this.duration}, err => {
+		storage.set(filename, {file: filename, watched: true, time: (process.env.SPECTRON ? 5 : this.duration), duration: duration}, err => {
 			if (err) {
 				bugsnag.notify(new Error(err), {
 					subsystem: {
@@ -255,16 +277,21 @@ function handleVids(e) {
  * @param params {object} - the x / y of the image.
  */
 function resetTime(params) {
-	const elem = document.elementFromPoint(params.x, params.y).parentNode;
+	let elem;
+	if (process.env.SPECTRON) {
+		elem = document.getElementById('top.gear.s24e07.hdtv.x264-mtb.mp4');
+	} else {
+		elem = document.elementFromPoint(params.x, params.y).parentNode;
+	}
 	const filename = elem.getAttribute('data-store-name');
 	const figcap = elem.childNodes;
 	storage.get(filename, (err, data) => {
 		if (err) {
 			throw err;
 		}
-		let time = 0;
-		let duration = data.duration;
-		let percent = (time / duration) * 100;
+		const time = 0;
+		const duration = data.duration;
+		const percent = (time / duration) * 100;
 		figcap[1].style.width = percent + '%';
 		figcap[1].style.zIndex = 9999;
 		figcap[1].style.position = 'relative';
@@ -289,10 +316,10 @@ function resetTime(params) {
 function vidProgress(e) {
 	const filename = this.getAttribute('data-file-name');
 	const img = document.getElementById(this.getAttribute('data-img-id'));
-	let time = this.currentTime;
-	let duration = this.duration;
-	let figcap = img.childNodes;
-	let percent = (time / duration) * 100;
+	const time = this.currentTime;
+	const duration = this.duration;
+	const figcap = img.childNodes;
+	const percent = (time / duration) * 100;
 	if (time !== duration) {
 		figcap[1].style.width = percent + '%';
 		figcap[1].style.zIndex = 9999;
@@ -325,6 +352,26 @@ function vidProgress(e) {
 				});
 			}
 		});
+	} else if (time === duration) {
+		storage.get(filename, (err, data) => {
+			if (err) {
+				console.log(err);
+				bugsnag.notify(new Error(err), {
+					subsystem: {
+						name: 'Viewer'
+					}
+				});
+			}
+			storage.set(filename, {file: filename, watched: true, time: this.currentTime, duration: this.duration}, err => {
+				if (err) {
+					bugsnag.notify(new Error(err), {
+						subsystem: {
+							name: 'Viewer'
+						}
+					});
+				}
+			});
+		});
 	}
 }
 /**
@@ -349,9 +396,9 @@ async function watchedTime(vid, elem, figcap) {
 				elem.style.backgroundColor = 'red';
 				resolve(elem);
 			} else if (data.watched === false) {
-				let time = data.time;
-				let duration = data.duration;
-				let percent = (time / duration) * 100;
+				const time = data.time;
+				const duration = data.duration;
+				const percent = (time / duration) * 100;
 				elem.style.width = percent + '%';
 				elem.style.zIndex = 9999;
 				elem.style.position = 'relative';
@@ -363,10 +410,18 @@ async function watchedTime(vid, elem, figcap) {
 				figcap.innerText = `${figcap.innerText} (${Math.round(percent)}% watched)`;
 				resolve(elem);
 			} else if (data.watched === true) {
+				const time = data.duration;
+				const duration = data.duration;
+				const percent = (time / duration) * 100;
+				elem.style.width = percent + '%';
 				elem.style.zIndex = 9999;
 				elem.style.position = 'relative';
-				elem.style.width = '100%';
+				elem.style.top = '0';
+				elem.style.marginTop = '0px';
+				elem.style.marginBottom = '0px';
+				elem.style.setProperty('margin', '0px 0px', 'important');
 				elem.style.backgroundColor = 'red';
+				figcap.innerText = `${figcap.innerText} (${Math.round(percent)}% watched)`;
 				resolve(elem);
 			}
 		});
@@ -398,12 +453,13 @@ async function findDL() {
 				const video = document.createElement('video');
 				video.src = files[i];
 				video.setAttribute('data-file-name', `${parsedName.show.replace(' ', '')}S${parsedName.season}E${parsedName.episode}`);
+				video.setAttribute('data-store-name', `${parsedName.show.replace(' ', '')}S${parsedName.season}E${parsedName.episode}`);
 				video.autoplay = true;
 				video.controls = true;
 				video.setAttribute('data-img-id', files[i].replace(/^.*[\\/]/, ''));
 				video.addEventListener('loadedmetadata', handleVids, false);
 				video.addEventListener('ended', vidFinished, false);
-				video.addEventListener('timeupdate', vidProgressthrottled, false);
+				video.addEventListener('timeupdate', vidProgress, false);
 				document.getElementById('stopvid').addEventListener('click', handleEventHandlers);
 				if (videodiv.childElementCount > 0) {
 					videodiv.replaceChild(video, videodiv.firstElementChild);
@@ -412,6 +468,7 @@ async function findDL() {
 				}
 			});
 			imgelem.className = 'hvr-shrink';
+			imgelem.id = 'img_' + files[i].replace(/^.*[\\/]/, '');
 			imgelem.src = `file:///${__dirname}/loading.png`;
 			figelem.style.display = 'inline-block';
 			figelem.id = files[i].replace(/^.*[\\/]/, '');

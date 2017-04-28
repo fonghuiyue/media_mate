@@ -16,7 +16,6 @@ const PouchDB = require('pouchdb');
 require('events').EventEmitter.prototype._maxListeners = 1000;
 const moment = require('moment');
 const swal = require('sweetalert2');
-
 const RSSParse = require(`${__dirname}/lib/rssparse.js`).RSSParse;
 const ProgressBar = require('progressbar.js');
 const _ = require('underscore');
@@ -35,7 +34,7 @@ const dbindex = 0;
 const allTorrents = [];
 const prog = _.throttle(dlProgress, 10000);
 
-process.on('unhandledRejection', function (err, promise) {
+process.on('unhandledRejection', (err, promise) => {
 	console.error('Unhandled rejection: ' + (err && err.stack || err)); // eslint-disable-line
 	bugsnag.notify(new Error(err));
 });
@@ -128,7 +127,7 @@ function getRSSURI(callback) {
  * @param callback - You know what it is.
  */
 function ignoreDupeTorrents(torrent, callback) {
-	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbTor').toString());
+	const db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbTor').toString());
 	db.find({
 		selector: {
 			_id: torrent.link
@@ -164,17 +163,17 @@ function ignoreDupeTorrents(torrent, callback) {
  * @param callback - let em know.
  */
 function dropTorrents(callback) {
-	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbTor').toString());
+	const db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbTor').toString());
 	db.allDocs({
 		include_docs: true, // eslint-disable-line camelcase
 		attachments: true
-	}).then(function (res) {
+	}).then(res => {
 		_.each(res.rows, elem => {
 			if (elem.doc._id !== 'showRSS') {
 				db.remove(elem.doc);
 			}
 		});
-	}).catch(function (err) {
+	}).catch(err => {
 		console.log(err);
 	});
 }
@@ -193,24 +192,24 @@ function updateURI(uri) {
  * Initial load, get the torrents in the db.
  */
 function findDocuments() {
-	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbTor').toString());
+	const db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbTor').toString());
 	db.allDocs({
 		include_docs: true // eslint-disable-line camelcase
-	}).then(function (result) {
+	}).then(result => {
 		_.each(result.rows, elem => allTorrents.push(elem.doc.magnet));
 		db.close();
-	}).catch(function (err) {
+	}).catch(err => {
 		console.log(err);
 	});
 }
 
 function indexDB() {
-	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbTor').toString());
+	const db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbTor').toString());
 	db.createIndex({
 		index: {
 			fields: ['_id', 'magnet', 'downloaded']
 		}
-	}).then(function (result) {
+	}).then(result => {
 		if (result.result === 'created') {
 			console.log('index made');
 		} else {
@@ -225,16 +224,16 @@ function indexDB() {
  * Download all of the torrents, after they are added to the DOM.
  */
 function dlAll() {
-	let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbTor').toString());
+	const db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbTor').toString());
 	db.find({
 		selector: {downloaded: false},
 		fields: ['_id', 'magnet', 'title', 'airdate', 'downloaded']
-	}).then(function (result) {
+	}).then(result => {
 		_.each(result.docs, (elem, index) => {
 			addTor(elem.magnet, index);
 		});
 		db.close();
-	}).catch(function (err) {
+	}).catch(err => {
 		handleErrs(err);
 	});
 }
@@ -260,18 +259,20 @@ function getDlPath(callback) {
  */
 function insertDlPath(callback) {
 	const tb = document.getElementById('dlpath');
-	const dlpath = dialog.showOpenDialog({
+	dialog.showOpenDialog({
 		properties: ['openDirectory']
+	}, dlpath => {
+		if (dlpath !== undefined) {
+			console.log(dlpath[0]);
+			storage.set('path', {
+				path: dlpath[0]
+			}, error => {
+				if (error) {
+					handleErrs(error);
+				}
+			});
+		}
 	});
-	if (dlpath !== undefined) {
-		storage.set('path', {
-			path: dlpath[0]
-		}, error => {
-			if (error) {
-				handleErrs(error);
-			}
-		});
-	}
 }
 /**
  * Add a torrent to WebTorrent and the DB.
@@ -294,7 +295,7 @@ function addTor(magnet, index) {
 			});
 			torrent.on('done', () => {
 				dlProgress();
-				let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbTor').toString());
+				const db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbTor').toString());
 				db.get(document.getElementsByName(magnet)[0].name).then(doc => {
 					db.put({
 						_id: document.getElementsByName(magnet)[0].name,

@@ -66,7 +66,7 @@ class RSSParse extends events.EventEmitter {
 
 				feedparser.on('readable', function () {
 					// This is where the action is!
-					let stream = this; // `this` is `feedparser`, which is a stream
+					const stream = this; // `this` is `feedparser`, which is a stream
 					// **NOTE** the "meta" is always available in the context of the feedparser instance
 					const meta = this.meta; // eslint-disable-line no-unused-vars
 					let item;

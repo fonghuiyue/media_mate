@@ -91,7 +91,7 @@ class GetImgs extends events.EventEmitter {
 	 */
 	async inDB() {
 		return new Promise(resolve => {
-			let db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbImg').toString());
+			const db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbImg').toString());
 			db.find({
 				selector: {_id: `img${this.tvelem.show.replace(' ', '')}S${this.tvelem.season}E${this.tvelem.episode}`},
 				fields: ['_id', '_rev', 'tvelem']
@@ -110,7 +110,7 @@ class GetImgs extends events.EventEmitter {
 	 */
 	async hasShow() {
 		if (_.has(this.tvelem, 'show') === true) {
-			let already = await this.inDB();
+			const already = await this.inDB();
 			if (already === 'got image') {
 				this.emit('tvelem', [this.tvelem, this.elempath]);
 				this._operation++;
@@ -224,7 +224,7 @@ module.exports = {
 	GetImgs
 };
 if (!module.parent) {
-	let m8 = new GetImgs('/Users/willb/media_matedl');
+	const m8 = new GetImgs('/Users/willb/media_matedl');
 	m8.on('episode', data => {
 		console.log(data);
 	});

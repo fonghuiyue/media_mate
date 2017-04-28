@@ -53,7 +53,13 @@ let RSS;
 const app = electron.app;
 bugsnag.register('03b389d77abc2d10136d8c859391f952', {appVersion: app.getVersion(), sendCode: true});
 let win;
-// Let MongoClient;
+
+if (process.env.SPECTRON) {
+	electron.dialog.showOpenDialog = (opts, cb) => {
+		cb([require('path').join(require('os').tmpdir(), 'MediaMateTest', 'Downloads')]);
+	};
+}
+
 /**
  * Autoupdater on update available
  */
@@ -110,7 +116,7 @@ process.on('uncaughtError', err => {
 	bugsnag.notify(err);
 	console.log('ERROR! The error is: ' + err || err.stack);
 });
-process.on('unhandledRejection', function (err) {
+process.on('unhandledRejection', err => {
 	console.error('Unhandled rejection: ' + (err && err.stack || err)); // eslint-disable-line
 	bugsnag.notify(err);
 });
@@ -217,7 +223,7 @@ app.on('activate', () => {
  * @param callback - The callback.
  */
 function ignoreDupeTorrents(torrent, callback) {
-	let db = new PouchDB(require('path').join(app.getPath('userData'), 'dbTor').toString());
+	const db = new PouchDB(require('path').join(app.getPath('userData'), 'dbTor').toString());
 	db.get(torrent.link)
 				.then(doc => {
 					if (doc === null) {

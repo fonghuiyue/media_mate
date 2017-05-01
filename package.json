@@ -12,7 +12,7 @@
     "url": "tehsuperwilly.tech"
   },
   "scripts": {
-    "test": "gulp test",
+    "test": "node tests/",
     "prestart": "gulp && gulp index",
     "start": "electron app/",
     "build": "electron-zip-packager . --out=dist --overwrite --platform=win32 --arch=x64 --prune --asar",
@@ -41,7 +41,7 @@
     "devtron": "^1.4.0",
     "electron": "^1.6.6",
     "electron-builder": "^17.1.1",
-    "electron-compilers": "^5.8.1",
+    "electron-compilers": "^5.8.3",
     "electron-rebuild": "^1.5.7",
     "eslint": "^3.19.0",
     "eslint-config-xo": "^0.18.1",
@@ -61,7 +61,7 @@
     "jsdoc-export-default-interop": "^0.3.1",
     "jsdoc-strip-async-await": "^0.1.0",
     "mkdirp": "latest",
-    "pngjs": "^3.0.1",
+    "pngjs": "^3.2.0",
     "release-it": "^2.7.1",
     "rimraf": "^2.6.1",
     "spectron": "^3.6.2",
@@ -80,15 +80,15 @@
       "tests/*",
       "test.js",
       "gulpfile.babel.js",
-      "app/indexbuild.*",
-      "docs/**/*"
-    ]
-  },
-  "build": {
-    "electronCompile": false,
-    "nodeGypRebuild": false,
-    "appId": "com.willyb321.media_mate",
-    "nsis": {
+		"app/indexbuild.*",
+		"docs/**/*"
+	]
+	},
+	  "build": {
+		  "electronCompile": true,
+		  "nodeGypRebuild": false,
+		  "appId": "com.willyb321.media_mate",
+		  "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
     },
@@ -102,6 +102,12 @@
       "publish": [
         "github"
       ]
-    }
+    },
+	"linux": {
+		"target": [
+			"dir",
+			"AppImage"
+		]
+	}
   }
 }

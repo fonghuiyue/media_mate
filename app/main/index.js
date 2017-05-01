@@ -70,7 +70,7 @@ autoUpdater.on('update-available', info => { // eslint-disable-line no-unused-va
 		title: 'New update available.',
 		message: 'Press OK to download the update, and the application will download the update and then tell you when its done.'
 	});
-	win.loadURL(`file:///${__dirname}/../index.html`);
+	win.loadURL(`file:///${__dirname}/../renderhtml/index.html`);
 });
 /**
  * Autoupdater on downloaded
@@ -141,20 +141,31 @@ function onClosed() {
  * @returns {*}
  */
 function createMainWindow() {
-	const mainWindowState = windowStateKeeper({
-		defaultWidth: 1280,
-		defaultHeight: 720
-	});
-	win = new electron.BrowserWindow({
-		x: mainWindowState.x,
-		y: mainWindowState.y,
-		width: mainWindowState.width,
-		height: mainWindowState.height,
-		show: false,
-		backgroundColor: '#f8f9fa'
-	});
-	mainWindowState.manage(win);
-	win.loadURL(`file://${__dirname}/../index.html`);
+	if (process.env.SPECTRON) {
+		win = new electron.BrowserWindow({
+			width: 1280,
+			height: 1024,
+			enableLargerThanScreen: true,
+			backgroundColor: '#f8f9fa'
+		});
+	} else {
+		const mainWindowState = windowStateKeeper({
+			isMaximized: false,
+			defaultWidth: 1280,
+			defaultHeight: 1024
+		});
+		win = new electron.BrowserWindow({
+			x: mainWindowState.x,
+			y: mainWindowState.y,
+			width: mainWindowState.width,
+			height: mainWindowState.height,
+			show: false,
+			enableLargerThanScreen: true,
+			backgroundColor: '#f8f9fa'
+		});
+		mainWindowState.manage(win);
+	}
+	win.loadURL(`file://${__dirname}/../renderhtml/index.html`);
 	win.on('closed', onClosed);
 	win.on('unresponsive', () => {
 		console.log('I\'ve frozen. Sorry about that.');

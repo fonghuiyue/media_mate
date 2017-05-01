@@ -2199,9 +2199,9 @@ electron-chromedriver@~1.6.0:
     electron-download "^3.1.0"
     extract-zip "^1.6.0"
 
-electron-compilers@^5.8.1:
-  version "5.8.1"
-  resolved "https://registry.yarnpkg.com/electron-compilers/-/electron-compilers-5.8.1.tgz#7d941c8a750f674207a20d9ccd8926959818e7fd"
+electron-compilers@^5.8.3:
+  version "5.8.3"
+  resolved "https://registry.yarnpkg.com/electron-compilers/-/electron-compilers-5.8.3.tgz#b0c04b0093733cd8b158b637c9544f64e16e742e"
   dependencies:
     "@paulcbetts/mime-types" "^2.1.10"
     "@paulcbetts/vueify" "9.4.3"
@@ -5444,9 +5444,9 @@ pluralize@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/pluralize/-/pluralize-1.2.1.tgz#d1a21483fd22bb41e58a12fa3421823140897c45"
 
-pngjs@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/pngjs/-/pngjs-3.0.1.tgz#b15086ac1ac47298c8fd3f9cdf364fa9879c4db6"
+pngjs@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/pngjs/-/pngjs-3.2.0.tgz#fc9fcea1a8a375da54a51148019d5abd41dbabde"
 
 postcss-calc@^5.2.0:
   version "5.3.1"

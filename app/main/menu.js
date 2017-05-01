@@ -37,25 +37,25 @@ function getMenuTemplate() {
 				{
 					label: 'Homepage',
 					click: () => {
-						win.loadURL(`file://${__dirname}/../index.html`);
+						win.loadURL(`file://${__dirname}/../renderhtml/index.html`);
 					}
 				},
 				{
 					label: 'Downloader',
 					click: () => {
-						win.loadURL(`file://${__dirname}/../downloader.html`);
+						win.loadURL(`file://${__dirname}/../renderhtml/downloader.html`);
 					}
 				},
 				{
 					label: 'Viewer',
 					click: () => {
-						win.loadURL(`file://${__dirname}/../viewer.html`);
+						win.loadURL(`file://${__dirname}/../renderhtml/viewer.html`);
 					}
 				},
 				{
 					label: 'Streamer',
 					click: () => {
-						win.loadURL(`file://${__dirname}/../streamer.html`);
+						win.loadURL(`file://${__dirname}/../renderhtml/streamer.html`);
 					}
 				}
 			]
@@ -108,7 +108,7 @@ function getMenuTemplate() {
 				{
 					label: 'Tutorial',
 					click() {
-						win.loadURL(`file://${__dirname}/../onboard.html`);
+						win.loadURL(`file://${__dirname}/../renderhtml/onboard.html`);
 					}
 
 				},

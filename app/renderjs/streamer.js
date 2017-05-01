@@ -15,7 +15,7 @@ const _ = require('underscore');
 
 const client = new WebTorrent();
 let filesAll = '';
-const {isPlayable} = require(require('path').join(__dirname, 'lib', 'utils.js'));
+const {isPlayable} = require(require('path').join(__dirname, '..', 'lib', 'utils.js'));
 
 /**
  * On keypress on the input

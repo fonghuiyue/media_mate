@@ -46,9 +46,9 @@ gulp.task('default', () => {
 
 gulp.task('build:pack', ['default'], cb => {
 	builder.build({
-		extraMetadata: {
-			main: 'main/indexbuild.js'
-		},
+		// extraMetadata: {
+		// 	main: 'main/indexbuild.js'
+		// },
 		platform: process.platform,
 		arch: 'x64',
 		config: {
@@ -81,9 +81,9 @@ gulp.task('build:pack', ['default'], cb => {
 });
 gulp.task('build:dist', ['default'], cb => {
 	builder.build({
-		extraMetadata: {
-			main: 'main/indexbuild.js'
-		},
+		// extraMetadata: {
+		// 	main: 'main/indexbuild.js'
+		// },
 		platform: process.platform,
 		arch: 'x64',
 		config: {
@@ -121,30 +121,30 @@ gulp.task('index', () => {
 	let filename;
 	filename = './app/renderjs/downloader.js';
 	injects.push(filename);
-	gulp.src(['./app/downloader.html', '!./app/node_modules/**'])
+	gulp.src(['./app/renderhtml/downloader.html', '!./app/node_modules/**'])
 		.pipe(inject(gulp.src(injects, {read: false}), {relative: true}))
-		.pipe(gulp.dest('./app'));
+		.pipe(gulp.dest('./app/renderhtml/'));
 	filename = './app/renderjs/streamer.js';
 	injects.pop();
 	injects.push(filename);
-	gulp.src(['./app/streamer.html', '!./app/node_modules/**'])
+	gulp.src(['./app/renderhtml/streamer.html', '!./app/node_modules/**'])
 		.pipe(inject(gulp.src(injects, {read: false}), {relative: true}))
-		.pipe(gulp.dest('./app'));
+		.pipe(gulp.dest('./app/renderhtml/'));
 	injects.pop();
-	gulp.src(['./app/index.html', '!./app/node_modules/**'])
+	gulp.src(['./app/renderhtml/index.html', '!./app/node_modules/**'])
 		.pipe(inject(gulp.src(injects, {read: false}), {relative: true}))
-		.pipe(gulp.dest('./app'));
-	gulp.src(['./app/onboard.html', '!./app/node_modules/**'])
+		.pipe(gulp.dest('./app/renderhtml/'));
+	gulp.src(['./app/renderhtml/onboard.html', '!./app/node_modules/**'])
 		.pipe(inject(gulp.src(injects, {read: false}), {relative: true}))
-		.pipe(gulp.dest('./app'));
+		.pipe(gulp.dest('./app/renderhtml/'));
 	gulp.src(['./app/tutorials/*.html', '!./app/node_modules/**'])
 		.pipe(inject(gulp.src(injects, {read: false}), {relative: true}))
 		.pipe(gulp.dest('./app/tutorials'));
 	filename = './app/renderjs/viewer.js';
 	injects.push(filename);
-	gulp.src(['./app/viewer.html', '!./app/node_modules/**'])
+	gulp.src(['./app/renderhtml/viewer.html', '!./app/node_modules/**'])
 		.pipe(inject(gulp.src(injects, {read: false}), {relative: true}))
-		.pipe(gulp.dest('./app'));
+		.pipe(gulp.dest('./app/renderhtml'));
 });
 
 gulp.task('build:packCI', cb => {

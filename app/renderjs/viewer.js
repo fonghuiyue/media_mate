@@ -7,9 +7,9 @@
  */
 /* eslint-disable no-unused-vars */
 /* eslint-disable max-nested-callbacks */
-require('dotenv').config({path: `${__dirname}/.env`});
+require('dotenv').config({path: `${__dirname}/../.env`});
 require('events').EventEmitter.prototype._maxListeners = 1000;
-const Getimg = require(require('path').join(__dirname, 'lib', 'get-imgs.js')).GetImgs;
+const Getimg = require(require('path').join(__dirname, '..', 'lib', 'get-imgs.js')).GetImgs;
 const path = require('path');
 const version = require('electron').remote.app.getVersion();
 const fs = require('fs-extra');
@@ -22,7 +22,7 @@ const parser = require('episode-parser');
 const klawSync = require('klaw-sync');
 const PouchDB = require('pouchdb');
 const blobUtil = require('blob-util');
-const {titleCase, isPlayable} = require(require('path').join(__dirname, 'lib', 'utils.js'));
+const {titleCase, isPlayable} = require(require('path').join(__dirname, '..', 'lib', 'utils.js'));
 
 PouchDB.plugin(require('pouchdb-find'));
 const tvdb = new TVDB(process.env.TVDB_KEY);

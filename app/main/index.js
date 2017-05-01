@@ -144,7 +144,7 @@ function createMainWindow() {
 	if (process.env.SPECTRON) {
 		win = new electron.BrowserWindow({
 			width: 1280,
-			height: 1024,
+			height: 720,
 			enableLargerThanScreen: true,
 			backgroundColor: '#f8f9fa'
 		});
@@ -152,7 +152,7 @@ function createMainWindow() {
 		const mainWindowState = windowStateKeeper({
 			isMaximized: false,
 			defaultWidth: 1280,
-			defaultHeight: 1024
+			defaultHeight: 720
 		});
 		win = new electron.BrowserWindow({
 			x: mainWindowState.x,

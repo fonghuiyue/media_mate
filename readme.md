@@ -3,13 +3,14 @@
 
 <p align="center"><img src="https://raw.githubusercontent.com/willyb321/media_mate/develop/build/icon.png"></p>
 
-<!-- MarkdownTOC -->
+<!-- TOC -->
 
-- [What is it?](#what-is-it)
-- [Whats it look like then?](#whats-it-look-like-then)
-- [License](#license)
+- [Media Mate](#media-mate)
+    - [What is it?](#what-is-it)
+    - [Whats it look like then?](#whats-it-look-like-then)
+    - [License](#license)
 
-<!-- /MarkdownTOC -->
+<!-- /TOC -->
 
 
 ## What is it?

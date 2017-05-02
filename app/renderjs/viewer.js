@@ -236,7 +236,7 @@ function vidFinished(e) {
 				}
 			});
 		}
-		storage.set(filename, {file: filename, watched: true, time: (process.env.SPECTRON ? 5.014 : this.duration), duration: duration}, err => {
+		storage.set(filename, {file: filename, watched: true, time: (process.env.SPECTRON ? 5.014 : this.duration), duration: (process.env.SPECTRON ? 5.014 : duration)}, err => {
 			if (err) {
 				bugsnag.notify(new Error(err), {
 					subsystem: {

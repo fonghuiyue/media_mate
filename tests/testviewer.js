@@ -19,6 +19,7 @@ test('viewer', t => {
 		.then(() => app.webContents.executeJavaScript('document.getElementById("video").firstElementChild.pause()'))
 		.then(() => setup.wait())
 		.then(() => app.webContents.executeJavaScript('document.getElementById("video").firstElementChild.currentTime = 6'))
+		.then(() => setup.wait())
 		.then(() => app.webContents.executeJavaScript('vidFinished()'))
 		.then(() => app.client.moveToObject('#title'))
 		.then(() => setup.wait(10e3))

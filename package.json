@@ -1,7 +1,7 @@
 {
   "name": "media-mate",
   "productName": "MediaMate",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": true,
   "license": "MIT",
   "description": "My SDD HSC Major Project, a full media server/player/downloader/etc - in one",
@@ -80,15 +80,15 @@
       "tests/*",
       "test.js",
       "gulpfile.babel.js",
-		"app/indexbuild.*",
-		"docs/**/*"
-	]
-	},
-	  "build": {
-		  "electronCompile": true,
-		  "nodeGypRebuild": false,
-		  "appId": "com.willyb321.media_mate",
-		  "nsis": {
+      "app/indexbuild.*",
+      "docs/**/*"
+    ]
+  },
+  "build": {
+    "electronCompile": true,
+    "nodeGypRebuild": false,
+    "appId": "com.willyb321.media_mate",
+    "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
     },
@@ -103,11 +103,11 @@
         "github"
       ]
     },
-	"linux": {
-		"target": [
-			"dir",
-			"AppImage"
-		]
-	}
+    "linux": {
+      "target": [
+        "dir",
+        "AppImage"
+      ]
+    }
   }
 }

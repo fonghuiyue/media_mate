@@ -39,6 +39,7 @@
       <w>notif</w>
       <w>onboard</w>
       <w>pubdate</w>
+      <w>renderhtml</w>
       <w>rimraf</w>
       <w>showrssadd</w>
       <w>showrssfeed</w>

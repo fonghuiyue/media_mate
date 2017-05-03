@@ -94,7 +94,10 @@
 			"allowToChangeInstallationDirectory": true
 		},
 		"mac": {
-			"category": "public.app-category.entertainment"
+			"category": "public.app-category.entertainment",
+			"publish": [
+				"github"
+			]
 		},
 		"win": {
 			"target": [

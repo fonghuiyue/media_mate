@@ -94,7 +94,10 @@ gulp.task('build:dist', ['default'], cb => {
 			},
 			mac: {
 				category: 'public.app-category.entertainment',
-				target: 'dmg'
+				target: ['zip'],
+				publish: [
+				"github"
+			]
 			},
 			win: {
 				target: [

@@ -42,7 +42,7 @@
 		"devtron": "^1.4.0",
 		"electron": "^1.6.6",
 		"electron-builder": "^17.2.0",
-		"electron-compilers": "^5.8.3",
+		"electron-compilers": "^5.9.0",
 		"electron-rebuild": "^1.5.7",
 		"eslint": "^3.19.0",
 		"eslint-config-xo": "^0.18.1",

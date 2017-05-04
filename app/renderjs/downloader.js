@@ -22,6 +22,7 @@ const _ = require('underscore');
 const storage = require('electron-json-storage');
 const WebTorrent = require('webtorrent');
 
+let rssTor = [];
 let dupeCount = 0;
 let db;
 PouchDB.plugin(require('pouchdb-find'));
@@ -126,37 +127,41 @@ function getRSSURI(callback) {
  * @param torrent {object} - the torrent object to be checked
  * @param callback - You know what it is.
  */
-function ignoreDupeTorrents(torrent, callback) {
+function ignoreDupeTorrents(torrent, inDB, callback) {
 	const db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbTor').toString());
-	db.find({
-		selector: {
-			_id: torrent.link
-		},
-		fields: ['_id', 'magnet', 'downloaded']
-	}).then(res => {
-		if (res.docs.length > 0) {
-			if (res.docs[0].downloaded === true) {
-				callback('dupe');
-			} else if (res.docs[0].downloaded === false) {
-				callback();
+	if (inDB === false) {
+		db.find({
+			selector: {
+				_id: torrent.link || torrent.magnet
+			},
+			fields: ['_id', 'magnet', 'downloaded']
+		}).then(res => {
+			if (res.docs.length > 0) {
+				if (res.docs[0].downloaded === true) {
+					callback('dupe');
+				} else if (res.docs[0].downloaded === false) {
+					callback();
+				}
+			} else {
+				db.put({
+					_id: torrent.link,
+					magnet: torrent.link,
+					title: torrent.title,
+					tvdbID: torrent['tv:show_name']['#'] || torrent.tvdbID,
+					airdate: torrent['rss:pubdate']['#'] || torrent.airdate,
+					downloaded: false
+				}).then(res => {
+					callback();
+				}).catch(err => {
+					handleErrs(err);
+				});
 			}
-		} else {
-			db.put({
-				_id: torrent.link,
-				magnet: torrent.link,
-				title: torrent.title,
-				tvdbID: torrent['tv:show_name']['#'],
-				airdate: torrent['rss:pubdate']['#'],
-				downloaded: false
-			}).then(res => {
-				callback();
-			}).catch(err => {
-				handleErrs(err);
-			});
-		}
-	}).catch(err => {
-		handleErrs(err);
-	});
+		}).catch(err => {
+			handleErrs(err);
+		});
+	} else {
+		callback();
+	}
 }
 /**
  * Drop the torrent database. Mainly for testing purpose.
@@ -319,9 +324,9 @@ function addTor(magnet, index) {
 	});
 }
 
-function processTorrents(data) {
+function processTorrents(data, inDB) {
 	const dlbox = document.getElementById('dlbox');
-	ignoreDupeTorrents(data, dupe => {
+	ignoreDupeTorrents(data, inDB, dupe => {
 		if (!dupe) {
 			const br = document.createElement('br');
 			const label = document.createElement('label');
@@ -352,6 +357,26 @@ function processTorrents(data) {
 		}
 	});
 }
+
+function getTorDB(tor, callback) {
+	const db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbTor').toString());
+	db.find({
+		selector: {
+			_id: tor.title
+		}
+	}).then(res => {
+		if (res.docs[0] && res.docs[0].title === tor.title) {
+			console.log('M8');
+			callback(res.docs[0]);
+		} else {
+			console.log('M9');
+			callback('dupe');
+		}
+	}).catch(err => {
+		throw err;
+	});
+}
+
 /**
  * Called on hitting enter in the Magnet URI box.
  * @param e {object} - the keypress event.
@@ -374,7 +399,15 @@ function runScript(e) {
 		});
 		RSS.on('data', data => {
 			data = _.omit(data, '_id');
-			processTorrents(data);
+			rssTor.push(data);
+			getTorDB(data, inDB => {
+				if (inDB === 'dupe') {
+					processTorrents(data, false);
+				} else if (_.isObject(inDB)) {
+					processTorrents(inDB, true);
+					console.log('ayy');
+				}
+			});
 		});
 		return false;
 	}

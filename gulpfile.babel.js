@@ -6,7 +6,7 @@ import sourcemaps from 'gulp-sourcemaps';
 import babel from 'gulp-babel';
 import concat from 'gulp-concat';
 import rimraf from 'rimraf';
-import ava from 'gulp-ava';
+const spawn = require('child_process').spawn;
 
 const builder = require('electron-builder');
 
@@ -182,9 +182,18 @@ gulp.task('build:packCI', cb => {
 			console.error(err);
 		});
 });
+gulp.task('changelog', cb => {
+	let githubChanges = spawn(require('path').join('node_modules', '.bin', 'github-changes')+ (process.platform === 'win32' ? '.cmd' : ''), ['-o', 'willyb321', '-r', 'media_mate', '-b', 'develop', '--use-commit-body', '-k',  `${process.env.GH_TOKEN || process.env.GITHUB_TOKEN}`]);
+	githubChanges.stdout.on('data', (data) => {
+		console.log(`stdout: ${data}`);
+	});
 
-gulp.task('test', ['default', 'build:packCI'], () => {
-	return gulp.src('test.js')
-		.pipe(ava({verbose: true}));
+	githubChanges.stderr.on('data', (data) => {
+		console.log(`stderr: ${data}`);
+	});
+
+	githubChanges.on('close', (code) => {
+		console.log(`github-changes exited with code ${code}`);
+		cb();
+	});
 });
-

@@ -358,25 +358,6 @@ function processTorrents(data, inDB) {
 	});
 }
 
-function getTorDB(tor, callback) {
-	const db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbTor').toString());
-	db.find({
-		selector: {
-			_id: tor.title
-		}
-	}).then(res => {
-		if (res.docs[0] && res.docs[0].title === tor.title) {
-			console.log('M8');
-			callback(res.docs[0]);
-		} else {
-			console.log('M9');
-			callback('dupe');
-		}
-	}).catch(err => {
-		throw err;
-	});
-}
-
 /**
  * Called on hitting enter in the Magnet URI box.
  * @param e {object} - the keypress event.
@@ -400,14 +381,7 @@ function runScript(e) {
 		RSS.on('data', data => {
 			data = _.omit(data, '_id');
 			rssTor.push(data);
-			getTorDB(data, inDB => {
-				if (inDB === 'dupe') {
-					processTorrents(data, false);
-				} else if (_.isObject(inDB)) {
-					processTorrents(inDB, true);
-					console.log('ayy');
-				}
-			});
+			processTorrents(data, false);
 		});
 		return false;
 	}

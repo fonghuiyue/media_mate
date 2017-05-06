@@ -4,7 +4,6 @@
 			"es2015"
 		],
 		"only": [
-			"app/css/*.*",
 			"app/*.js",
 			"app/main/*.js"
 		]

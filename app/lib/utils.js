@@ -1,3 +1,7 @@
+/**
+ * @module Utils
+ */
+
 const path = require('path');
 /**
  * Return true if file is playable

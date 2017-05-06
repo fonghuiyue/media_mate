@@ -26,9 +26,8 @@ function init() {
 
 /**
  * Helper function to get menu item from a label
- *
  * @param {string} label - name of the menu item to find.
- * @returns {object} - the menuitem
+ * @returns {object} - the menu item.
  */
 function getMenuItem(label) {
 	for (let i = 0; i < menu.items.length; i++) {

@@ -55,7 +55,7 @@ class GetImgs extends events.EventEmitter {
 
 	/**
 	 * Promise for getting a list of files in {@link GetImgs}
-	 * @returns {array}
+	 * @returns {array} List of files in the download directory.
 	 */
 	async files() {
 		const ret = await this.findFiles();

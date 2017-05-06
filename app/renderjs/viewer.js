@@ -59,8 +59,8 @@ window.onload = () => {
 
 /**
  * Helper function to store images as blobs.
- * @param img - image tag to convert to blob.
- * @param callback - Returns blob of img.
+ * @param img {object} - image tag to convert to blob.
+ * @param callback {function} - Returns blob of img.
  */
 function convertImgToBlob(img, callback) {
 	blobUtil.imgSrcToBlob(img.src).then(blob => {

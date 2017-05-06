@@ -14,7 +14,7 @@ function isPlayable(file) {
 /**
  * Checks whether the file path is playable video
  * @param file {string} - the path to the file
- * @returns {boolean}
+ * @returns {boolean} true for playable, false for not.
  */
 function isVideo(file) {
 	return [

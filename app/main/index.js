@@ -55,6 +55,11 @@ bugsnag.register('03b389d77abc2d10136d8c859391f952', {appVersion: app.getVersion
 let win;
 
 if (process.env.SPECTRON) {
+	/**
+	 * If Spectron is running, mock showOpenDialog to return the test folder.
+	 * @param opts {object} Options showOpenDialog was called with.
+	 * @param cb {array} An array of file paths returned.
+	 */
 	electron.dialog.showOpenDialog = (opts, cb) => {
 		cb([require('path').join(require('os').tmpdir(), 'MediaMateTest', 'Downloads')]);
 	};
@@ -116,6 +121,9 @@ process.on('uncaughtError', err => {
 	bugsnag.notify(err);
 	console.log('ERROR! The error is: ' + err || err.stack);
 });
+/**
+ * Same as process.on('uncaughtError') but for promises.
+ */
 process.on('unhandledRejection', err => {
 	console.error('Unhandled rejection: ' + (err && err.stack || err)); // eslint-disable-line
 	bugsnag.notify(err);
@@ -231,7 +239,7 @@ app.on('activate', () => {
 /**
  * @description Make sure to not add torrents that are already in the database / downloaded
  * @param torrent {object} - the torrent object to be checked
- * @param callback - The callback.
+ * @param callback {string} - The callback.
  */
 function ignoreDupeTorrents(torrent, callback) {
 	const db = new PouchDB(require('path').join(app.getPath('userData'), 'dbTor').toString());
@@ -271,7 +279,7 @@ function ignoreDupeTorrents(torrent, callback) {
 }
 /**
  * @description Get the ShowRSS URI from the DB.
- * @param callback - Callbacks
+ * @param callback {function} Callbacks
  */
 function getRSSURI(callback) {
 	storage.get('showRSS', (err, data) => {
@@ -308,7 +316,9 @@ function watchRSS() {
 		}
 	});
 }
-
+/**
+ * Sent from render process on a download finishes. Sends a notification
+ */
 ipc.on('dldone', (event, data) => {
 	console.log(data);
 	mainWindow.webContents.executeJavaScript(`notify('Download Finished', '${data}' )`);

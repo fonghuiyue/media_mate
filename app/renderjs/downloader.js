@@ -22,7 +22,7 @@ const _ = require('underscore');
 const storage = require('electron-json-storage');
 const WebTorrent = require('webtorrent');
 
-let rssTor = [];
+const rssTor = [];
 let dupeCount = 0;
 let db;
 PouchDB.plugin(require('pouchdb-find'));

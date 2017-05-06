@@ -4,12 +4,11 @@
 @import "../node_modules/izitoast/dist/css/iziToast.min.css";
 @import "../node_modules/bulma/css/bulma.css";
 @import "../node_modules/sweetalert2/dist/sweetalert2.min.css";
-@import "../node_modules/open-color/open-color.css";
+@import "../node_modules/open-color/open-color.less";
 
 body {
 	min-height: 100%;
-	background-color: var(--oc-gray-0);
-	color: var(--oc-gray-7);
+	color: @oc-gray-7;
 }
 figure > hr {
 	margin: 0 0 !important;
@@ -22,8 +21,8 @@ figure > hr {
 }
 
 .section {
-	background-color: var(--oc-gray-0);
-	color: var(--oc-gray-7);
+	background-color: @oc-gray-0;
+	color: @oc-gray-7;
 }
 
 @keyframes fadein {
@@ -36,17 +35,13 @@ figure > hr {
 }
 
 html {
-	/* Disable text selection, or your app will feel like a web page */
 	-webkit-user-select: none;
 	-webkit-app-region: drag;
 
 	/* Cover the whole window */
 	height: 100%;
-
-	/* Make sure this matches the native window background color that you pass to
-     * electron.BrowserWindow({...}), otherwise your app startup will look janky. */
-	background-color: var(--oc-gray-0);
-	color: var(--oc-gray-7);
+	background-color: @oc-gray-0;
+	color: @oc-gray-7;
 	/* Smoother startup */
 	animation: fadein 0.5s;
 }

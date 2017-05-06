@@ -4,7 +4,7 @@
 	"version": "1.0.0",
 	"private": true,
 	"license": "MIT",
-	"description": "My SDD HSC Major Project, a full media server/player/downloader/etc - in one",
+	"description": "A full media server/player/downloader/etc - in one",
 	"repository": "willyb321/media_mate",
 	"author": {
 		"name": "willyb321",

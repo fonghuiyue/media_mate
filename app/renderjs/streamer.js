@@ -12,10 +12,17 @@ require('events').EventEmitter.prototype._maxListeners = 1000;
 const swal = require('sweetalert2');
 const path = require('path');
 const _ = require('underscore');
+const PouchDB = require('pouchdb');
+const {isPlayable, titleCase} = require(require('path').join(__dirname, '..', 'lib', 'utils.js'));
 
+PouchDB.plugin(require('pouchdb-upsert'));
+PouchDB.plugin(require('pouchdb-find'));
 const client = new WebTorrent();
-let filesAll = '';
-const {isPlayable} = require(require('path').join(__dirname, '..', 'lib', 'utils.js'));
+let filesAll;
+
+client.on('error', err => {
+	console.log(err);
+});
 
 /**
  * On keypress on the input
@@ -35,11 +42,18 @@ function runScript(e) {
 	}
 }
 /**
+ * Called on window load.
+ */
+window.onload = () => {
+	streamHistory();
+};
+
+/**
  * Allow the user to choose what file to stream.
  * @param files {array} - files in the torrent
  */
 function chooseFile(files) {
-	const select = document.getElementById('selectNumber');
+	const select = document.getElementById('selectFile');
 	console.log(files);
 	files = _.filter(files, isPlayable);
 	filesAll = files;
@@ -81,7 +95,7 @@ function startPlaying(file) {
  * Get file when selected
  */
 function getFile() {
-	const e = document.getElementById('selectNumber');
+	const e = document.getElementById('selectFile');
 	const text = e.options[e.selectedIndex].value;
 	startPlaying(filesAll[text]);
 }
@@ -90,12 +104,76 @@ function getFile() {
  * @param magnet {string} - the magnet URI
  */
 function submitmagnet(magnet) {
-	client.add(magnet, torrent => {
-		chooseFile(torrent.files);
-		process.torrent = torrent;
-		document.getElementById('myForm').style.display = 'inline';
-	});
+	const ifExist = client.get(magnet);
+	if (ifExist) {
+		addStreamHistory(ifExist);
+		process.torrent = ifExist;
+		document.getElementById('files').style.display = 'inline';
+	} else {
+		client.add(magnet, torrent => {
+			addStreamHistory(torrent);
+			chooseFile(torrent.files);
+			process.torrent = torrent;
+			document.getElementById('files').style.display = 'inline';
+		});
+	}
 }
+/**
+ * Adds torrents to stream history DB.
+ * @param torrent {object} Contains magnet, files, metadata etc.
+ */
+function addStreamHistory(torrent) {
+	const db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbStream').toString());
+	let files = [];
+	_.each(torrent.files, file => {
+		files.push(file.name);
+	});
+	files = _.filter(files, isPlayable);
+	console.log(files);
+	db.putIfNotExists(torrent.magnetURI, {magnet: torrent.magnetURI, files: files})
+		.then(res => {
+			console.log(res);
+		})
+		.catch(err => {
+			if (err.status !== 404) {
+				throw err;
+			}
+		});
+}
+/**
+ * Called when choosing a file in the history form.
+ */
+function getFileHistory() {
+	const e = document.getElementById('historySelect');
+	const text = e.options[e.selectedIndex];
+	submitmagnet(text.id);
+}
+/**
+ * Get stream history, and make options in a select tag.
+ * Called on window load.
+ */
+function streamHistory() {
+	const db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbStream').toString());
+	const select = document.getElementById('historySelect');
+	db.allDocs({include_docs: true}) // eslint-disable-line camelcase
+		.then(res => {
+			for (let i = 0; i < res.rows.length; i++) {
+				_.each(res.rows[i].doc.files, file => {
+					const opt = file;
+					const el = document.createElement('option');
+					el.textContent = opt;
+					el.value = i;
+					el.id = res.rows[i].doc.magnet;
+					select.appendChild(el);
+				});
+				document.getElementById('historyForm').style.display = 'inline-block';
+			}
+		})
+		.catch(err => {
+			throw err;
+		});
+}
+
 /**
  * Stop downloading the torrent.
  */
@@ -103,6 +181,6 @@ function stop() {
 	process.torrent.destroy(tor => {
 		document.getElementById('player').removeChild(document.getElementById('player').firstChild);
 		document.getElementById('destroy').style.display = 'none';
-		document.getElementById('selectNumber').style.display = 'none';
+		document.getElementById('selectFile').style.display = 'none';
 	});
 }

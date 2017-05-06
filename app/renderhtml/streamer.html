@@ -40,8 +40,15 @@
 			<div id="dl" class="column">
 			<button class="button is-primary"  id="destroy" style="display: none;" onclick="stop()">Stop torrent</button>
 			</div>
-			<form id="myForm" style="display: none;">
-				<select class="select" id="selectNumber" onchange="getFile()" title="Choose file">
+			<form id="files" style="display: none;">
+				<label>Pick a file</label>
+				<select class="select" id="selectFile" onchange="getFile()" title="Choose file">
+					<option>Select an option</option>
+				</select>
+			</form>
+			<form id="historyForm" style="display: none;">
+				<label>Stream History</label>
+				<select class="select" id="historySelect" onchange="getFileHistory()" title="Choose file">
 					<option>Select an option</option>
 				</select>
 			</form>

@@ -1,3 +1,7 @@
+/**
+ * @module Menu
+ */
+
 module.exports = {
 	init,
 	getMenuItem

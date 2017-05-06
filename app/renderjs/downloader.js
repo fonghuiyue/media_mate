@@ -324,6 +324,11 @@ function addTor(magnet, index) {
 	});
 }
 
+/**
+ * Function to process torrents from ShowRSS
+ * @param {object} data
+ * @param {boolean} inDB
+ */
 function processTorrents(data, inDB) {
 	const dlbox = document.getElementById('dlbox');
 	ignoreDupeTorrents(data, inDB, dupe => {

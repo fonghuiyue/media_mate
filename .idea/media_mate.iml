@@ -17,5 +17,6 @@
     <orderEntry type="library" name="electron-debug-DefinitelyTyped" level="application" />
     <orderEntry type="library" name="underscore-DefinitelyTyped" level="application" />
     <orderEntry type="library" name="webdriverio-DefinitelyTyped" level="application" />
+    <orderEntry type="library" name="c7450b3c67" level="application" />
   </component>
 </module>

@@ -1,8 +1,10 @@
 app/node_modules/**/*
-app/indexbuild*
+app/main/indexbuild*
 gulpfile.babel.js
 ./test.js
 **/*.min*
 **/*/node_modules/**/*.*
 app/renderjs/notify.js
 docs/**/*
+dist/**/*
+tests/**/*

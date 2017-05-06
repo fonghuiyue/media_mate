@@ -8,6 +8,7 @@
 - [Media Mate](#media-mate)
     - [What is it?](#what-is-it)
     - [Whats it look like then?](#whats-it-look-like-then)
+    - [Disclaimer](#disclaimer)
     - [License](#license)
 
 <!-- /TOC -->
@@ -23,6 +24,9 @@ Media Mate is a media centre, along the lines of [Plex](https://plex.tv), with t
 <img align="center" style="width: 100%; height:100%;" src="https://raw.githubusercontent.com/willyb321/media_mate/develop/img/viewer.jpg" alt="Media Mate UI">
 <img align="center" style="width: 100%; height:100%;" src="https://raw.githubusercontent.com/willyb321/media_mate/develop/img/streamer.png" alt="Media Mate UI">
 
+## Disclaimer
+
+I cannot be responsible for anything that happens when you use this program. If your computer explodes, if your house gets blown up - I cannot be responsible. Likewise, I am not responsible for anything that you do with this program.
 
 ## License
 

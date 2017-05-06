@@ -11,13 +11,21 @@ const openAboutWindow = require('about-window').default;
 const app = electron.app;
 let win;
 let menu;
-
+/**
+ * Initialise the menu.
+ */
 function init() {
 	menu = electron.Menu.buildFromTemplate(getMenuTemplate());
 	electron.Menu.setApplicationMenu(menu);
 	win = BrowserWindow.getAllWindows()[0];
 }
 
+/**
+ * Helper function to get menu item from a label
+ *
+ * @param {string} label - name of the menu item to find.
+ * @returns {object} - the menuitem
+ */
 function getMenuItem(label) {
 	for (let i = 0; i < menu.items.length; i++) {
 		const menuItem = menu.items[i].submenu.items.find(item => {
@@ -28,7 +36,9 @@ function getMenuItem(label) {
 		}
 	}
 }
-
+/**
+ * Menu template.
+ */
 function getMenuTemplate() {
 	const template = [
 		{

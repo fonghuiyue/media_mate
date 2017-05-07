@@ -12,7 +12,7 @@ console.time('init');
 console.time('require');
 require('dotenv').config({path: `${__dirname}/../.env`});
 console.time('electron');
-import electron, {dialog, ipcMain as ipc} from 'electron';
+import electron, {dialog, protocol, ipcMain as ipc} from 'electron';
 console.timeEnd('electron');
 console.time('updater');
 import {autoUpdater} from 'electron-updater';
@@ -323,7 +323,7 @@ ipc.on('dldone', (event, data) => {
 	console.log(data);
 	mainWindow.webContents.executeJavaScript(`notify('Download Finished', '${data}' )`);
 });
-
+protocol.registerStandardSchemes(['video']);
 /**
  * Make the main window.
  */
@@ -332,5 +332,15 @@ app.on('ready', () => {
 	init();
 	watchRSS();
 	onBoard();
+	protocol.registerFileProtocol('video', (request, callback) => {
+		const url = request.url;
+		console.log(url.substring('7'));
+		callback(require('path').resolve(url.substring('7')));
+	}, error => {
+		if (error) {
+			console.log(error);
+			console.error('Failed to register protocol');
+		}
+	});
 	console.timeEnd('init');
 });

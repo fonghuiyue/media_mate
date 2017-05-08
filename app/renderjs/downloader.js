@@ -127,41 +127,37 @@ function getRSSURI(callback) {
  * @param torrent {object} - the torrent object to be checked
  * @param callback - You know what it is.
  */
-function ignoreDupeTorrents(torrent, inDB, callback) {
+function ignoreDupeTorrents(torrent, callback) {
 	const db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbTor').toString());
-	if (inDB === false) {
-		db.find({
-			selector: {
-				_id: torrent.link || torrent.magnet
-			},
-			fields: ['_id', 'magnet', 'downloaded']
-		}).then(res => {
-			if (res.docs.length > 0) {
-				if (res.docs[0].downloaded === true) {
-					callback('dupe');
-				} else if (res.docs[0].downloaded === false) {
-					callback();
-				}
-			} else {
-				db.put({
-					_id: torrent.link,
-					magnet: torrent.link,
-					title: torrent.title,
-					tvdbID: torrent['tv:show_name']['#'] || torrent.tvdbID,
-					airdate: torrent['rss:pubdate']['#'] || torrent.airdate,
-					downloaded: false
-				}).then(res => {
-					callback();
-				}).catch(err => {
-					handleErrs(err);
-				});
+	db.find({
+		selector: {
+			_id: torrent.link || torrent.magnet
+		},
+		fields: ['_id', 'magnet', 'downloaded']
+	}).then(res => {
+		if (res.docs.length > 0) {
+			if (res.docs[0].downloaded === true) {
+				callback('dupe');
+			} else if (res.docs[0].downloaded === false) {
+				callback();
 			}
-		}).catch(err => {
-			handleErrs(err);
-		});
-	} else {
-		callback();
-	}
+		} else {
+			db.put({
+				_id: torrent.link,
+				magnet: torrent.link,
+				title: torrent.title,
+				tvdbID: torrent['tv:show_name']['#'] || torrent.tvdbID,
+				airdate: torrent['rss:pubdate']['#'] || torrent.airdate,
+				downloaded: false
+			}).then(res => {
+				callback();
+			}).catch(err => {
+				handleErrs(err);
+			});
+		}
+	}).catch(err => {
+		handleErrs(err);
+	});
 }
 /**
  * Drop the torrent database. Mainly for testing purpose.
@@ -327,11 +323,10 @@ function addTor(magnet, index) {
 /**
  * Function to process torrents from ShowRSS
  * @param {object} data
- * @param {boolean} inDB
  */
-function processTorrents(data, inDB) {
+function processTorrents(data) {
 	const dlbox = document.getElementById('dlbox');
-	ignoreDupeTorrents(data, inDB, dupe => {
+	ignoreDupeTorrents(data, dupe => {
 		if (!dupe) {
 			const br = document.createElement('br');
 			const label = document.createElement('label');
@@ -386,7 +381,7 @@ function runScript(e) {
 		RSS.on('data', data => {
 			data = _.omit(data, '_id');
 			rssTor.push(data);
-			processTorrents(data, false);
+			processTorrents(data);
 		});
 		return false;
 	}

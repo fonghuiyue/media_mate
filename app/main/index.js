@@ -48,9 +48,6 @@ console.timeEnd('find');
 console.time('windowstate');
 import windowStateKeeper from 'electron-window-state';
 console.timeEnd('windowstate');
-console.time('fileurl');
-import fileUrl from 'file-url';
-console.timeEnd('fileurl');
 console.timeEnd('require');
 let RSS;
 const app = electron.app;
@@ -342,10 +339,11 @@ app.on('ready', () => {
 		const urlParsed = require('url').parse(request.url);
 		console.log(urlParsed);
 		if (process.platform === 'win32') {
+			// Hacky af but it works so I can't complain.
 			console.log(require('path').join(urlParsed.hostname.toUpperCase() + ':\\', urlParsed.path).replace('\\', '\\\\'));
 			callback(require('path').join(urlParsed.hostname.toUpperCase() + ':\\', urlParsed.path).replace('\\', '\\\\'));
 		} else {
-			callback(fileUrl(request.url).replace('video://', ''));
+			callback(require('path').resolve(url.substring('7')));
 		}
 	}, error => {
 		if (error) {

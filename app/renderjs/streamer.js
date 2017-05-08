@@ -130,7 +130,7 @@ function addStreamHistory(torrent) {
 	});
 	files = _.filter(files, isPlayable);
 	console.log(files);
-	db.putIfNotExists(torrent.magnetURI, {magnet: torrent.magnetURI, files: files})
+	db.putIfNotExists(torrent.magnetURI, {magnet: torrent.magnetURI, files})
 		.then(res => {
 			console.log(res);
 		})

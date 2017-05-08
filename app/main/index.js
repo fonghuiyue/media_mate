@@ -340,7 +340,7 @@ app.on('ready', () => {
 			// Hacky af but it works so I can't complain.
 			callback(require('path').join(urlParsed.hostname.toUpperCase() + ':\\', urlParsed.path).replace('\\', '\\\\'));
 		} else {
-			callback(require('path').resolve(url.substring('7')));
+			callback(require('path').resolve(url.substring(7)));
 		}
 	}, error => {
 		if (error) {

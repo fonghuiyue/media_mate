@@ -39,10 +39,14 @@
 			<button id="dlAll" onclick="dlAll()" class="button is-primary" style="display: none; float: right;">Download All</button>
 			<button style="float: right;" onclick="dropTorrents()" class="button is-primary">Drop Torrents DB</button>
 			<button style="float: right;" onclick="insertDlPath()" id="dlpath" class="button is-primary">Choose DL Path</button>
-			<p id="rssp" class="subtitle">
-				<input id="rss" placeholder="Paste ShowRSS feed url." class="input" style="width: 25%" type="text" onkeypress="return runScript(event)" title="magnet">
-			<span style="display: none;" id="dupecount" style=""></span>
+			<div style="width: 25%" class="field has-addons">
+			<p id="rssp" class="control is-expanded">
+				<input id="rss" placeholder="Paste ShowRSS feed url." class="input" type="text" onkeypress="return runScript(event)" title="magnet">
 			</p>
+				<p class="control">
+				<button class="button is-info" onclick="return runScript(event)" id="dupecount">Submit</button>
+				</p>
+			</div>
 		</div>
 	</div>
 </div>

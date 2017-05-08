@@ -364,8 +364,10 @@ function processTorrents(data) {
  * @returns {boolean} - whether the key was enter or not.
  */
 function runScript(e) {
-	if (e.keyCode === 13) {
+	if (e.type === 'click' || e.charCode === 13) {
 		const tb = document.getElementById('rss');
+		tb.disabled = true;
+		document.getElementById('dupecount').disabled = true;
 		swal(
 			'Getting your downloads',
 			'Welcome to Media Mate',
@@ -377,6 +379,8 @@ function runScript(e) {
 		const RSS = new RSSParse(tb.value);
 		RSS.on('error', err => {
 			console.log(err);
+			tb.disabled = false;
+			document.getElementById('dupecount').disabled = false;
 		});
 		RSS.on('data', data => {
 			data = _.omit(data, '_id');

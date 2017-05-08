@@ -451,8 +451,7 @@ async function findDL() {
 			figelem.addEventListener('click', () => {
 				window.scrollTo(0, 0);
 				const video = document.createElement('video');
-				let vidsrc = 'video://' + files[i];
-				video.src = vidsrc;
+				video.src = 'video://' + files[i];
 				video.setAttribute('data-file-name', `${parsedName.show.replace(' ', '')}S${parsedName.season}E${parsedName.episode}`);
 				video.setAttribute('data-store-name', `${parsedName.show.replace(' ', '')}S${parsedName.season}E${parsedName.episode}`);
 				video.autoplay = true;

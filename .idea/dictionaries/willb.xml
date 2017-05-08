@@ -1,6 +1,7 @@
 <component name="ProjectDictionaryState">
   <dictionary name="willb">
     <words>
+      <w>addons</w>
       <w>airdate</w>
       <w>autoupdater</w>
       <w>bugsnag</w>
@@ -9,6 +10,7 @@
       <w>downloaderdl</w>
       <w>downloaderfeed</w>
       <w>downloaderhelp</w>
+      <w>dupecount</w>
       <w>elempath</w>
       <w>enoent</w>
       <w>eslint</w>

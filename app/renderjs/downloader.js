@@ -41,7 +41,7 @@ process.on('unhandledRejection', (err, promise) => {
 });
 
 function handleErrs(err) {
-	console.error('Unhandled rejection: ' + (err && err.stack || err)); // eslint-disable-line
+	console.error('Unhandled error: ' + (err && err.stack || err)); // eslint-disable-line
 	bugsnag.notify(new Error(err));
 }
 
@@ -131,7 +131,7 @@ function ignoreDupeTorrents(torrent, callback) {
 	const db = new PouchDB(require('path').join(require('electron').remote.app.getPath('userData'), 'dbTor').toString());
 	db.find({
 		selector: {
-			_id: torrent.link || torrent.magnet
+			_id: torrent.link
 		},
 		fields: ['_id', 'magnet', 'downloaded']
 	}).then(res => {
@@ -146,8 +146,8 @@ function ignoreDupeTorrents(torrent, callback) {
 				_id: torrent.link,
 				magnet: torrent.link,
 				title: torrent.title,
-				tvdbID: torrent['tv:show_name']['#'] || torrent.tvdbID,
-				airdate: torrent['rss:pubdate']['#'] || torrent.airdate,
+				tvdbID: torrent['tv:show_name']['#'],
+				airdate: torrent['rss:pubdate']['#'],
 				downloaded: false
 			}).then(res => {
 				callback();
@@ -364,6 +364,8 @@ function processTorrents(data) {
  * @returns {boolean} - whether the key was enter or not.
  */
 function runScript(e) {
+	// Called from both a button and a textbox
+	// so check for click / enter keypress before doing anything else.
 	if (e.type === 'click' || e.charCode === 13) {
 		const tb = document.getElementById('rss');
 		tb.disabled = true;
@@ -373,15 +375,17 @@ function runScript(e) {
 			'Welcome to Media Mate',
 			'success'
 		);
-		// Use connect method to connect to the Server
+		// Set the ShowRSS feed url in json storage.
 		updateURI(tb.value);
 		document.getElementById('dls').style.display = 'inline';
 		const RSS = new RSSParse(tb.value);
+		// Emitted on RSS error (invalid url etc).
 		RSS.on('error', err => {
 			console.log(err);
 			tb.disabled = false;
 			document.getElementById('dupecount').disabled = false;
 		});
+		// Emitted every time a new RSS item appears.
 		RSS.on('data', data => {
 			data = _.omit(data, '_id');
 			rssTor.push(data);

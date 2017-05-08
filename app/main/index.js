@@ -239,7 +239,7 @@ app.on('activate', () => {
 /**
  * @description Make sure to not add torrents that are already in the database / downloaded
  * @param torrent {object} - the torrent object to be checked
- * @param callback {string} - The callback.
+ * @param callback {function} - The callback.
  */
 function ignoreDupeTorrents(torrent, callback) {
 	const db = new PouchDB(require('path').join(app.getPath('userData'), 'dbTor').toString());

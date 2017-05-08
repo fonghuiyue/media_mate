@@ -48,6 +48,9 @@ console.timeEnd('find');
 console.time('windowstate');
 import windowStateKeeper from 'electron-window-state';
 console.timeEnd('windowstate');
+console.time('fileurl');
+import fileUrl from 'file-url';
+console.timeEnd('fileurl');
 console.timeEnd('require');
 let RSS;
 const app = electron.app;
@@ -332,10 +335,18 @@ app.on('ready', () => {
 	init();
 	watchRSS();
 	onBoard();
+	protocol.uninterceptProtocol('video');
 	protocol.registerFileProtocol('video', (request, callback) => {
 		const url = request.url;
-		console.log(url.substring('7'));
-		callback(require('path').resolve(url.substring('7')));
+		console.log(request);
+		const urlParsed = require('url').parse(request.url);
+		console.log(urlParsed);
+		if (process.platform === 'win32') {
+			console.log(require('path').join(urlParsed.hostname.toUpperCase() + ':\\', urlParsed.path).replace('\\', '\\\\'));
+			callback(require('path').join(urlParsed.hostname.toUpperCase() + ':\\', urlParsed.path).replace('\\', '\\\\'));
+		} else {
+			callback(fileUrl(request.url).replace('video://', ''));
+		}
 	}, error => {
 		if (error) {
 			console.log(error);
